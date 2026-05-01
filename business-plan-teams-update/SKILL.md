@@ -20,8 +20,8 @@ description: 福田会計の事業計画書PPTをAsanaのタスク進捗と連�
 以下をユーザーへ確認する（または会話から特定する）：
 
 - **PPTファイルパス**: 例 `C:\fukuda\business_plan_2026.pptx`
-- **Asanaパーソナルアクセストークン**: Asana → マイプロフィール → アプリ → パーソナルアクセストークン
-- **AsanaプロジェクトID**: プロジェクトURLの数字部分（例: `https://app.asana.com/0/1234567890/...` → `1234567890`）
+- **Asanaパーソナルアクセストークン**: 環境変数 `ASANA_TOKEN` に設定済み
+- **AsanaプロジェクトID**: `1211395874851623`（福田会計 事業計画）
 - **Teams Incoming Webhook URL**: Teamsチャネル → コネクタ → 受信Webhook → 構成
 - **作業種別**: 「日次更新のみ」「Teams投稿のみ」「両方」
 
@@ -40,8 +40,8 @@ pip install python-pptx requests
 ```python
 import requests
 
-ASANA_TOKEN = "your_asana_pat"   # ← 実際のトークンに置き換え
-PROJECT_ID  = "1234567890"       # ← 実際のプロジェクトIDに置き換え
+ASANA_TOKEN = os.environ["ASANA_TOKEN"]  # 環境変数から取得
+PROJECT_ID  = "1211395874851623"         # 福田会計 事業計画プロジェクト
 
 headers = {
     "Authorization": f"Bearer {ASANA_TOKEN}",
