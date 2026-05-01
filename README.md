@@ -27,10 +27,27 @@
 - 摘要のみでは判断できない大口修繕費は指摘不要
 - 小額の寄付金（概ね50,000円未満）は指摘不要
 
+### business-plan-teams-update（事業計画更新・Teams月次投稿）
+
+福田会計の事業計画Excelを毎日更新し、毎月1日にMicrosoft TeamsチャネルへAdaptive Card形式で自動投稿するスキル。
+
+**機能：**
+- 事業計画Excel（目標シート・実績シート）への日次実績入力
+- 売上・経費・新規顧問先件数の目標対比・進捗率を自動計算
+- 毎月1日にTeams Incoming WebhookへAdaptive Card形式で月次サマリーを投稿
+- Windowsタスクスケジューラによる自動実行設定をサポート
+
+**対応項目：**
+- 売上目標 vs 実績（進捗率・達成状況）
+- 顧問先数（新規獲得・解約・合計）
+- 経費実績
+- 月次備考・コメントの共有
+
 ## インストール方法
 
 スキルファイルを `~/.claude/skills/` 配下に配置してください。
 
 ```bash
 cp -r monthly-tax-audit ~/.claude/skills/
+cp -r business-plan-teams-update ~/.claude/skills/
 ```
