@@ -27,20 +27,17 @@
 - 摘要のみでは判断できない大口修繕費は指摘不要
 - 小額の寄付金（概ね50,000円未満）は指摘不要
 
-### business-plan-teams-update（事業計画書PPT更新・Teams月次投稿）
+### business-plan-teams-update（事業計画書PPT日次更新）
 
-福田会計の事業計画書PPTをAsanaのタスク進捗と連携しながら毎日更新し、毎月1日にMicrosoft TeamsチャネルへサマリーをIncoming Webhookで投稿するスキル。
+福田会計の事業計画書PPTをAsanaのタスク進捗と連携しながら毎日更新するスキル。更新後はユーザーが手動でメール送信する。
 
 **機能：**
-- AsanaのプロジェクトからタスクKPI・進捗率を取得
-- 事業計画書PPTの指定スライドを毎日自動更新（python-pptx）
-- 毎月1日にTeams Incoming WebhookへAdaptive Card形式でサマリーを投稿
-- Windowsタスクスケジューラによる日次自動実行をサポート
+- AsanaプロジェクトからタスクKPI・進捗率を自動取得
+- 事業計画書PPTの指定スライドを進捗データで更新・保存
 
 **使用技術：**
 - python-pptx（PPT操作）
 - Asana REST API
-- Microsoft Teams Incoming Webhook
 
 ## インストール方法
 
