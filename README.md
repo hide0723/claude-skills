@@ -27,10 +27,24 @@
 - 摘要のみでは判断できない大口修繕費は指摘不要
 - 小額の寄付金（概ね50,000円未満）は指摘不要
 
+### evernote-inbox-organization（エバーノートインボックス整理）
+
+Evernote のインボックスにあるノートをタグ付け・ノートブック移動で整理するスキル。
+
+**機能：**
+- Evernote API 経由でインボックス内のノートを一覧取得
+- ノートのタイトル・本文からクライアント名・資料種別を判定してタグ付与
+- 整理済みノートを指定ノートブック（既定：99.ノート）へ移動
+
+**前提条件：**
+- Evernote Developer Token（`https://www.evernote.com/api/DeveloperToken.action` で取得）
+- Python 3.x + `pip install evernote3`
+
 ## インストール方法
 
 スキルファイルを `~/.claude/skills/` 配下に配置してください。
 
 ```bash
 cp -r monthly-tax-audit ~/.claude/skills/
+cp -r evernote-inbox-organization ~/.claude/skills/
 ```
