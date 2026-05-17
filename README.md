@@ -27,10 +27,21 @@
 - 摘要のみでは判断できない大口修繕費は指摘不要
 - 小額の寄付金（概ね50,000円未満）は指摘不要
 
+### mobile-remote-control（スマホからClaudeCodeを操作）
+
+スマートフォンの Claude アプリから、自宅PCで動くClaude Codeをリモート操作するセットアップガイド。
+
+**機能：**
+- Remote Control 有効化コマンドと手順
+- 起動のたびに発行されるURLをメール・Slackへ自動通知するスクリプト
+
+**必要条件：** Claude Pro プラン以上
+
 ## インストール方法
 
 スキルファイルを `~/.claude/skills/` 配下に配置してください。
 
 ```bash
 cp -r monthly-tax-audit ~/.claude/skills/
+cp -r mobile-remote-control ~/.claude/skills/
 ```
