@@ -91,11 +91,11 @@
 
 | # | カテゴリー | サブ領域 | ファイル | 状態 |
 |---|-----------|---------|---------|------|
-| 1 | 人材活動 | 採用 / 教育 / 評価 | `human-resources-planning.md` | 未着手 |
+| 1 | 人材活動 | 採用 / 教育 / 評価 | `human-resources-planning.md` | ✅ 作成（project2で肉付け） |
 | 2 | サービス品質活動 | （未細分化） | `service-quality-planning.md` | 未着手 |
 | 3 | 営業マーケ活動 | （未細分化） | `sales-marketing-planning.md` | 未着手 |
-| 4 | 戦略構築活動 | 事業計画 / 外部委託 / 業務提携 | `strategy-planning.md` | 未着手 |
-| 5 | 財務経理活動 | （未細分化） | `finance-accounting-planning.md` | ✅ 試作済み（テンプレート） |
+| 4 | 戦略構築活動 | 事業計画 / 外部委託 / 業務提携 | `strategy-planning.md` | ✅ 作成（project2で肉付け・Opus） |
+| 5 | 財務経理活動 | （未細分化） | `finance-accounting-planning.md` | ✅ 試作・検証済み |
 
 ### 細分化の扱い方（設計方針）
 
