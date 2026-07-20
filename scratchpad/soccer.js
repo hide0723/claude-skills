@@ -4,7 +4,7 @@ const fs = require('fs');
 const items = [
   { name: '日焼け止め', icon: '☀️' },
   { name: 'すね当て',   icon: '🛡️' },
-  { name: 'ヘアバンド', icon: '🥷' },
+  { name: 'ヘアバンド', icon: '🪢' },
   { name: 'ビブス',     icon: '🦺' },
   { name: 'ボール',     icon: '⚽' },
   { name: 'タオル',     icon: '🧻' },
