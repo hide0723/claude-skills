@@ -1,7 +1,7 @@
 const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, PageOrientation, ShadingType } = require('docx');
 const fs = require('fs');
 
-const alwaysItems = [
+const items = [
   { name: '日焼け止め', icon: '☀️' },
   { name: 'すね当て',   icon: '🛡️' },
   { name: 'ヘアバンド', icon: '🎀' },
@@ -14,12 +14,14 @@ const alwaysItems = [
   { name: 'ユニフォーム', icon: '👕' },
   { name: '塩分チャージ', icon: '🍬' },
   { name: '帰りの靴',   icon: '👟' },
-];
-const matchItems = [
   { name: '椅子',       icon: '🪑' },
   { name: '三脚',       icon: '📷' },
   { name: 'タブレット', icon: '📱' },
 ];
+
+const matchOnlyStart = 12;
+const alwaysCount = matchOnlyStart;
+const matchCount = items.length - matchOnlyStart;
 
 const COLOR_A = 'E3F2FD';
 const COLOR_B = 'FCE4EC';
@@ -31,60 +33,89 @@ const itemColWidth = 900;
 const cellMargin = { top: 80, bottom: 80, left: 60, right: 60 };
 const numRows = 16;
 
-function buildTable(items, palette) {
-  const { rowFill, headerFill, headerColor, dateHeaderFill } = palette;
-
-  const headerCells = [
-    new TableCell({
-      width: { size: dateColWidth, type: WidthType.DXA },
-      shading: { type: ShadingType.CLEAR, color: 'auto', fill: dateHeaderFill },
-      margins: cellMargin,
-      children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '📅 ひづけ', bold: true, size: 22, color: '5D4037' })] })],
-    }),
-    ...items.map(it => new TableCell({
+// Row 1: item header row
+const headerCells = [
+  new TableCell({
+    width: { size: dateColWidth, type: WidthType.DXA },
+    shading: { type: ShadingType.CLEAR, color: 'auto', fill: 'FFF3E0' },
+    margins: cellMargin,
+    children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '📅 ひづけ', bold: true, size: 22, color: '5D4037' })] })],
+  }),
+  ...items.map((it, i) => {
+    const isMatch = i >= matchOnlyStart;
+    return new TableCell({
       width: { size: itemColWidth, type: WidthType.DXA },
-      shading: { type: ShadingType.CLEAR, color: 'auto', fill: headerFill },
+      shading: { type: ShadingType.CLEAR, color: 'auto', fill: isMatch ? 'F8BBD0' : 'BBDEFB' },
       margins: cellMargin,
       children: [
         new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: it.icon, size: 32 })] }),
-        new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: it.name, bold: true, size: 18, color: headerColor })] })
+        new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: it.name, bold: true, size: 18, color: isMatch ? HEADER_B : HEADER_A })] }),
       ],
-    })),
-  ];
+    });
+  }),
+];
 
-  const bodyRows = [];
-  for (let r = 0; r < numRows; r++) {
-    const even = r % 2 === 0;
-    const bg = even ? rowFill : 'FFFFFF';
-    const dateBg = even ? 'FFF8E1' : 'FFFFFF';
-    const cells = [
-      new TableCell({
-        width: { size: dateColWidth, type: WidthType.DXA },
-        shading: { type: ShadingType.CLEAR, color: 'auto', fill: dateBg },
-        margins: cellMargin,
-        children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '', size: 22 })] })],
-      }),
-      ...items.map(() => new TableCell({
+// Row 2: section label row (between header and check rows)
+const sectionRow = new TableRow({
+  height: { value: 500, rule: 'atLeast' },
+  children: [
+    new TableCell({
+      width: { size: dateColWidth, type: WidthType.DXA },
+      shading: { type: ShadingType.CLEAR, color: 'auto', fill: 'FFFFFF' },
+      margins: cellMargin,
+      children: [new Paragraph('')],
+    }),
+    new TableCell({
+      width: { size: itemColWidth * alwaysCount, type: WidthType.DXA },
+      columnSpan: alwaysCount,
+      shading: { type: ShadingType.CLEAR, color: 'auto', fill: HEADER_A },
+      margins: cellMargin,
+      children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '⭐ いつも', bold: true, size: 22, color: 'FFFFFF' })] })],
+    }),
+    new TableCell({
+      width: { size: itemColWidth * matchCount, type: WidthType.DXA },
+      columnSpan: matchCount,
+      shading: { type: ShadingType.CLEAR, color: 'auto', fill: HEADER_B },
+      margins: cellMargin,
+      children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '🏆 しあいの日だけ', bold: true, size: 22, color: 'FFFFFF' })] })],
+    }),
+  ],
+});
+
+// Body check rows
+const bodyRows = [];
+for (let r = 0; r < numRows; r++) {
+  const even = r % 2 === 0;
+  const bgAlways = even ? COLOR_A : 'FFFFFF';
+  const bgMatch = even ? COLOR_B : 'FFFFFF';
+  const bgDate = even ? 'FFF8E1' : 'FFFFFF';
+  const cells = [
+    new TableCell({
+      width: { size: dateColWidth, type: WidthType.DXA },
+      shading: { type: ShadingType.CLEAR, color: 'auto', fill: bgDate },
+      margins: cellMargin,
+      children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '', size: 22 })] })],
+    }),
+    ...items.map((_, i) => {
+      const isMatch = i >= matchOnlyStart;
+      return new TableCell({
         width: { size: itemColWidth, type: WidthType.DXA },
-        shading: { type: ShadingType.CLEAR, color: 'auto', fill: bg },
+        shading: { type: ShadingType.CLEAR, color: 'auto', fill: isMatch ? bgMatch : bgAlways },
         margins: cellMargin,
-        children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '☐', size: 30, color: headerColor })] })],
-      })),
-    ];
-    bodyRows.push(new TableRow({ children: cells, height: { value: 640, rule: 'atLeast' } }));
-  }
-
-  return new Table({
-    columnWidths: [dateColWidth, ...items.map(() => itemColWidth)],
-    rows: [new TableRow({ children: headerCells, tableHeader: true, height: { value: 860, rule: 'atLeast' } }), ...bodyRows],
-  });
+        children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '☐', size: 30, color: isMatch ? HEADER_B : HEADER_A })] })],
+      });
+    }),
+  ];
+  bodyRows.push(new TableRow({ children: cells, height: { value: 640, rule: 'atLeast' } }));
 }
 
-const alwaysTable = buildTable(alwaysItems, {
-  rowFill: COLOR_A, headerFill: 'BBDEFB', headerColor: HEADER_A, dateHeaderFill: 'FFF3E0',
-});
-const matchTable = buildTable(matchItems, {
-  rowFill: COLOR_B, headerFill: 'F8BBD0', headerColor: HEADER_B, dateHeaderFill: 'FFF3E0',
+const table = new Table({
+  columnWidths: [dateColWidth, ...items.map(() => itemColWidth)],
+  rows: [
+    new TableRow({ children: headerCells, tableHeader: true, height: { value: 860, rule: 'atLeast' } }),
+    sectionRow,
+    ...bodyRows,
+  ],
 });
 
 const doc = new Document({
@@ -109,18 +140,7 @@ const doc = new Document({
         spacing: { after: 150 },
         children: [new TextRun({ text: 'じゅんびできたら ☐ に ✔ をつけよう！', size: 20, color: '5D4037' })],
       }),
-
-      new Paragraph({
-        spacing: { before: 100, after: 100 },
-        children: [new TextRun({ text: '⭐ いつも もっていく もの', bold: true, size: 24, color: HEADER_A })],
-      }),
-      alwaysTable,
-
-      new Paragraph({
-        spacing: { before: 300, after: 100 },
-        children: [new TextRun({ text: '🏆 しあいの日だけ もっていく もの', bold: true, size: 24, color: HEADER_B })],
-      }),
-      matchTable,
+      table,
     ],
   }],
 });
