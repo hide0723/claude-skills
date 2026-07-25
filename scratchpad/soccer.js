@@ -7,7 +7,7 @@ const items = [
   { name: 'ヘアバンド', icon: '🪶' },
   { name: 'ビブス',     icon: '🎽' },
   { name: 'ボール',     icon: '⚽' },
-  { name: 'タオル',     icon: '🧖' },
+  { name: 'タオル',     icon: '💦' },
   { name: '水筒',       icon: '🥤' },
   { name: '帽子',       icon: '🧢' },
   { name: 'クーラー',   icon: '🧊' },
