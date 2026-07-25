@@ -5,21 +5,21 @@ const items = [
   { name: '日焼け止め', icon: '☀️' },
   { name: 'すね当て',   icon: '🛡️' },
   { name: 'ヘアバンド', icon: '🪶' },
-  { name: 'ビブス',     icon: '🦺' },
+  { name: 'ビブス',     icon: '🎽' },
   { name: 'ボール',     icon: '⚽' },
-  { name: 'タオル',     icon: '🧻' },
+  { name: 'タオル',     icon: '🧖' },
   { name: '水筒',       icon: '🥤' },
   { name: '帽子',       icon: '🧢' },
   { name: 'クーラー',   icon: '🧊' },
-  { name: 'ユニフォーム', icon: '👕' },
   { name: '塩分チャージ', icon: '🍬' },
   { name: '帰りの靴',   icon: '👟' },
+  { name: 'ユニフォーム', icon: '👕' },
   { name: '椅子',       icon: '🪑' },
   { name: '三脚',       icon: '📷' },
   { name: 'タブレット', icon: '📱' },
 ];
 
-const matchOnlyStart = 12;
+const matchOnlyStart = 11;
 const alwaysCount = matchOnlyStart;
 const matchCount = items.length - matchOnlyStart;
 
