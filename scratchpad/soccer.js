@@ -82,27 +82,38 @@ const sectionRow = new TableRow({
   ],
 });
 
-// Body check rows
+// Prefilled rows: date + per-item check state (true = checked)
+// 7/25 = practice; check everything in "always" EXCEPT 帽子/塩分チャージ/帰りの靴; match items all unchecked
+const uncheckedOn725 = new Set(['帽子', '塩分チャージ', '帰りの靴']);
+const prefilledRows = [
+  {
+    date: '7/25 (練習)',
+    checks: items.map(it => !uncheckedOn725.has(it.name) && !(items.indexOf(it) >= matchOnlyStart)),
+  },
+];
+
 const bodyRows = [];
 for (let r = 0; r < numRows; r++) {
   const even = r % 2 === 0;
   const bgAlways = even ? COLOR_A : 'FFFFFF';
   const bgMatch = even ? COLOR_B : 'FFFFFF';
   const bgDate = even ? 'FFF8E1' : 'FFFFFF';
+  const pre = prefilledRows[r];
   const cells = [
     new TableCell({
       width: { size: dateColWidth, type: WidthType.DXA },
       shading: { type: ShadingType.CLEAR, color: 'auto', fill: bgDate },
       margins: cellMargin,
-      children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '', size: 22 })] })],
+      children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: pre ? pre.date : '', size: 20, bold: !!pre, color: '5D4037' })] })],
     }),
     ...items.map((_, i) => {
       const isMatch = i >= matchOnlyStart;
+      const checked = pre ? pre.checks[i] : false;
       return new TableCell({
         width: { size: itemColWidth, type: WidthType.DXA },
         shading: { type: ShadingType.CLEAR, color: 'auto', fill: isMatch ? bgMatch : bgAlways },
         margins: cellMargin,
-        children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: '☐', size: 30, color: isMatch ? HEADER_B : HEADER_A })] })],
+        children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: checked ? '☑' : '☐', size: 30, color: isMatch ? HEADER_B : HEADER_A })] })],
       });
     }),
   ];
