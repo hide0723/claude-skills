@@ -67,15 +67,15 @@ function itemRow(no, name, qty, unit, note, sub) {
   });
 }
 
-// 区分ごとの小計行。単位は区分に応じて月額／年額または事業年度。
-function subtotalRow(label, unit) {
+// 区分ごとの小計行。単位は区分に応じて月額／年額または年額のみ。
+function subtotalRow(label, unit, unitPrice) {
   return new TableRow({
     children: [
       cell('', { width: COL[0], shade: 'F2F2F2' }),
       cell(label, { width: COL[1], shade: 'F2F2F2', bold: true }),
       cell('', { width: COL[2], shade: 'F2F2F2' }),
       cell(unit || '月額／年額', { width: COL[3], shade: 'F2F2F2', align: AlignmentType.CENTER, size: 15 }),
-      cell('', { width: COL[4], shade: 'F2F2F2' }),
+      cell(unitPrice || '', { width: COL[4], shade: 'F2F2F2', align: AlignmentType.CENTER, size: 15 }),
       cell('', { width: COL[5], shade: 'F2F2F2' }),
       cell('', { width: COL[6], shade: 'F2F2F2' }),
     ],
@@ -120,29 +120,29 @@ rows.push(itemRow('6', '報酬支払：口座振替以外＠3,000　※請求書
 
 rows.push(subtotalRow('税務業務　小計'));
 
+// ===== 決算・申告業務 =====
+rows.push(itemRow('7', '決算報酬：法人 ＠120,000　個人＆NPO ＠50,000', '1　事業年度', '', '法人／個人・NPO'));
+rows.push(itemRow('8', '消費税申告：＠50,000', '1　事業年度', '50,000'));
+rows.push(itemRow('9', '申告書控印刷', '　　　部', '30,000'));
+rows.push(itemRow('10', '銀行用申告書印刷', '　　　部', '5,000'));
+rows.push(itemRow('11', '総勘定元帳印刷', '　　　部', '30,000'));
+rows.push(itemRow('12', 'NXPRO使用　決算手数料：年間△50,000（ミロクのクラウドアプリを使用している場合）',
+  '　　事業年度', '△50,000'));
+rows.push(itemRow('13', '出精値引き', '　　事業年度', '△'));
+rows.push(itemRow('14', '税理士法第33条の2第1項に規定する書面添付', '1　事業年度', '30,000'));
+
+rows.push(subtotalRow('決算・申告業務　小計', '年額のみ', '－'));
+
 // ===== 給与計算代行 =====
-rows.push(itemRow('7', '給与計算：基本月額報酬', '12　ヶ月', '4,000'));
-rows.push(itemRow('8', '給与計算：人数×月＠800×12ヶ月（年＠9,600）', '　　　人', '9,600'));
-rows.push(itemRow('9', '給与計算　勤怠の集計有：人数×月＠400×12ヶ月（年＠4,800）※1', '　　　人', '4,800'));
-rows.push(itemRow('10', '給与明細印刷有：人数×月＠200×12ヶ月（年＠2,400）', '　　　人', '2,400'));
-rows.push(itemRow('11', '納税代行手続き（ダイレクト納付）－住民税＠1,000', '12　ヶ月', '1,000'));
-rows.push(itemRow('12', '労働保険・社会保険手続き一式：＠4,000', '12　ヶ月', '4,000'));
-rows.push(itemRow('13', '労働保険の算定基礎届の作成：＠45,000', '1　回', '45,000'));
+rows.push(itemRow('15', '給与計算：基本月額報酬', '12　ヶ月', '4,000'));
+rows.push(itemRow('16', '給与計算：人数×月＠800×12ヶ月（年＠9,600）', '　　　人', '9,600'));
+rows.push(itemRow('17', '給与計算　勤怠の集計有：人数×月＠400×12ヶ月（年＠4,800）※1', '　　　人', '4,800'));
+rows.push(itemRow('18', '給与明細印刷有：人数×月＠200×12ヶ月（年＠2,400）', '　　　人', '2,400'));
+rows.push(itemRow('19', '納税代行手続き（ダイレクト納付）－住民税＠1,000', '12　ヶ月', '1,000'));
+rows.push(itemRow('20', '労働保険・社会保険手続き一式：＠4,000', '12　ヶ月', '4,000'));
+rows.push(itemRow('21', '労働保険の算定基礎届の作成：＠45,000', '1　回', '45,000'));
 
 rows.push(subtotalRow('給与計算代行　小計'));
-
-// ===== 決算・申告業務 =====
-rows.push(itemRow('14', '決算報酬：法人 ＠120,000　個人＆NPO ＠50,000', '1　事業年度', '', '法人／個人・NPO'));
-rows.push(itemRow('15', '消費税申告：＠50,000', '1　事業年度', '50,000'));
-rows.push(itemRow('16', '申告書控印刷', '　　　部', '30,000'));
-rows.push(itemRow('17', '銀行用申告書印刷', '　　　部', '5,000'));
-rows.push(itemRow('18', '総勘定元帳印刷', '　　　部', '30,000'));
-rows.push(itemRow('19', 'NXPRO使用　決算手数料：年間△50,000（ミロクのクラウドアプリを使用している場合）',
-  '　　事業年度', '△50,000'));
-rows.push(itemRow('20', '出精値引き', '　　事業年度', '△　　　　'));
-rows.push(itemRow('21', '税理士法第33条の2第1項に規定する書面添付', '1　事業年度', '30,000'));
-
-rows.push(subtotalRow('決算・申告業務　小計', '事業年度'));
 
 // ===== 合計 =====
 rows.push(totalRow('小　計（税抜）　　'));
