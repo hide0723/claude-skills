@@ -194,6 +194,7 @@ const mkTable = (rows) => new Table({
 
 const NOTE_COMMON = [
   '　「含む」欄に☑を付していない業務は、本契約に含まれない。甲が当該業務を希望する場合は、その都度、事前に甲乙が業務内容及び報酬額を合意のうえ実施し、上表の単価により別途請求する。',
+  '　上表に掲げのない業務のうち、年末調整代行、支払調書の作成代行、償却資産税申告書の作成代行その他の業務の報酬は、別紙3のとおりとする。',
   '　本別紙は本契約の一部を構成する。本別紙の変更は、甲乙双方の書面又は電磁的方法による合意によらなければ、その効力を生じない。',
   '　契約期間の中途において消費税率が改正された場合、消費税額は改正後の税率による。',
 ];
@@ -207,6 +208,95 @@ function notes(extra) {
     p('以　上', { align: AlignmentType.RIGHT, size: 18 }),
   ];
 }
+
+// ==================== 別紙3　その他業務の報酬（料金表）====================
+// 出典: 税理士法人 福田会計「250600_報酬額のご案内」
+const RCOL = [4600, 2400, 2639];
+const RFULL = RCOL.reduce((a, b) => a + b, 0);
+
+function rateHeaderRow() {
+  const h = (t, w) => cell(t, { width: w, shade: 'D9D9D9', align: AlignmentType.CENTER, bold: true });
+  return new TableRow({
+    tableHeader: true,
+    children: [h('項　目', RCOL[0]), h('単　位', RCOL[1]), h('報酬額（税抜）', RCOL[2])],
+  });
+}
+
+function rateGroupRow(label) {
+  return new TableRow({
+    children: [cell(label, { width: RFULL, span: 3, shade: 'F2F2F2', bold: true })],
+  });
+}
+
+function rateRow(item, unit, fee) {
+  return new TableRow({
+    children: [
+      cell(item, { width: RCOL[0] }),
+      cell(unit, { width: RCOL[1], align: AlignmentType.CENTER, size: 16 }),
+      cell(fee, { width: RCOL[2], align: AlignmentType.RIGHT }),
+    ],
+  });
+}
+
+const rateRows = [rateHeaderRow()];
+
+rateRows.push(rateGroupRow('１　年末調整代行'));
+rateRows.push(rateRow('基本料金', '1企業あたり', '￥10,000'));
+rateRows.push(rateRow('従業員人数　10人まで', '1人あたり', '￥2,000'));
+rateRows.push(rateRow('従業員人数　11人から30人まで', '1人あたり', '￥5,000'));
+rateRows.push(rateRow('従業員人数　30人超', '―', '別途見積り'));
+
+rateRows.push(rateGroupRow('２　支払調書の作成代行'));
+rateRows.push(rateRow('所得税法第204条第1項報酬　※3', '1件あたり', '￥1,500'));
+
+rateRows.push(rateGroupRow('３　償却資産税申告書の作成代行'));
+rateRows.push(rateRow('提出自治体', '一自治体あたり', '￥10,000'));
+
+rateRows.push(rateGroupRow('４　税務申告（その他）'));
+rateRows.push(rateRow('修正申告', '1事業年度', '￥20,000'));
+
+rateRows.push(rateGroupRow('５　株式評価'));
+rateRows.push(rateRow('初回', '1回', '￥100,000'));
+rateRows.push(rateRow('2回目以降', '1回', '￥50,000'));
+
+const rateTable = new Table({
+  columnWidths: RCOL,
+  width: { size: RFULL, type: WidthType.DXA },
+  rows: rateRows,
+});
+
+function frontMatter3() {
+  return [
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 40 },
+      children: [run('別　紙　３　　その他業務の報酬', { bold: true, size: 26 })],
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 140 },
+      children: [run('（年末調整代行業務・償却資産申告業務ほか　料金表）', { bold: true, size: 20 })],
+    }),
+    p('委任者（甲）　　　　　　　　　　　　　　　　　　　　　　　　様', { size: 18 }),
+    p('受任者（乙）　税理士法人　福田会計', { size: 18 }),
+    p('原契約　　　　　　　年　　　月　　　日付　顧問契約書', { size: 18 }),
+    blank(),
+    p('本別紙は、甲乙間の顧問契約書（以下「本契約」という。）の一部を構成する。下表の業務は別紙1及び別紙2の月額報酬に含まれない。甲が委任を希望する場合は、その都度、事前に甲乙が業務内容を合意のうえ実施し、下表の報酬額により別途請求する。', { size: 17 }),
+    blank(80),
+  ];
+}
+
+const rateNotes = [
+  new Paragraph({ spacing: { before: 140, after: 40 }, children: [run('【注記】', { bold: true, size: 18 })] }),
+  p('※1　年末調整を行わず、法定調書合計表の作成のみを行う場合の報酬は、￥10,000とする。', { size: 16 }),
+  p('※2　償却資産税申告書について、該当する資産がない場合は請求しない。', { size: 16 }),
+  p('※3　所得税法第204条第1項報酬とは、弁護士・税理士・デザイナー等の一定の職業に該当する者への支払について、支払者が源泉徴収を要する報酬・料金をいう。', { size: 16 }),
+  p('※4　本別紙に掲げのない業務を甲が委任する場合は、その都度、事前に甲乙が業務内容及び報酬額を合意のうえ実施する。', { size: 16 }),
+  p('※5　本別紙は本契約の一部を構成する。本別紙の変更は、甲乙双方の書面又は電磁的方法による合意によらなければ、その効力を生じない。', { size: 16 }),
+  p('※6　契約期間の中途において消費税率が改正された場合、消費税額は改正後の税率による。', { size: 16 }),
+  blank(160),
+  p('以　上', { align: AlignmentType.RIGHT, size: 18 }),
+];
 
 const doc = new Document({
   styles: { default: { document: { run: { font: FONT, size: 18 } } } },
@@ -227,6 +317,12 @@ const doc = new Document({
       ...frontMatter('別　紙　２　　契約業務内容および報酬内訳', '（給与計算代行業務）'),
       mkTable(rows2),
       ...notes(['　出勤簿及びタイムカードの預かり（確認業務含む）の場合は、勤怠の管理有となります。']),
+
+      new Paragraph({ children: [new PageBreak()] }),
+
+      ...frontMatter3(),
+      rateTable,
+      ...rateNotes,
     ],
   }],
 });
