@@ -135,7 +135,7 @@ function frontMatter(title, subtitle) {
 const rows1 = [headerRow()];
 
 // ----- 税務業務 -----
-rows1.push(itemRow('1', '基本月額報酬', '12　ヶ月', '10,000'));
+rows1.push(itemRow('1', '税務監査、税務相談業務', '12　ヶ月', '10,000', '', ['基本月額報酬']));
 
 rows1.push(itemRow('2', '記帳代行報酬：', '12　ケ月', '5,000', '',
   ['会計ソフトの入力処理をご依頼の場合']));
@@ -229,11 +229,13 @@ function rateGroupRow(label) {
 }
 
 function rateRow(item, unit, fee) {
+  const feeKids = (Array.isArray(fee) ? fee : [fee]).map((t, i) =>
+    p(t, { align: AlignmentType.RIGHT, size: i === 0 ? 17 : 15 }));
   return new TableRow({
     children: [
       cell(item, { width: RCOL[0] }),
       cell(unit, { width: RCOL[1], align: AlignmentType.CENTER, size: 16 }),
-      cell(fee, { width: RCOL[2], align: AlignmentType.RIGHT }),
+      cell(feeKids, { width: RCOL[2] }),
     ],
   });
 }
@@ -252,12 +254,31 @@ rateRows.push(rateRow('所得税法第204条第1項報酬　※3', '1件あた�
 rateRows.push(rateGroupRow('３　償却資産税申告書の作成代行'));
 rateRows.push(rateRow('提出自治体', '一自治体あたり', '￥10,000'));
 
-rateRows.push(rateGroupRow('４　税務申告（その他）'));
-rateRows.push(rateRow('修正申告', '1事業年度', '￥20,000'));
+rateRows.push(rateGroupRow('４　税務調査立会料及び修正申告書作成料'));
+rateRows.push(rateRow('税務調査立会料', '1日1人あたり', '￥30,000'));
+rateRows.push(rateRow('修正申告書作成料', '1税目1事業年度あたり', '￥30,000'));
 
 rateRows.push(rateGroupRow('５　株式評価'));
 rateRows.push(rateRow('初回', '1回', '￥100,000'));
 rateRows.push(rateRow('2回目以降', '1回', '￥50,000'));
+
+rateRows.push(rateGroupRow('６　所得税・贈与税申告書の作成代行'));
+rateRows.push(rateRow('〈所得税〉確定申告書　第1表・第2表（基本料金）', '1件', '￥20,000'));
+rateRows.push(rateRow('〈所得税〉収支内訳書　又は　青色申告決算書（損益計算書のみ）', '1件', '￥30,000'));
+rateRows.push(rateRow('〈所得税〉青色申告決算書（貸借対照表あり）　※4', '―', '顧問契約報酬に含む'));
+rateRows.push(rateRow('〈所得税〉消費税申告書', '1件', '￥30,000'));
+rateRows.push(rateRow('〈所得税〉その他の付表・明細（株式譲渡明細を含む）', '1種類につき', '￥10,000'));
+rateRows.push(rateRow('〈所得税〉土地・建物の譲渡所得の申告', '1事業年度あたり', '￥100,000'));
+rateRows.push(rateRow('〈所得税〉給与所得以外の所得の収入金額が300万円以下の場合', '1件', '△￥10,000'));
+rateRows.push(rateRow('〈贈与税〉贈与税申告書の作成・贈与契約書の作成', '贈与者・受贈者1組につき', '￥10,000'));
+
+rateRows.push(rateGroupRow('７　税額控除に係る報酬'));
+rateRows.push(rateRow('法人税額の特別控除額に対する報酬　※5', '1事業年度',
+  ['特別控除額×5％', '（上限 ￥500,000／事業年度）']));
+
+rateRows.push(rateGroupRow('８　試算表の提出頻度又は訪問の追加'));
+rateRows.push(rateRow('別紙1の項目3及び項目4で合意した頻度・方法を超える場合　※6', '都度',
+  ['別紙1の当該項目の単価による']));
 
 const rateTable = new Table({
   columnWidths: RCOL,
@@ -291,9 +312,12 @@ const rateNotes = [
   p('※1　年末調整を行わず、法定調書合計表の作成のみを行う場合の報酬は、￥10,000とする。', { size: 16 }),
   p('※2　償却資産税申告書について、該当する資産がない場合は請求しない。', { size: 16 }),
   p('※3　所得税法第204条第1項報酬とは、弁護士・税理士・デザイナー等の一定の職業に該当する者への支払について、支払者が源泉徴収を要する報酬・料金をいう。', { size: 16 }),
-  p('※4　本別紙に掲げのない業務を甲が委任する場合は、その都度、事前に甲乙が業務内容及び報酬額を合意のうえ実施する。', { size: 16 }),
-  p('※5　本別紙は本契約の一部を構成する。本別紙の変更は、甲乙双方の書面又は電磁的方法による合意によらなければ、その効力を生じない。', { size: 16 }),
-  p('※6　契約期間の中途において消費税率が改正された場合、消費税額は改正後の税率による。', { size: 16 }),
+  p('※4　青色申告決算書について貸借対照表の作成が必要な場合は、顧問契約報酬の範囲内で対応する。', { size: 16 }),
+  p('※5　税額控除に係る報酬は、法人税申告書別表一「法人税額の特別控除額の合計を記載する欄」の金額に5％を乗じた額とし、1事業年度あたり￥500,000（税抜）を上限とする。', { size: 16 }),
+  p('※6　試算表の提出頻度及び資料の預り・打合せの方法について、別紙1の項目3及び項目4で合意した頻度・方法を超えて実施する場合は、別紙1の当該項目の単価により算定し、その都度、事前に甲乙が合意する。', { size: 16 }),
+  p('※7　本別紙に掲げのない業務を甲が委任する場合は、その都度、事前に甲乙が業務内容及び報酬額を合意のうえ実施する。', { size: 16 }),
+  p('※8　本別紙は本契約の一部を構成する。本別紙の変更は、甲乙双方の書面又は電磁的方法による合意によらなければ、その効力を生じない。', { size: 16 }),
+  p('※9　契約期間の中途において消費税率が改正された場合、消費税額は改正後の税率による。', { size: 16 }),
   blank(160),
   p('以　上', { align: AlignmentType.RIGHT, size: 18 }),
 ];
