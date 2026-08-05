@@ -1,7 +1,8 @@
 // 税理士法人 福田会計 顧問契約書 別紙（契約業務内容および報酬内訳）共通フォーム
-// 列構成・項目立て・小計区分は福田会計側で編集された様式に準拠。関与先ごとに記入して使用する。
+// 別紙1＝税務・決算申告業務、別紙2＝給与計算代行業務。関与先ごとに記入して使用する。
+// 列構成・項目立て・小計区分は福田会計側で編集された様式に準拠。
 const {
-  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, PageBreak,
   WidthType, AlignmentType, BorderStyle, ShadingType, VerticalAlign,
 } = require('docx');
 const fs = require('fs');
@@ -25,6 +26,10 @@ function p(text, opts = {}) {
     spacing: { before: 20, after: 20, line: opts.line || 215 },
     children: Array.isArray(text) ? text : [run(text, opts)],
   });
+}
+
+function blank(before) {
+  return new Paragraph({ spacing: { before: before || 0, after: 60 }, children: [run('')] });
 }
 
 function cell(children, opts = {}) {
@@ -96,64 +101,112 @@ function totalRow(label, opts = {}) {
   });
 }
 
-const rows = [headerRow()];
+function totalBlock() {
+  return [
+    totalRow('小　計（税抜）　　'),
+    totalRow('消費税（10％）　　'),
+    totalRow('合　計（税込）　　', { bold: true, shade: 'E6E6E6' }),
+  ];
+}
 
-// ===== 税務業務 =====
-rows.push(itemRow('1', '基本月額報酬', '12　ヶ月', '10,000'));
+// 各別紙の前付（表題・甲乙・原契約・前文）
+function frontMatter(title, subtitle) {
+  return [
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 40 },
+      children: [run(title, { bold: true, size: 26 })],
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 140 },
+      children: [run(subtitle, { bold: true, size: 20 })],
+    }),
+    p('委任者（甲）　　　　　　　　　　　　　　　　　　　　　　　　様', { size: 18 }),
+    p('受任者（乙）　税理士法人　福田会計', { size: 18 }),
+    p('原契約　　　　　　　年　　　月　　　日付　顧問契約書', { size: 18 }),
+    blank(),
+    p('本別紙は、甲乙間の顧問契約書（以下「本契約」という。）の一部を構成する。本契約に基づき乙が受任する業務及び報酬は、下表のとおりとする。「含む」欄に☑を付した業務が本契約に含まれる業務であり、☑を付していない業務は本契約に含まれない。', { size: 17 }),
+    blank(80),
+  ];
+}
 
-rows.push(itemRow('2', '記帳代行報酬：', '12　ケ月', '5,000', '',
+// ========================= 別紙1　税務・決算申告業務 =========================
+const rows1 = [headerRow()];
+
+// ----- 税務業務 -----
+rows1.push(itemRow('1', '基本月額報酬', '12　ヶ月', '10,000'));
+
+rows1.push(itemRow('2', '記帳代行報酬：', '12　ケ月', '5,000', '',
   ['会計ソフトの入力処理をご依頼の場合']));
 
-rows.push(itemRow('', 'なお、年仕訳数1,201件～＠50にて別途請求', '', '', ''));
+rows1.push(itemRow('', 'なお、年仕訳数1,201件～＠50にて別途請求', '', '', ''));
 
-rows.push(itemRow('3', '資料預り、打合せ方法：', '　　　ヶ月', '5,000', '来所／オンライン／訪問',
+rows1.push(itemRow('3', '資料預り、打合せ方法：', '　　　ヶ月', '5,000', '来所／オンライン／訪問',
   ['訪問ありの場合は＠5,000', '来所・オンラインはゼロ']));
 
-rows.push(itemRow('4', '月次経理処理頻度：', '　　　ケ月', '', '年　　　回',
+rows1.push(itemRow('4', '月次経理処理頻度：', '　　　ケ月', '', '年　　　回',
   ['年4回　＠5,000×12か月、年6回　＠10,000×12か月、年6回超　＠15,000×12か月']));
 
-rows.push(itemRow('5', '事業規模：', '12　ヶ月', '', '　　　　万円想定',
+rows1.push(itemRow('5', '事業規模：', '12　ヶ月', '', '　　　　万円想定',
   ['年商　　　　万円（年商5,000万円未満は＠0円、5,000万円超から5,000万円ごとに＠5,000）',
    '※5億円超は一律（+50,000円）']));
 
-rows.push(itemRow('6', '報酬支払：口座振替以外＠3,000　※請求書発行を行う場合', '　　　ヶ月', '3,000', '振替口座'));
+rows1.push(itemRow('6', '報酬支払：口座振替以外＠3,000　※請求書発行を行う場合', '　　　ヶ月', '3,000', '振替口座'));
 
-rows.push(subtotalRow('税務業務　小計'));
+rows1.push(subtotalRow('税務業務　小計'));
 
-// ===== 決算・申告業務 =====
-rows.push(itemRow('7', '決算報酬：法人 ＠120,000　個人＆NPO ＠50,000', '1　事業年度', '', '法人／個人・NPO'));
-rows.push(itemRow('8', '消費税申告：＠50,000', '1　事業年度', '50,000'));
-rows.push(itemRow('9', '申告書控印刷', '　　　部', '30,000'));
-rows.push(itemRow('10', '銀行用申告書印刷', '　　　部', '5,000'));
-rows.push(itemRow('11', '総勘定元帳印刷', '　　　部', '30,000'));
-rows.push(itemRow('12', 'NXPRO使用　決算手数料：年間△50,000（ミロクのクラウドアプリを使用している場合）',
+// ----- 決算・申告業務 -----
+rows1.push(itemRow('7', '決算報酬：法人 ＠120,000　個人＆NPO ＠50,000', '1　事業年度', '', '法人／個人・NPO'));
+rows1.push(itemRow('8', '消費税申告：＠50,000', '1　事業年度', '50,000'));
+rows1.push(itemRow('9', '申告書控印刷', '　　　部', '30,000'));
+rows1.push(itemRow('10', '銀行用申告書印刷', '　　　部', '5,000'));
+rows1.push(itemRow('11', '総勘定元帳印刷', '　　　部', '30,000'));
+rows1.push(itemRow('12', 'NXPRO使用　決算手数料：年間△50,000（ミロクのクラウドアプリを使用している場合）',
   '　　事業年度', '△50,000'));
-rows.push(itemRow('13', '出精値引き', '　　事業年度', '△'));
-rows.push(itemRow('14', '税理士法第33条の2第1項に規定する書面添付', '1　事業年度', '30,000'));
+rows1.push(itemRow('13', '出精値引き', '　　事業年度', '△'));
+rows1.push(itemRow('14', '税理士法第33条の2第1項に規定する書面添付', '1　事業年度', '30,000'));
 
-rows.push(subtotalRow('決算・申告業務　小計', '年額のみ', '－'));
+rows1.push(subtotalRow('決算・申告業務　小計', '年額のみ', '－'));
 
-// ===== 給与計算代行 =====
-rows.push(itemRow('15', '給与計算：基本月額報酬', '12　ヶ月', '4,000'));
-rows.push(itemRow('16', '給与計算：人数×月＠800×12ヶ月（年＠9,600）', '　　　人', '9,600'));
-rows.push(itemRow('17', '給与計算　勤怠の集計有：人数×月＠400×12ヶ月（年＠4,800）※1', '　　　人', '4,800'));
-rows.push(itemRow('18', '給与明細印刷有：人数×月＠200×12ヶ月（年＠2,400）', '　　　人', '2,400'));
-rows.push(itemRow('19', '納税代行手続き（ダイレクト納付）－住民税＠1,000', '12　ヶ月', '1,000'));
-rows.push(itemRow('20', '労働保険・社会保険手続き一式：＠4,000', '12　ヶ月', '4,000'));
-rows.push(itemRow('21', '労働保険の算定基礎届の作成：＠45,000', '1　回', '45,000'));
+rows1.push(...totalBlock());
 
-rows.push(subtotalRow('給与計算代行　小計'));
+// ========================= 別紙2　給与計算代行業務 =========================
+const rows2 = [headerRow()];
 
-// ===== 合計 =====
-rows.push(totalRow('小　計（税抜）　　'));
-rows.push(totalRow('消費税（10％）　　'));
-rows.push(totalRow('合　計（税込）　　', { bold: true, shade: 'E6E6E6' }));
+rows2.push(itemRow('1', '給与計算：基本月額報酬', '12　ヶ月', '4,000'));
+rows2.push(itemRow('2', '給与計算：人数×月＠800×12ヶ月（年＠9,600）', '　　　人', '9,600'));
+rows2.push(itemRow('3', '給与計算　勤怠の集計有：人数×月＠400×12ヶ月（年＠4,800）※1', '　　　人', '4,800'));
+rows2.push(itemRow('4', '給与明細印刷有：人数×月＠200×12ヶ月（年＠2,400）', '　　　人', '2,400'));
+rows2.push(itemRow('5', '納税代行手続き（ダイレクト納付）－住民税＠1,000', '12　ヶ月', '1,000'));
+rows2.push(itemRow('6', '労働保険・社会保険手続き一式：＠4,000', '12　ヶ月', '4,000'));
+rows2.push(itemRow('7', '労働保険の算定基礎届の作成：＠45,000', '1　回', '45,000'));
 
-const table = new Table({
+rows2.push(subtotalRow('給与計算代行　小計'));
+
+rows2.push(...totalBlock());
+
+const mkTable = (rows) => new Table({
   columnWidths: COL,
   width: { size: FULL, type: WidthType.DXA },
   rows,
 });
+
+const NOTE_COMMON = [
+  '　「含む」欄に☑を付していない業務は、本契約に含まれない。甲が当該業務を希望する場合は、その都度、事前に甲乙が業務内容及び報酬額を合意のうえ実施し、上表の単価により別途請求する。',
+  '　本別紙は本契約の一部を構成する。本別紙の変更は、甲乙双方の書面又は電磁的方法による合意によらなければ、その効力を生じない。',
+  '　契約期間の中途において消費税率が改正された場合、消費税額は改正後の税率による。',
+];
+
+function notes(extra) {
+  const list = extra ? [...extra, ...NOTE_COMMON] : NOTE_COMMON;
+  return [
+    new Paragraph({ spacing: { before: 140, after: 40 }, children: [run('【注記】', { bold: true, size: 18 })] }),
+    ...list.map((t, i) => p(`※${i + 1}${t}`, { size: 16 })),
+    blank(160),
+    p('以　上', { align: AlignmentType.RIGHT, size: 18 }),
+  ];
+}
 
 const doc = new Document({
   styles: { default: { document: { run: { font: FONT, size: 18 } } } },
@@ -165,25 +218,15 @@ const doc = new Document({
       },
     },
     children: [
-      new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 140 },
-        children: [run('別　紙　　契約業務内容および報酬内訳', { bold: true, size: 26 })],
-      }),
-      p('委任者（甲）　　　　　　　　　　　　　　　　　　　　　　　　様', { size: 18 }),
-      p('受任者（乙）　税理士法人　福田会計', { size: 18 }),
-      p('原契約　　　　　　　年　　　月　　　日付　顧問契約書', { size: 18 }),
-      new Paragraph({ spacing: { after: 60 }, children: [run('')] }),
-      p('本別紙は、甲乙間の顧問契約書（以下「本契約」という。）の一部を構成する。本契約に基づき乙が受任する業務及び報酬は、下表のとおりとする。「含む」欄に☑を付した業務が本契約に含まれる業務であり、☑を付していない業務は本契約に含まれない。', { size: 17 }),
-      new Paragraph({ spacing: { after: 80 }, children: [run('')] }),
-      table,
-      new Paragraph({ spacing: { before: 140, after: 40 }, children: [run('【注記】', { bold: true, size: 18 })] }),
-      p('※1　出勤簿及びタイムカードの預かり（確認業務含む）の場合は、勤怠の管理有となります。', { size: 16 }),
-      p('※2　「含む」欄に☑を付していない業務は、本契約に含まれない。甲が当該業務を希望する場合は、その都度、事前に甲乙が業務内容及び報酬額を合意のうえ実施し、上表の単価により別途請求する。', { size: 16 }),
-      p('※3　本別紙は本契約の一部を構成する。本別紙の変更は、甲乙双方の書面又は電磁的方法による合意によらなければ、その効力を生じない。', { size: 16 }),
-      p('※4　契約期間の中途において消費税率が改正された場合、消費税額は改正後の税率による。', { size: 16 }),
-      new Paragraph({ spacing: { before: 160 }, children: [run('')] }),
-      p('以　上', { align: AlignmentType.RIGHT, size: 18 }),
+      ...frontMatter('別　紙　１　　契約業務内容および報酬内訳', '（税務顧問業務・決算申告業務）'),
+      mkTable(rows1),
+      ...notes(),
+
+      new Paragraph({ children: [new PageBreak()] }),
+
+      ...frontMatter('別　紙　２　　契約業務内容および報酬内訳', '（給与計算代行業務）'),
+      mkTable(rows2),
+      ...notes(['　出勤簿及びタイムカードの預かり（確認業務含む）の場合は、勤怠の管理有となります。']),
     ],
   }],
 });
