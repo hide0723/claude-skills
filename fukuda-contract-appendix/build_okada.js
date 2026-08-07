@@ -169,19 +169,19 @@ rows1.push(totalRow('合　計（税込）　　', '336,600', { bold: true, shad
 const rows3 = [headerRow()];
 
 rows3.push(itemRow('1', '給与計算：基本月額報酬', true, '1　ヶ月', '4,000', '4,000', '※3'));
-rows3.push(itemRow('2', '給与計算：人数×月＠800×12ヶ月（年＠9,600）', true, '1　人', '9,600', '9,600'));
+rows3.push(itemRow('2', '給与計算：人数×月＠800×12ヶ月（年＠9,600）', true, '2　人', '9,600', '19,200'));
 rows3.push(itemRow('3', '給与計算　勤怠の集計有：人数×月＠400×12ヶ月（年＠4,800）※1', false, '―　人', '4,800', '0'));
 rows3.push(itemRow('4', '給与明細印刷有：人数×月＠200×12ヶ月（年＠2,400）', true, '1　人', '2,400', '2,400'));
 rows3.push(itemRow('5', '納税代行手続き（ダイレクト納付）－住民税＠1,000', false, '―　ヶ月', '1,000', '0'));
 rows3.push(itemRow('6', '労働保険・社会保険手続き一式：＠4,000', false, '―　ヶ月', '4,000', '0', '※2'));
 rows3.push(itemRow('7', '労働保険の算定基礎届の作成：＠45,000', true, '1　回', '45,000', '45,000', '※2'));
 
-rows3.push(subtotalRow('給与計算代行　小計', '年額のみ　※3', '－', '61,000'));
+rows3.push(subtotalRow('給与計算代行　小計', '年額のみ　※3', '－', '70,600'));
 
-rows3.push(totalRow('小　計（税抜）　　', '61,000'));
-rows3.push(totalRow('消費税（10％）　　', '6,100'));
+rows3.push(totalRow('小　計（税抜）　　', '70,600'));
+rows3.push(totalRow('消費税（10％）　　', '7,060'));
 rows3.push(totalRow('お値引き（税込）　※4　　', '－'));
-rows3.push(totalRow('合　計（税込）　　', '67,100', { bold: true, shade: 'E6E6E6' }));
+rows3.push(totalRow('合　計（税込）　　', '77,660', { bold: true, shade: 'E6E6E6' }));
 
 const mkTable = (rows) => new Table({
   columnWidths: COL, width: { size: FULL, type: WidthType.DXA }, rows,
