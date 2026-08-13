@@ -27,10 +27,42 @@
 - 摘要のみでは判断できない大口修繕費は指摘不要
 - 小額の寄付金（概ね50,000円未満）は指摘不要
 
+### fukuda-quality-strategy（品質維持向上戦略）
+
+福田会計のサービス品質戦略を立案するスキル。
+
+**機能：**
+- 6分類（記帳／監査／決算申告／給与年調／特別／支援）× 3軸（B-1専門性／B-2人間性／B-3労働環境）で方針化
+- 業務棚卸データv1・スキル表v1からギャップ（手順書欠落・属人化・繁忙集中等）を抽出
+- 施策を「責任者候補／時期／先行指標／遅行指標／依存／リスク」の6要素まで分解
+- NPS・所内満足度・内部指標の測定設計
+
+**成果物：** 戦略サマリー（500〜800字）＋ 施策一覧表（12〜20行）
+
+**関連エージェント：** `fukuda-quality-strategist`（Step 3〜7の分析を担当）
+
+## エージェント一覧
+
+### fukuda-quality-strategist
+
+品質戦略立案の分析パートを担当するサブエージェント。既存成果物の突合・ギャップ抽出・
+施策分解・指標設計・リスクマップを行い、戦略サマリーと施策一覧表のみを返す。
+
+配置先: `.claude/agents/fukuda-quality-strategist.md`
+
 ## インストール方法
 
 スキルファイルを `~/.claude/skills/` 配下に配置してください。
 
 ```bash
 cp -r monthly-tax-audit ~/.claude/skills/
+cp -r fukuda-accounting/quality-strategy ~/.claude/skills/fukuda-quality-strategy
+```
+
+エージェントはリポジトリ内の `.claude/agents/` に配置済みのため、このリポジトリを
+作業ディレクトリとして開けばそのまま利用できます。全プロジェクトで使う場合は
+`~/.claude/agents/` にコピーしてください。
+
+```bash
+cp .claude/agents/fukuda-quality-strategist.md ~/.claude/agents/
 ```
