@@ -5,7 +5,7 @@
 使い方: python3 build_md.py  → 期待職能_福田会計.md
 """
 
-from levels import DECISIONS, LEVELS, NOTES, RULES, VERSION, flag_of
+from levels import DECISIONS, LEVELS, NOTES, RULES, VERSION, flag_of, is_prov
 
 OUT = "期待職能_福田会計.md"
 
@@ -42,20 +42,25 @@ def level_section(lv):
     elif lv["sym"] not in ("―",):
         out += ["**在籍者**：現在なし（将来枠）", ""]
 
+    def m(key):
+        return "　**【仮】**" if is_prov(lv, key) else ""
+
     head = f"（{lv['promo_to']} へ）" if lv["promo_to"] else "（最上位）"
-    out += [f"**昇格の条件{head}**", bulleted(lv["promo"]), ""]
+    out += [f"**昇格の条件{head}**{m('promo')}", bulleted(lv["promo"]), ""]
 
     if lv["role"]:
         tag = f" ＜{lv['role_tag']}＞" if lv["role_tag"] else ""
-        out += [f"**期待される役割{tag}**", numbered(lv["role"]), ""]
+        out += [f"**期待される役割{tag}**{m('role')}", numbered(lv["role"]), ""]
     if lv["kpi1"]:
-        out += ["**測定指標1（関与先担当／フロントオフィス）**", numbered(lv["kpi1"]), ""]
+        out += [f"**測定指標1（関与先担当／フロントオフィス）**{m('kpi1')}",
+                numbered(lv["kpi1"]), ""]
     if lv["kpi2"]:
-        out += ["**測定指標2（総務・経理／バックオフィス）**", numbered(lv["kpi2"]), ""]
+        out += [f"**測定指標2（総務・経理／バックオフィス）**{m('kpi2')}",
+                numbered(lv["kpi2"]), ""]
     if lv["process"]:
-        out += ["**期待されるプロセス**", numbered(lv["process"]), ""]
+        out += [f"**期待されるプロセス**{m('process')}", numbered(lv["process"]), ""]
     if lv["input"]:
-        out += ["**必要なインプット**", bulleted(lv["input"]), ""]
+        out += [f"**必要なインプット**{m('input')}", bulleted(lv["input"]), ""]
 
     out.append("---")
     out.append("")

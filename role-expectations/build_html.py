@@ -3,20 +3,20 @@
 """期待職能（税理士法人福田会計版）のスマホ閲覧用 HTML を levels.py から生成する。
 
 1職階＝1スライド。横スワイプで職階を移動し、中身は縦スクロールする。
-並びは下位から上位（T1 → EP）。実際に在籍している T1・S・SS に先に着く。
+並びは下位から上位（T → EP）。実際に在籍している T・S・SS に先に着く。
 
 使い方: python3 build_html.py  → 期待職能_福田会計.html
 """
 
 import html as _html
 
-from levels import DECISIONS, LEVELS, RULES, VERSION, flag_of
+from levels import DECISIONS, LEVELS, RULES, VERSION, flag_of, is_prov
 
 OUT = "期待職能_福田会計.html"
 
 SLUG = {
     "EP": "ep", "P": "p", "SD": "sd", "D": "d", "SM": "sm",
-    "M": "m", "SS": "ss", "S": "s", "T1": "t1", "―": "pre",
+    "M": "m", "SS": "ss", "S": "s", "T": "t1",
 }
 LIGHT_TEXT_ON_BAND = {"EP", "P", "SD", "D", "SM", "M", "SS"}
 
@@ -414,13 +414,14 @@ def book_list(items):
     return "\n".join(out)
 
 
-def block(title, body, tag_text=""):
+def block(title, body, tag_text="", provisional=False):
     if not body:
         return ""
     tag = f'\n      <p class="tag">{esc(tag_text)}</p>' if tag_text else ""
+    mark = '<span class="prov">仮</span>' if provisional else ""
     return (
         f'    <div class="blk">\n'
-        f"      <h3>{esc(title)}</h3>{tag}\n"
+        f"      <h3>{esc(title)}{mark}</h3>{tag}\n"
         f"      {body}\n"
         f"    </div>"
     )
@@ -473,16 +474,22 @@ def level_slide(lv):
     )
     for a, b in [
         (
-            block("期待される役割", li_list(lv["role"]), lv["role_tag"]),
-            block(promo_title, li_list(lv["promo"], "ul")),
+            block("期待される役割", li_list(lv["role"]), lv["role_tag"],
+                  is_prov(lv, "role")),
+            block(promo_title, li_list(lv["promo"], "ul"), "",
+                  is_prov(lv, "promo")),
         ),
         (
-            block("測定指標1 ／ 関与先担当", li_list(lv["kpi1"])),
-            block("測定指標2 ／ 総務・経理", li_list(lv["kpi2"])),
+            block("測定指標1 ／ 関与先担当", li_list(lv["kpi1"]), "",
+                  is_prov(lv, "kpi1")),
+            block("測定指標2 ／ 総務・経理", li_list(lv["kpi2"]), "",
+                  is_prov(lv, "kpi2")),
         ),
         (
-            block("期待されるプロセス", li_list(lv["process"])),
-            block("必要なインプット", book_list(lv["input"])),
+            block("期待されるプロセス", li_list(lv["process"]), "",
+                  is_prov(lv, "process")),
+            block("必要なインプット", book_list(lv["input"]), "",
+                  is_prov(lv, "input")),
         ),
     ]:
         if a or b:

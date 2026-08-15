@@ -13,7 +13,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.page import PageMargins
 
-from levels import LEVELS, NOTES, VERSION, flag_of
+from levels import LEVELS, NOTES, VERSION, flag_of, is_prov
 
 OUT = "期待職能_福田会計.xlsx"
 
@@ -41,8 +41,7 @@ BANDS = {
     "M": "9DB3E0",
     "SS": "B4C6E7",
     "S": "D9E2F3",
-    "T1": "F2F2F2",
-    "―": "FFFFFF",
+    "T": "F2F2F2",
 }
 WHITE_TEXT = {"EP", "P", "SD", "D"}
 
@@ -68,14 +67,19 @@ def bulleted(items):
     return "\n".join(out)
 
 
+def sec(lv, key, body):
+    """セクション丸ごとが仮なら先頭に【仮】を立てる。"""
+    return ("【仮】\n" + body) if (body and is_prov(lv, key)) else body
+
+
 def promo_cell(lv):
     head = f"＜{lv['promo_to']}への昇格要件＞\n" if lv["promo_to"] else ""
-    return head + bulleted(lv["promo"])
+    return sec(lv, "promo", head + bulleted(lv["promo"]))
 
 
 def role_cell(lv):
     head = f"＜{lv['role_tag']}＞\n" if lv["role_tag"] else ""
-    return head + numbered(lv["role"])
+    return sec(lv, "role", head + numbered(lv["role"]))
 
 
 def main() -> None:
@@ -114,10 +118,10 @@ def main() -> None:
             lv["theme"],
             promo_cell(lv),
             role_cell(lv),
-            numbered(lv["kpi1"]),
-            numbered(lv["kpi2"]),
-            numbered(lv["process"]),
-            "\n".join(lv["input"]),
+            sec(lv, "kpi1", numbered(lv["kpi1"])),
+            sec(lv, "kpi2", numbered(lv["kpi2"])),
+            sec(lv, "process", numbered(lv["process"])),
+            sec(lv, "input", "\n".join(lv["input"])),
         ]
         band = BANDS[lv["sym"]]
         for i, val in enumerate(row, start=1):
