@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""期待職能（税理士法人福田会計版）を A3 横1枚に印刷できる xlsx として出力する。
+"""職階別の期待職能（税理士法人福田会計）を A3 横1枚に印刷できる xlsx として出力する。
 
 内容は levels.py から読む。元フォーマットは EMPグループ
 「16 （A3印刷＆片袖折り）給与テーブル期待職能」。
 
-使い方: python3 build_xlsx.py  → 期待職能_福田会計.xlsx
+使い方: python3 build_xlsx.py  → 職階別の期待職能.xlsx
 """
 
 from openpyxl import Workbook
@@ -15,7 +15,7 @@ from openpyxl.worksheet.page import PageMargins
 
 from levels import LEVELS, NOTES, VERSION, flag_of, is_prov
 
-OUT = "期待職能_福田会計.xlsx"
+OUT = "職階別の期待職能.xlsx"
 
 HEADERS = [
     ("記号", 7),
@@ -85,7 +85,7 @@ def role_cell(lv):
 def main() -> None:
     wb = Workbook()
     ws = wb.active
-    ws.title = "期待職能"
+    ws.title = "職階別の期待職能"
 
     ncols = len(HEADERS)
     last_col = get_column_letter(ncols)
@@ -93,7 +93,7 @@ def main() -> None:
     # タイトル行
     ws.merge_cells(f"A1:{last_col}1")
     t = ws["A1"]
-    t.value = f"期待職能　税理士法人福田会計（{VERSION}）"
+    t.value = f"職階別の期待職能　税理士法人福田会計（{VERSION}）"
     t.font = Font(name=FONT, size=16, bold=True)
     t.alignment = Alignment(horizontal="center", vertical="center")
     ws.row_dimensions[1].height = 28

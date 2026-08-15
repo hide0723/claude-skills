@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""期待職能（税理士法人福田会計版）のスマホ閲覧用 HTML を levels.py から生成する。
+"""職階別の期待職能（税理士法人福田会計）のスマホ閲覧用 HTML を levels.py から生成する。
 
 1職階＝1スライド。横スワイプで職階を移動し、中身は縦スクロールする。
 並びは下位から上位（T → EP）。実際に在籍している T・S・SS に先に着く。
 
-使い方: python3 build_html.py  → 期待職能_福田会計.html
+使い方: python3 build_html.py  → 職階別の期待職能.html
 """
 
 import html as _html
@@ -13,7 +13,7 @@ import html as _html
 from atc_map import ATC_TOPICS, LINKS
 from levels import DECISIONS, LEVELS, RULES, VERSION, flag_of, is_prov
 
-OUT = "期待職能_福田会計.html"
+OUT = "職階別の期待職能.html"
 
 SLUG = {
     "EP": "ep", "P": "p", "SD": "sd", "D": "d", "SM": "sm",

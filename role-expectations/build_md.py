@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""期待職能（税理士法人福田会計版）の本文 Markdown を levels.py から生成する。
+"""職階別の期待職能（税理士法人福田会計）の本文 Markdown を levels.py から生成する。
 
-使い方: python3 build_md.py  → 期待職能_福田会計.md
+使い方: python3 build_md.py  → 職階別の期待職能.md
 """
 
 from levels import DECISIONS, LEVELS, NOTES, RULES, VERSION, flag_of, is_prov
 
-OUT = "期待職能_福田会計.md"
+OUT = "職階別の期待職能.md"
 
 
 def mark(item):
@@ -70,7 +70,7 @@ def level_section(lv):
 def main() -> None:
     p = []
     p += [
-        "# 期待職能（税理士法人福田会計版）",
+        "# 職階別の期待職能（税理士法人福田会計）",
         "",
         f"**版数：{VERSION}（たたき台）**",
         "**原型：EMPグループ「給与テーブル期待職能（2024-09-01版）」**",
