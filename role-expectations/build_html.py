@@ -10,6 +10,7 @@
 
 import html as _html
 
+from atc_map import ATC_TOPICS, LINKS
 from levels import DECISIONS, LEVELS, RULES, VERSION, flag_of, is_prov
 
 OUT = "期待職能_福田会計.html"
@@ -200,6 +201,40 @@ CSS = """
     .figures{grid-template-columns:repeat(3,1fr);}
     .slide{padding:2rem 1.6rem 3rem;}
   }
+
+  /* ATC の対応 */
+  .atc{display:inline-flex;gap:.2rem;margin-left:.35rem;vertical-align:.05em;}
+  .atc code{
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;
+    color:var(--accent);background:var(--surface-2);
+    border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius:2px;padding:.02rem .28rem;
+  }
+  .why{
+    display:block;margin:.2rem 0 .5rem;font-size:.8rem;color:var(--ink-3);
+    padding-left:.6rem;border-left:1px solid var(--rule);
+  }
+  .topics{display:flex;flex-direction:column;gap:.4rem;margin:0;padding:0;list-style:none;}
+  .topics li{
+    display:grid;grid-template-columns:2.4rem 1fr;gap:.6rem;align-items:baseline;
+    background:var(--surface);border:1px solid var(--rule);
+    border-left:3px solid var(--gcol,var(--accent));
+    border-radius:2px;padding:.5rem .7rem;
+  }
+  .topics code{
+    font-family:var(--mono);font-size:.66rem;font-weight:700;color:var(--gcol,var(--accent));
+  }
+  .topics b{display:block;font-size:.9rem;font-weight:600;margin-bottom:.1rem;}
+  .topics span{display:block;font-size:.82rem;color:var(--ink-2);}
+  .topics em{
+    display:block;font-style:normal;font-family:var(--mono);
+    font-size:.62rem;color:var(--ink-3);margin-top:.2rem;letter-spacing:.06em;
+  }
+  .grp{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;
+    color:var(--ink-3);margin:1.4rem 0 .5rem;
+  }
+  .grp:first-of-type{margin-top:1rem;}
 
   .prov{
     display:inline-block;font-family:var(--mono);font-size:.6rem;
@@ -414,6 +449,27 @@ def book_list(items):
     return "\n".join(out)
 
 
+def process_block(lv, provisional=False):
+    """期待されるプロセス。ATC対応がある行には記号チップとねらいを添える。"""
+    if not lv["process"]:
+        return ""
+    linked = {proc: (codes, why) for proc, codes, why in LINKS.get(lv["sym"], [])}
+    out = ["<ol>"]
+    for item in lv["process"]:
+        text, flag = flag_of(item)
+        badge = f'<span class="prov">{esc(flag)}</span>' if flag else ""
+        chips = why_html = ""
+        if text in linked:
+            codes, why = linked[text]
+            chips = '<span class="atc">' + "".join(
+                f"<code>{esc(c)}</code>" for c in codes
+            ) + "</span>"
+            why_html = f'<span class="why">{esc(why)}</span>'
+        out.append(f"        <li>{esc(text)}{badge}{chips}{why_html}</li>")
+    out.append("      </ol>")
+    return block("期待されるプロセス", "\n".join(out), "", provisional)
+
+
 def block(title, body, tag_text="", provisional=False):
     if not body:
         return ""
@@ -486,8 +542,7 @@ def level_slide(lv):
                   is_prov(lv, "kpi2")),
         ),
         (
-            block("期待されるプロセス", li_list(lv["process"]), "",
-                  is_prov(lv, "process")),
+            process_block(lv, is_prov(lv, "process")),
             block("必要なインプット", book_list(lv["input"]), "",
                   is_prov(lv, "input")),
         ),
@@ -514,6 +569,7 @@ def main() -> None:
         for lv in order
     ]
     chips += [
+        '<li><a href="#atc">ATC対応</a></li>',
         '<li><a href="#rules">運用ルール</a></li>',
         '<li><a href="#decide">要決定</a></li>',
     ]
@@ -531,6 +587,31 @@ def main() -> None:
             rules += [f"        <li>{esc(x)}</li>" for x in r["lines"]]
             rules.append("      </ul>")
         rules.append("    </div>")
+
+    GROUPS = [("選択理論の基礎", "A", "#4472C4"),
+              ("目標達成技術", "B", "#8F6620"),
+              ("対人関係・組織", "C", "#4B7B52")]
+    used = {}
+    for sym, rows in LINKS.items():
+        for _, codes, _ in rows:
+            for c in codes:
+                used.setdefault(c, []).append(sym)
+    sym_order = [lv["sym"] for lv in LEVELS]
+
+    topics = []
+    for gname, prefix, gcol in GROUPS:
+        topics.append(f'    <p class="grp">{esc(gname)}</p>')
+        topics.append('    <ul class="topics">')
+        for code, (name, desc) in ATC_TOPICS.items():
+            if not code.startswith(prefix):
+                continue
+            syms = sorted(set(used.get(code, [])), key=sym_order.index)
+            topics.append(
+                f'      <li style="--gcol:{gcol}"><code>{esc(code)}</code>'
+                f"<div><b>{esc(name)}</b><span>{esc(desc)}</span>"
+                f'<em>{esc(" / ".join(syms)) or "―"}</em></div></li>'
+            )
+        topics.append("    </ul>")
 
     decisions = "\n".join(
         f"      <li><b>{esc(t)}</b><span>{esc(b)}</span></li>" for t, b in DECISIONS
@@ -567,6 +648,15 @@ def main() -> None:
 </section>
 
 {chr(10).join(level_slide(lv) for lv in order)}
+
+<section class="slide" id="atc" data-label="ATC対応" style="--rank:var(--r-doc)">
+  <div class="inner">
+    <h2 class="sec">アチーブメントとの対応</h2>
+    <p class="lead">各職階の「期待されるプロセス」に付いている記号は、アチーブメントテクノロジー（ATC）の学習項目です。ATCは選択理論心理学（W.グラッサー）と成功哲学を土台に、実行力強化と習慣形成に特化した講座で、300の基礎技術で構成されます。記号の下の職階は、その技術を主に使う場面です。</p>
+{chr(10).join(topics)}
+    <p class="lead" style="margin-top:1.6rem">学習項目の並びはATCの講座順ではなく、この表のために系統立てたものです。実際の受講内容と突き合わせて確定させてください。ATC受講は現在 M（部長）の必要なインプットに置いていますが、技術自体は全職階で使います。</p>
+  </div>
+</section>
 
 <section class="slide" id="rules" data-label="運用ルール" style="--rank:var(--r-doc)">
   <div class="inner">

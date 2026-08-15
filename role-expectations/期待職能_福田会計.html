@@ -180,6 +180,40 @@
     .slide{padding:2rem 1.6rem 3rem;}
   }
 
+  /* ATC の対応 */
+  .atc{display:inline-flex;gap:.2rem;margin-left:.35rem;vertical-align:.05em;}
+  .atc code{
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;
+    color:var(--accent);background:var(--surface-2);
+    border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius:2px;padding:.02rem .28rem;
+  }
+  .why{
+    display:block;margin:.2rem 0 .5rem;font-size:.8rem;color:var(--ink-3);
+    padding-left:.6rem;border-left:1px solid var(--rule);
+  }
+  .topics{display:flex;flex-direction:column;gap:.4rem;margin:0;padding:0;list-style:none;}
+  .topics li{
+    display:grid;grid-template-columns:2.4rem 1fr;gap:.6rem;align-items:baseline;
+    background:var(--surface);border:1px solid var(--rule);
+    border-left:3px solid var(--gcol,var(--accent));
+    border-radius:2px;padding:.5rem .7rem;
+  }
+  .topics code{
+    font-family:var(--mono);font-size:.66rem;font-weight:700;color:var(--gcol,var(--accent));
+  }
+  .topics b{display:block;font-size:.9rem;font-weight:600;margin-bottom:.1rem;}
+  .topics span{display:block;font-size:.82rem;color:var(--ink-2);}
+  .topics em{
+    display:block;font-style:normal;font-family:var(--mono);
+    font-size:.62rem;color:var(--ink-3);margin-top:.2rem;letter-spacing:.06em;
+  }
+  .grp{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;
+    color:var(--ink-3);margin:1.4rem 0 .5rem;
+  }
+  .grp:first-of-type{margin-top:1rem;}
+
   .prov{
     display:inline-block;font-family:var(--mono);font-size:.6rem;
     letter-spacing:.1em;color:var(--flag);background:var(--flag-soft);
@@ -309,6 +343,7 @@
     <li><a href="#sd">SD 拠点長</a></li>
     <li><a href="#p">P パートナー</a></li>
     <li><a href="#ep">EP 代表社員</a></li>
+    <li><a href="#atc">ATC対応</a></li>
     <li><a href="#rules">運用ルール</a></li>
     <li><a href="#decide">要決定</a></li>
   </ul>
@@ -388,7 +423,7 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>日報・週報で進捗と不明点を必ず報告している</li>
+        <li>日報・週報で進捗と不明点を必ず報告している<span class="atc"><code>A1</code><code>A2</code><code>A7</code></span><span class="why">報告を「やらされ」ではなく自分の選択として行う。分からないことを放置しないのは、自己評価の習慣そのもの。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -457,8 +492,8 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>上司の指示内容を記録し、完了報告まで自分で完結している</li>
-        <li>業務マニュアルに沿って作業し、気づいた点を上司に報告している</li>
+        <li>上司の指示内容を記録し、完了報告まで自分で完結している<span class="atc"><code>B5</code><code>B4</code></span><span class="why">「実行の徹底」はATCの中核テーマ。記録と完了報告を型にして習慣化する。</span></li>
+        <li>業務マニュアルに沿って作業し、気づいた点を上司に報告している<span class="atc"><code>A7</code><code>A1</code></span><span class="why">気づきを言語化して出す＝自己評価と改善計画の初歩。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -532,9 +567,9 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>マニュアルを常に更新している（新しい業務は1から作成している）</li>
-        <li>半期目標を常に意識して行動している</li>
-        <li>自身の時間毎の売上高（生産性）を意識して行動している</li>
+        <li>マニュアルを常に更新している（新しい業務は1から作成している）<span class="atc"><code>B5</code><code>A2</code></span><span class="why">指示されなくても仕組みを直す。内的コントロールの実践形。</span></li>
+        <li>半期目標を常に意識して行動している<span class="atc"><code>B2</code><code>B3</code><code>A4</code></span><span class="why">自分の上質世界と半期目標をつなげる。逆算して週・日に落とす。</span></li>
+        <li>自身の時間毎の売上高（生産性）を意識して行動している<span class="atc"><code>B4</code></span><span class="why">2:8の法則で、成果に効く2割に時間を寄せる。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -604,8 +639,8 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>部下の半期目標の設定・振り返りを実施している</li>
-        <li>虎の巻の更新を提案し、実際に更新ができる</li>
+        <li>部下の半期目標の設定・振り返りを実施している<span class="atc"><code>A4</code><code>C3</code><code>B2</code></span><span class="why">部下の上質世界（本人が本当に求めているもの）を質問で引き出し、そこから目標を立てる。上から割り当てない。</span></li>
+        <li>虎の巻の更新を提案し、実際に更新ができる<span class="atc"><code>B5</code><code>A6</code></span><span class="why">チームの実行力を個人技でなく仕組みに変える。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -671,9 +706,9 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>他チームの部長と定例で情報連携している</li>
-        <li>チーム間の異動・応援の調整を自ら行っている</li>
-        <li>虎の巻の更新を提案し、実際に更新ができる</li>
+        <li>他チームの部長と定例で情報連携している<span class="atc"><code>A6</code><code>A3</code></span><span class="why">指揮命令権のない相手を動かす場面。欲求の強さが違う前提で関わる。</span></li>
+        <li>チーム間の異動・応援の調整を自ら行っている<span class="atc"><code>A5</code><code>A6</code></span><span class="why">利害が対立する調整ほど致命的な7つの習慣が出やすい。「意見の違いを常に交渉する」で合意をつくる。</span></li>
+        <li>虎の巻の更新を提案し、実際に更新ができる<span class="atc"><code>B5</code></span><span class="why">部門をまたぐ運用を文章にして残す。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -741,9 +776,9 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>定期的に部下を昇格させている</li>
-        <li>マニュアルの作成・更新指示を行っている</li>
-        <li>虎の巻の更新を提案し、実際に更新ができる</li>
+        <li>定期的に部下を昇格させている<span class="atc"><code>C1</code><code>A2</code><code>A3</code></span><span class="why">「人は変えられない、しかし人は変われる」。部下ごとの欲求プロフィールを踏まえて育成の打ち手を変える。</span></li>
+        <li>マニュアルの作成・更新指示を行っている<span class="atc"><code>C1</code><code>C2</code></span><span class="why">指示の出し方そのものがリードマネジメントかボスマネジメントかを分ける。</span></li>
+        <li>虎の巻の更新を提案し、実際に更新ができる<span class="atc"><code>B5</code><code>C1</code></span><span class="why">部長が自走する状態をつくる。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -812,8 +847,8 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>財務コーチングの実技試験を行える</li>
-        <li>虎の巻の更新を提案し、実際に更新ができる</li>
+        <li>財務コーチングの実技試験を行える<span class="atc"><code>C3</code><code>B2</code><code>B3</code></span><span class="why">関与先の願望を引き出し、数字に翻訳して逆算計画にする。ATCの目標設定技術をそのまま業務に使う場面。</span></li>
+        <li>虎の巻の更新を提案し、実際に更新ができる<span class="atc"><code>B3</code><code>B6</code></span><span class="why">予算策定の型を残す。できる前提で計画を組む。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -883,8 +918,8 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>財務コーチングの実技指導を行える</li>
-        <li>虎の巻の更新を提案し、実際に更新ができる</li>
+        <li>財務コーチングの実技指導を行える<span class="atc"><code>C3</code><code>C1</code><code>B1</code></span><span class="why">「経営者は人生理念づくりからはじめなさい」。関与先の理念から入る面談ができ、それを職員に教えられる。</span></li>
+        <li>虎の巻の更新を提案し、実際に更新ができる<span class="atc"><code>B1</code><code>C4</code></span><span class="why">法人の理念と日常の運用をつなぐ。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -949,8 +984,8 @@
     <div class="blk">
       <h3>期待されるプロセス</h3>
       <ol>
-        <li>虎の巻・報酬制度の改定を主導できる</li>
-        <li>後継者育成計画を持ち、実行している</li>
+        <li>虎の巻・報酬制度の改定を主導できる<span class="atc"><code>C4</code><code>A5</code><code>C1</code></span><span class="why">制度は最大の外的コントロール装置。報酬設計が「褒美で釣る」に寄っていないかを設計段階で点検する。</span></li>
+        <li>後継者育成計画を持ち、実行している<span class="atc"><code>C4</code><code>B1</code><code>C1</code></span><span class="why">理念と関わり方を次代へ継承する。</span></li>
       </ol>
     </div>
     <div class="blk">
@@ -961,6 +996,40 @@
       </ul>
     </div>
     </div>
+  </div>
+</section>
+
+<section class="slide" id="atc" data-label="ATC対応" style="--rank:var(--r-doc)">
+  <div class="inner">
+    <h2 class="sec">アチーブメントとの対応</h2>
+    <p class="lead">各職階の「期待されるプロセス」に付いている記号は、アチーブメントテクノロジー（ATC）の学習項目です。ATCは選択理論心理学（W.グラッサー）と成功哲学を土台に、実行力強化と習慣形成に特化した講座で、300の基礎技術で構成されます。記号の下の職階は、その技術を主に使う場面です。</p>
+    <p class="grp">選択理論の基礎</p>
+    <ul class="topics">
+      <li style="--gcol:#4472C4"><code>A1</code><div><b>全行動</b><span>行為・思考・感情・生理反応のうち、直接選べるのは行為と思考</span><em>S / T</em></div></li>
+      <li style="--gcol:#4472C4"><code>A2</code><div><b>内的コントロール</b><span>他人と過去は変えられない。変えられるのは自分と未来だけ</span><em>D / SS / T</em></div></li>
+      <li style="--gcol:#4472C4"><code>A3</code><div><b>5つの基本的欲求</b><span>生存・愛と所属・力・自由・楽しみ。強さは人によって違う</span><em>D / SM</em></div></li>
+      <li style="--gcol:#4472C4"><code>A4</code><div><b>上質世界</b><span>その人が心から求めているもののイメージ写真帳</span><em>M / SS</em></div></li>
+      <li style="--gcol:#4472C4"><code>A5</code><div><b>致命的な7つの習慣</b><span>批判・責める・文句・ガミガミ・脅す・罰する・褒美で釣る</span><em>EP / SM</em></div></li>
+      <li style="--gcol:#4472C4"><code>A6</code><div><b>身につけたい7つの習慣</b><span>傾聴・支援・励まし・尊敬・信頼・受容・意見の違いを交渉する</span><em>SM / M</em></div></li>
+      <li style="--gcol:#4472C4"><code>A7</code><div><b>セルフカウンセリング</b><span>願望→行動→自己評価→改善計画の4ステップで自分を点検する</span><em>S / T</em></div></li>
+    </ul>
+    <p class="grp">目標達成技術</p>
+    <ul class="topics">
+      <li style="--gcol:#8F6620"><code>B1</code><div><b>人生理念・目的の明確化</b><span>何のためにやるのかを言語化する</span><em>EP / P</em></div></li>
+      <li style="--gcol:#8F6620"><code>B2</code><div><b>願望の明確化と目標設定</b><span>理想の自己イメージを視覚化し、達成基準を数値で置く</span><em>SD / M / SS</em></div></li>
+      <li style="--gcol:#8F6620"><code>B3</code><div><b>目標からの逆算計画</b><span>アチーブメントプランナーで年→月→週→日に落とす</span><em>SD / SS</em></div></li>
+      <li style="--gcol:#8F6620"><code>B4</code><div><b>タイムマネジメント</b><span>優先順位づけと2:8の法則（パレート）</span><em>SS / S</em></div></li>
+      <li style="--gcol:#8F6620"><code>B5</code><div><b>実行力強化・習慣形成</b><span>決めたことを続ける仕組みをつくる。ATCの中核</span><em>D / SM / M / SS / S</em></div></li>
+      <li style="--gcol:#8F6620"><code>B6</code><div><b>成功哲学・可能思考</b><span>思考は現実化する。できる前提で選択肢を探す</span><em>SD</em></div></li>
+    </ul>
+    <p class="grp">対人関係・組織</p>
+    <ul class="topics">
+      <li style="--gcol:#4B7B52"><code>C1</code><div><b>リードマネジメント</b><span>外から動かすのではなく、本人が動きたくなる環境をつくる</span><em>EP / P / D</em></div></li>
+      <li style="--gcol:#4B7B52"><code>C2</code><div><b>ボスマネジメントからの脱却</b><span>強制・評価による統制が関係を壊す仕組みを理解する</span><em>D</em></div></li>
+      <li style="--gcol:#4B7B52"><code>C3</code><div><b>質問による関わり</b><span>相手の上質世界を知るための問いを立てる</span><em>P / SD / M</em></div></li>
+      <li style="--gcol:#4B7B52"><code>C4</code><div><b>理念経営・組織文化</b><span>理念を制度と日常の運用に落とし込む</span><em>EP / P</em></div></li>
+    </ul>
+    <p class="lead" style="margin-top:1.6rem">学習項目の並びはATCの講座順ではなく、この表のために系統立てたものです。実際の受講内容と突き合わせて確定させてください。ATC受講は現在 M（部長）の必要なインプットに置いていますが、技術自体は全職階で使います。</p>
   </div>
 </section>
 
@@ -1028,6 +1097,7 @@
       <li><b>新サービス立ち上げ額</b><span>EP=3,000万円／P=1,000万円。EMP版（3億／1億）を法人規模に合わせて1/10に縮小した仮置き値。</span></li>
       <li><b>バックオフィス職の評価軸</b><span>総務・経理は契約報酬なしでT1扱い。期待売上高に代わる測定指標（処理件数・期限遵守率など）を何にするか。</span></li>
       <li><b>T・S の中身の確定</b><span>研究生（T）の昇格の条件と、担当職（S）の期待される役割・昇格の条件・測定指標1 はセクションごと仮置き。実際の新人教育カリキュラム（虎の巻・オンボーディング）が固まってから確定させる。</span></li>
+      <li><b>ATC対応表の突き合わせ</b><span>アチーブメント公式サイトを直接参照できなかったため、ATCの学習項目は公開されている二次情報と所内の『グラッサー博士の選択理論』から構成した提案。実際の受講テキストと突き合わせて項目名・粒度を確定させること。あわせて、ATC受講をM（部長）に置いたままでよいか（下位職階での受講時期）も要検討。</span></li>
       <li><b>M と SM の線引き</b><span>テーマは「チーム力の向上」と「チーム間の相乗効果」で分けたが、現在の組織にチームが1つしかないため、SMの測定指標は実質運用できない。チーム分割の時期とあわせて要検討。</span></li>
     </ol>
     <div class="colophon">
