@@ -11,67 +11,48 @@
     --rule:#DDE2EC;
     --rule-soft:#E9EDF4;
     --accent:#8F6620;
-    --accent-soft:#F3E9D6;
     --flag:#A2382F;
     --flag-soft:#F7E6E3;
     --shadow:0 1px 2px rgba(20,26,43,.05), 0 8px 24px -16px rgba(20,26,43,.28);
 
     /* rank ramp — deepest = most senior. carries the hierarchy in colour. */
-    --r-ep:#16233F; --r-p:#1F3259; --r-d:#2C4678; --r-m:#3C5D97;
-    --r-ss:#5B7DB5; --r-s:#8CA6CC; --r-t1:#B7C7DE; --r-pre:#CBD3E0;
+    --r-ep:#16233F; --r-p:#1F3259;  --r-sd:#263D6B; --r-d:#2C4678;
+    --r-sm:#35538D; --r-m:#3C5D97;  --r-ss:#5B7DB5; --r-s:#8CA6CC;
+    --r-t1:#B7C7DE; --r-pre:#CBD3E0;
 
-    --fs-body:16px;
     --gothic:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","YuGothic","Noto Sans JP","Meiryo",system-ui,sans-serif;
     --mincho:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP","MS PMincho",serif;
     --mono:ui-monospace,"SFMono-Regular","Menlo","Consolas",monospace;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#0D111C;
-      --surface:#151B2B;
-      --surface-2:#1D2436;
-      --ink:#E7EBF3;
-      --ink-2:#A6B0C4;
-      --ink-3:#77819A;
-      --rule:#283044;
-      --rule-soft:#232B3D;
-      --accent:#D7AC63;
-      --accent-soft:#2A2418;
-      --flag:#E3907F;
-      --flag-soft:#2C1B18;
+      --bg:#0D111C; --surface:#151B2B; --surface-2:#1D2436;
+      --ink:#E7EBF3; --ink-2:#A6B0C4; --ink-3:#77819A;
+      --rule:#283044; --rule-soft:#232B3D;
+      --accent:#D7AC63; --flag:#E3907F; --flag-soft:#2C1B18;
       --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
-      --r-ep:#8FA9D6; --r-p:#7E9BCD; --r-d:#6E8DC4; --r-m:#5F80BA;
-      --r-ss:#5273AD; --r-s:#45659F; --r-t1:#3A5890; --r-pre:#334C7C;
+      --r-ep:#9FB6DD; --r-p:#92AAD7;  --r-sd:#869FD0; --r-d:#7A95CA;
+      --r-sm:#6E8AC3; --r-m:#6280BC;  --r-ss:#5273AD; --r-s:#45659F;
+      --r-t1:#3A5890; --r-pre:#334C7C;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#0D111C;
-    --surface:#151B2B;
-    --surface-2:#1D2436;
-    --ink:#E7EBF3;
-    --ink-2:#A6B0C4;
-    --ink-3:#77819A;
-    --rule:#283044;
-    --rule-soft:#232B3D;
-    --accent:#D7AC63;
-    --accent-soft:#2A2418;
-    --flag:#E3907F;
-    --flag-soft:#2C1B18;
+    --bg:#0D111C; --surface:#151B2B; --surface-2:#1D2436;
+    --ink:#E7EBF3; --ink-2:#A6B0C4; --ink-3:#77819A;
+    --rule:#283044; --rule-soft:#232B3D;
+    --accent:#D7AC63; --flag:#E3907F; --flag-soft:#2C1B18;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
-    --r-ep:#8FA9D6; --r-p:#7E9BCD; --r-d:#6E8DC4; --r-m:#5F80BA;
-    --r-ss:#5273AD; --r-s:#45659F; --r-t1:#3A5890; --r-pre:#334C7C;
+    --r-ep:#9FB6DD; --r-p:#92AAD7;  --r-sd:#869FD0; --r-d:#7A95CA;
+    --r-sm:#6E8AC3; --r-m:#6280BC;  --r-ss:#5273AD; --r-s:#45659F;
+    --r-t1:#3A5890; --r-pre:#334C7C;
   }
 
   *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:var(--gothic);
-    font-size:var(--fs-body);
-    line-height:1.75;
-    -webkit-text-size-adjust:100%;
-    text-rendering:optimizeLegibility;
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--gothic);font-size:16px;line-height:1.75;
+    -webkit-text-size-adjust:100%;text-rendering:optimizeLegibility;
   }
   .wrap{max-width:46rem;margin:0 auto;padding:0 1rem 5rem;}
 
@@ -91,7 +72,7 @@
     margin:.5rem 0 0;letter-spacing:.04em;
   }
   .mast .note{
-    font-size:.82rem;color:var(--ink-2);margin:.9rem 0 0;
+    font-size:.82rem;color:var(--ink-2);margin:1rem 0 0;
     padding-left:.7rem;border-left:2px solid var(--accent);
   }
   .meta{
@@ -105,8 +86,7 @@
     position:sticky;top:0;z-index:20;
     margin:1.5rem -1rem 0;padding:.6rem 0;
     background:color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--rule);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);
   }
   nav.jump ul{
     display:flex;gap:.4rem;margin:0;padding:0 1rem;list-style:none;
@@ -115,10 +95,8 @@
   nav.jump ul::-webkit-scrollbar{display:none;}
   nav.jump a{
     display:block;white-space:nowrap;text-decoration:none;
-    padding:.3rem .7rem;border-radius:999px;
-    border:1px solid var(--rule);
-    background:var(--surface);
-    color:var(--ink-2);
+    padding:.3rem .7rem;border-radius:999px;border:1px solid var(--rule);
+    background:var(--surface);color:var(--ink-2);
     font-family:var(--mono);font-size:.75rem;letter-spacing:.04em;
   }
   nav.jump a:hover{border-color:var(--accent);color:var(--accent);}
@@ -127,35 +105,32 @@
   /* ---- level cards ---- */
   .levels{display:flex;flex-direction:column;gap:1.1rem;margin-top:1.6rem;}
   .lv{
-    position:relative;
-    background:var(--surface);
-    border:1px solid var(--rule);
-    border-radius:2px;
-    box-shadow:var(--shadow);
-    padding:1.3rem 1.1rem 1.4rem 1.5rem;
-    scroll-margin-top:4rem;
-    overflow:hidden;
+    position:relative;background:var(--surface);
+    border:1px solid var(--rule);border-radius:2px;box-shadow:var(--shadow);
+    padding:1.3rem 1.1rem 1.4rem 1.5rem;scroll-margin-top:4rem;overflow:hidden;
   }
   .lv::before{
     content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
     background:var(--rank);
   }
-  .lv-ep{--rank:var(--r-ep);}  .lv-p{--rank:var(--r-p);}
-  .lv-d{--rank:var(--r-d);}    .lv-m{--rank:var(--r-m);}
-  .lv-ss{--rank:var(--r-ss);}  .lv-s{--rank:var(--r-s);}
-  .lv-t1{--rank:var(--r-t1);}  .lv-pre{--rank:var(--r-pre);}
+  .lv-ep{--rank:var(--r-ep);}   .lv-p{--rank:var(--r-p);}
+  .lv-sd{--rank:var(--r-sd);}   .lv-d{--rank:var(--r-d);}
+  .lv-sm{--rank:var(--r-sm);}   .lv-m{--rank:var(--r-m);}
+  .lv-ss{--rank:var(--r-ss);}   .lv-s{--rank:var(--r-s);}
+  .lv-t1{--rank:var(--r-t1);}   .lv-pre{--rank:var(--r-pre);}
 
   .lv-head{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;}
   .sym{
     font-family:var(--mono);font-size:.78rem;font-weight:700;letter-spacing:.08em;
-    color:#fff;background:var(--rank);
+    background:var(--rank);color:#14203A;
     padding:.18rem .5rem;border-radius:2px;flex:none;
   }
-  .lv-t1 .sym,.lv-pre .sym,.lv-s .sym{color:#14203A;}
-  :root[data-theme="dark"] .lv .sym,
-  :root[data-theme="dark"] .lv-t1 .sym{color:#0D111C;}
+  .sym.on-dark{color:#FFFFFF;}
+  :root[data-theme="dark"] .sym,
+  :root[data-theme="dark"] .sym.on-dark{color:#0D111C;}
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .lv .sym{color:#0D111C;}
+    :root:not([data-theme="light"]) .sym,
+    :root:not([data-theme="light"]) .sym.on-dark{color:#0D111C;}
   }
   .lv h2{
     font-family:var(--mincho);font-weight:600;font-size:1.5rem;
@@ -169,11 +144,14 @@
     font-family:var(--mono);font-size:.78rem;color:var(--ink-3);
     margin:0;letter-spacing:.03em;
   }
-  .role{
-    font-family:var(--mincho);font-size:1.05rem;color:var(--ink);
+  .theme{
+    font-family:var(--mincho);font-size:1.15rem;color:var(--ink);
     margin:.9rem 0 0;padding-left:.75rem;
-    border-left:2px solid var(--rank);
-    letter-spacing:.03em;
+    border-left:2px solid var(--rank);letter-spacing:.03em;
+  }
+  .theme .lbl{
+    display:block;font-family:var(--mono);font-size:.6rem;
+    letter-spacing:.16em;color:var(--ink-3);margin-bottom:.1rem;
   }
 
   /* figures strip */
@@ -201,8 +179,7 @@
   .roster .lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;}
   .who{
     background:var(--surface-2);border:1px solid var(--rule);
-    padding:.1rem .5rem;border-radius:999px;
-    font-size:.78rem;color:var(--ink-2);
+    padding:.1rem .5rem;border-radius:999px;font-size:.78rem;color:var(--ink-2);
   }
   .who b{font-weight:600;color:var(--ink);}
   .who code{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);margin-left:.25rem;}
@@ -222,9 +199,7 @@
   .blk li{margin:.28rem 0;color:var(--ink-2);font-size:.94rem;line-height:1.7;}
   .blk li::marker{color:var(--ink-3);font-family:var(--mono);font-size:.8em;}
   .books{list-style:none;padding:0;display:flex;flex-direction:column;gap:.2rem;}
-  .books li{
-    padding-left:.9rem;position:relative;font-size:.88rem;
-  }
+  .books li{padding-left:.9rem;position:relative;font-size:.88rem;}
   .books li::before{
     content:"";position:absolute;left:0;top:.72em;
     width:.35rem;height:1px;background:var(--ink-3);
@@ -245,8 +220,8 @@
     vertical-align:.08em;white-space:nowrap;
   }
 
-  /* ---- rules section ---- */
-  .rules{margin-top:2.8rem;}
+  /* ---- rules / decisions ---- */
+  .rules,.decide{margin-top:2.8rem;}
   .rules h2,.decide h2{
     font-family:var(--mincho);font-size:1.5rem;font-weight:600;
     margin:0 0 .3rem;letter-spacing:.04em;
@@ -270,15 +245,15 @@
   .rule-card ul{margin:.4rem 0 0;padding-left:1.2rem;}
   .rule-card li{color:var(--ink-2);font-size:.88rem;margin:.2rem 0;}
 
-  /* ---- decisions ---- */
-  .decide{margin-top:2.8rem;}
-  .decide ol{list-style:none;counter-reset:d;margin:0;padding:0;
-    display:flex;flex-direction:column;gap:.55rem;}
+  .decide ol{
+    list-style:none;counter-reset:d;margin:0;padding:0;
+    display:flex;flex-direction:column;gap:.55rem;
+  }
   .decide li{
     counter-increment:d;position:relative;
     background:var(--surface);border:1px solid var(--rule);
-    border-left:3px solid var(--flag);
-    border-radius:2px;padding:.85rem 1rem .9rem 2.6rem;
+    border-left:3px solid var(--flag);border-radius:2px;
+    padding:.85rem 1rem .9rem 2.6rem;
   }
   .decide li::before{
     content:counter(d,decimal-leading-zero);
@@ -290,14 +265,12 @@
 
   footer{
     margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--rule);
-    font-family:var(--mono);font-size:.68rem;color:var(--ink-3);
-    line-height:1.9;
+    font-family:var(--mono);font-size:.68rem;color:var(--ink-3);line-height:1.9;
   }
   footer p{margin:0 0 .2rem;}
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
   }
-  html{scroll-behavior:smooth;}
 </style>
 
 <div class="wrap">
@@ -306,11 +279,11 @@
   <p class="kicker">税理士法人福田会計</p>
   <h1>期待職能</h1>
   <p class="sub">職階ごとに、何を期待されているか</p>
-  <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。</p>
+  <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は末尾の決定事項に対応します。</p>
   <div class="meta">
-    <span>2026-08-13版（たたき台）</span>
+    <span>2026-08-15版（たたき台）</span>
     <span>原型：EMPグループ 2024-09-01版</span>
-    <span>全8段階 / 31グレード</span>
+    <span>全9段階 / 31グレード</span>
   </div>
 </header>
 
@@ -319,8 +292,10 @@
     <li><a href="#t1">T1 研究生</a></li>
     <li><a href="#s">S 担当職</a></li>
     <li><a href="#ss">SS 主任</a></li>
-    <li><a href="#m">M・SM 部長</a></li>
-    <li><a href="#d">D・SD 拠点長</a></li>
+    <li><a href="#m">M 部長</a></li>
+    <li><a href="#sm">SM 部長</a></li>
+    <li><a href="#d">D 拠点長</a></li>
+    <li><a href="#sd">SD 拠点長</a></li>
     <li><a href="#p">P パートナー</a></li>
     <li><a href="#ep">EP 執行社員</a></li>
     <li><a href="#rules">運用ルール</a></li>
@@ -329,30 +304,54 @@
 </nav>
 
 <main class="levels">
-
-  <!-- ============ T1 ============ -->
+  <article class="lv lv-pre" id="pre">
+    <div class="lv-head">
+      <span class="sym">―</span>
+      <h2>入社前<span class="en">PRE-HIRE</span></h2>
+      <p class="grades">試用期間</p>
+    </div>
+    <p class="theme"><span class="lbl">テーマ</span>スムーズな合流</p>
+    <div class="two">
+      <div class="blk">
+        <h3>昇格の条件（T1 へ）</h3>
+        <ul>
+          <li>面接</li>
+          <li>税理士法人福田会計の理念（MVV）への共感</li>
+        </ul>
+      </div>
+    </div>
+    <div class="two">
+      <div class="blk">
+        <h3>必要なインプット</h3>
+        <ul class="books">
+          <li>所内ハンドブック</li>
+          <li>税理士を活用して業績を3倍にする方法</li>
+        </ul>
+      </div>
+    </div>
+  </article>
   <article class="lv lv-t1" id="t1">
     <div class="lv-head">
       <span class="sym">T1</span>
       <h2>研究生<span class="en">ASSOCIATE</span></h2>
       <p class="grades">T1</p>
     </div>
-    <p class="role">基礎の習得</p>
+    <p class="theme"><span class="lbl">テーマ</span>文化に慣れる</p>
     <dl class="figures">
-      <div><dt>期待売上高</dt><dd>754<em>万円</em></dd></div>
-      <div><dt>基本給</dt><dd>〜180,000<em>円</em></dd></div>
+      <div><dt>期待売上高</dt><dd>754万円</dd></div>
+      <div><dt>基本給</dt><dd>〜180,000円</dd></div>
       <div><dt>目安</dt><dd>1年目 / 20歳</dd></div>
     </dl>
     <p class="roster"><span class="lbl">在籍</span>
       <span class="who"><b>根本 綺夏</b><code>T1</code></span>
     </p>
-
     <div class="two">
       <div class="blk">
         <h3>期待される役割</h3>
         <p class="tag">これから戦力になる人</p>
         <ol>
-          <li>教わったことを素直に実行し、同じ指摘を繰り返さない人</li>
+          <li>理念と所内のやり方に馴染み、教わったことを素直に実行できる人</li>
+          <li>同じ指摘を繰り返さない人</li>
           <li>分からないことを、分からないまま放置しない人</li>
         </ol>
       </div>
@@ -366,7 +365,6 @@
         </ul>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
         <h3>測定指標1 ／ 関与先担当</h3>
@@ -382,11 +380,12 @@
         </ol>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
-        <h3>プロセス</h3>
-        <ol><li>日報・週報で進捗と不明点を必ず報告している</li></ol>
+        <h3>期待されるプロセス</h3>
+        <ol>
+          <li>日報・週報で進捗と不明点を必ず報告している</li>
+        </ol>
       </div>
       <div class="blk">
         <h3>必要なインプット</h3>
@@ -397,25 +396,22 @@
       </div>
     </div>
   </article>
-
-  <!-- ============ S ============ -->
   <article class="lv lv-s" id="s">
     <div class="lv-head">
       <span class="sym">S</span>
       <h2>担当職<span class="en">STAFF</span></h2>
       <p class="grades">S1〜S6</p>
     </div>
-    <p class="role">実行の徹底</p>
+    <p class="theme"><span class="lbl">テーマ</span>実行力の習得</p>
     <dl class="figures">
-      <div><dt>期待売上高</dt><dd>816〜1,130<em>万円</em></dd></div>
-      <div><dt>基本給</dt><dd>180,001〜270,000<em>円</em></dd></div>
+      <div><dt>期待売上高</dt><dd>816〜1,130万円</dd></div>
+      <div><dt>基本給</dt><dd>180,001〜270,000円</dd></div>
       <div><dt>目安</dt><dd>4年目 / 24歳</dd></div>
     </dl>
     <p class="roster"><span class="lbl">在籍</span>
       <span class="who"><b>須藤 佑介</b><code>S3</code></span>
       <span class="who"><b>小島 浩子</b><code>S3・総務兼任</code></span>
     </p>
-
     <div class="two">
       <div class="blk">
         <h3>期待される役割</h3>
@@ -431,29 +427,29 @@
           <li>所内ハンドブック試験（スタッフ用）<span class="prov">要決定</span></li>
           <li>半年間に5冊以上の読書（要レポート）</li>
           <li>宣言書＆面接試験</li>
-          <li>財務コーチング養成動画 C判定以上</li>
-          <li>日商簿記2級以上（または税理士1科目）<span class="prov">仮</span></li>
+          <li>日商簿記3級以上<span class="prov">仮</span></li>
         </ul>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
         <h3>測定指標1 ／ 関与先担当</h3>
         <ol>
-          <li>労働分配率 43%</li>
+          <li>労働分配率43%</li>
           <li>月次巡回監査を担当先について自ら実施し、期限内に完了できる</li>
+          <li>教わった手順を、次からは自分だけで再現できる</li>
         </ol>
       </div>
       <div class="blk">
         <h3>測定指標2 ／ 総務・経理</h3>
-        <ol><li>定型業務を期限内に、指示なく完了できる</li></ol>
+        <ol>
+          <li>定型業務を期限内に、指示なく完了できる</li>
+        </ol>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
-        <h3>プロセス</h3>
+        <h3>期待されるプロセス</h3>
         <ol>
           <li>上司の指示内容を記録し、完了報告まで自分で完結している</li>
           <li>業務マニュアルに沿って作業し、気づいた点を上司に報告している</li>
@@ -470,18 +466,16 @@
       </div>
     </div>
   </article>
-
-  <!-- ============ SS ============ -->
   <article class="lv lv-ss" id="ss">
     <div class="lv-head">
-      <span class="sym">SS</span>
+      <span class="sym on-dark">SS</span>
       <h2>主任<span class="en">SENIOR STAFF</span></h2>
       <p class="grades">SS1〜SS6</p>
     </div>
-    <p class="role">精鋭集団化への貢献と実行の徹底</p>
+    <p class="theme"><span class="lbl">テーマ</span>どれだけ自走できるか</p>
     <dl class="figures">
-      <div><dt>期待売上高</dt><dd>1,193〜1,507<em>万円</em></dd></div>
-      <div><dt>基本給</dt><dd>270,001〜360,000<em>円</em></dd></div>
+      <div><dt>期待売上高</dt><dd>1,193〜1,507万円</dd></div>
+      <div><dt>基本給</dt><dd>270,001〜360,000円</dd></div>
       <div><dt>目安</dt><dd>8年目 / 28歳</dd></div>
     </dl>
     <p class="roster"><span class="lbl">在籍</span>
@@ -490,13 +484,12 @@
       <span class="who"><b>松崎 恵</b><code>SS1</code></span>
       <span class="who"><b>越沼 浩美</b><code>SS1</code></span>
     </p>
-
     <div class="two">
       <div class="blk">
         <h3>期待される役割</h3>
-        <p class="tag">組織に寄与する個人</p>
+        <p class="tag">自分で回し切る個人</p>
         <ol>
-          <li>（Sの要件に加え、）言われたことの実行徹底ができ、自分の目標を達成できる人</li>
+          <li>指示を待たずに自分の担当を回し切り、判断に迷う点だけを上司に上げられる人</li>
           <li>失敗をフィードバックと捉え、挑戦できる人</li>
           <li>質の良い提案書を作成し、周りの人を説得するプランを立案したことがある人</li>
         </ol>
@@ -504,22 +497,22 @@
       <div class="blk">
         <h3>昇格の条件（M へ）</h3>
         <ul>
-          <li>所内ハンドブック試験（マネージャー用）<span class="prov">要決定</span></li>
-          <li>半年間に6冊以上の読書（要レポート）</li>
+          <li>所内ハンドブック試験（スタッフ用）<span class="prov">要決定</span></li>
+          <li>半年間に5冊以上の読書（要レポート）</li>
           <li>宣言書＆面接試験</li>
-          <li>財務コーチング養成動画 B判定以上</li>
+          <li>財務コーチング養成動画 C判定以上</li>
+          <li>日商簿記2級以上（または税理士試験科目合格1科目以上）<span class="prov">仮</span></li>
         </ul>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
         <h3>測定指標1 ／ 関与先担当</h3>
         <ol>
-          <li>労働分配率 43%</li>
-          <li>業務マニュアルを使って後輩の指導ができる</li>
-          <li>トレーナーとして担当職（S）を指導できる</li>
+          <li>労働分配率43%</li>
           <li>決算・申告を単独で完結し、関与先へ説明できる</li>
+          <li>トレーナーとして担当職（S）を指導できる</li>
+          <li>担当先からの一次照会を、上司を介さず自ら回答できる</li>
         </ol>
       </div>
       <div class="blk">
@@ -530,10 +523,9 @@
         </ol>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
-        <h3>プロセス</h3>
+        <h3>期待されるプロセス</h3>
         <ol>
           <li>マニュアルを常に更新している（新しい業務は1から作成している）</li>
           <li>半期目標を常に意識して行動している</li>
@@ -547,27 +539,23 @@
           <li>絶妙な「報・連・相」の技術</li>
           <li>働き方（稲盛和夫）</li>
           <li>あたりまえだけどなかなかできない仕事のルール</li>
-          <li>考える技術・書く技術</li>
         </ul>
       </div>
     </div>
   </article>
-
-  <!-- ============ M / SM ============ -->
   <article class="lv lv-m" id="m">
     <div class="lv-head">
-      <span class="sym">M・SM</span>
+      <span class="sym on-dark">M</span>
       <h2>部長<span class="en">MANAGER</span></h2>
-      <p class="grades">M1〜SM3</p>
+      <p class="grades">M1〜M3</p>
     </div>
-    <p class="role">部下の育成と「何とかしてやる」の体現</p>
+    <p class="theme"><span class="lbl">テーマ</span>チーム力の向上</p>
     <dl class="figures">
-      <div><dt>期待売上高</dt><dd>1,633〜2,261<em>万円</em></dd></div>
-      <div><dt>基本給</dt><dd>360,001〜540,000<em>円</em></dd></div>
+      <div><dt>期待売上高</dt><dd>1,633〜1,884万円</dd></div>
+      <div><dt>基本給</dt><dd>360,001〜450,000円</dd></div>
       <div><dt>目安</dt><dd>12年目 / 32歳</dd></div>
     </dl>
     <p class="roster"><span class="lbl">在籍</span><span class="vacant">現在なし（将来枠）</span></p>
-
     <div class="two">
       <div class="blk">
         <h3>期待される役割</h3>
@@ -576,41 +564,42 @@
           <li>経験ある分野の目標を定め（部下の目標設定を含めて）、何とかして達成できる人</li>
           <li>達成に向けた課題や問題を自ら解決する人</li>
           <li>家族的なチームを作れる人</li>
-          <li>主任以下の指導育成ができる人</li>
+          <li>主任（SS）以下の指導育成ができる人</li>
         </ol>
       </div>
       <div class="blk">
-        <h3>昇格の条件（D へ）</h3>
+        <h3>昇格の条件（SM へ）</h3>
         <ul>
           <li>所内ハンドブック試験（マネージャー用）<span class="prov">要決定</span></li>
-          <li>半年間に7冊以上の読書（要レポート）</li>
+          <li>半年間に6冊以上の読書（要レポート）</li>
           <li>宣言書＆面接試験</li>
-          <li>税理士試験科目合格 3科目以上<span class="prov">仮</span></li>
+          <li>財務コーチング養成動画 B判定以上</li>
         </ul>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
         <h3>測定指標1 ／ 関与先担当</h3>
         <ol>
-          <li>労働分配率 43%（部下の売上10%計上）</li>
+          <li>労働分配率43%（部下の売上10%計上）</li>
           <li>3名以上の組織を運営できる<span class="prov">仮</span></li>
-          <li>担当関与先の月次巡回監査・決算申告を、期限管理を含めチームで完結できる</li>
+          <li>チームの担当関与先の月次巡回監査・決算申告を、期限管理を含めチームで完結できる</li>
+          <li>部下一人ひとりの担当先と負荷を把握し、期中で組み替えられる</li>
         </ol>
       </div>
       <div class="blk">
         <h3>測定指標2 ／ 総務・経理</h3>
-        <ol><li>自らの専門領域（税務・労務・システム等）を継続的に追及し、所内の相談窓口になれる</li></ol>
+        <ol>
+          <li>自らの専門領域（税務・労務・システム等）を継続的に追及し、所内の相談窓口になれる</li>
+        </ol>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
-        <h3>プロセス</h3>
+        <h3>期待されるプロセス</h3>
         <ol>
-          <li>所内ハンドブックの更新を提案し、実際に更新ができる</li>
           <li>部下の半期目標の設定・振り返りを実施している</li>
+          <li>所内ハンドブックの更新を提案し、実際に更新ができる</li>
         </ol>
       </div>
       <div class="blk">
@@ -624,62 +613,126 @@
       </div>
     </div>
   </article>
-
-  <!-- ============ D / SD ============ -->
+  <article class="lv lv-sm" id="sm">
+    <div class="lv-head">
+      <span class="sym on-dark">SM</span>
+      <h2>部長<span class="en">SENIOR MANAGER</span></h2>
+      <p class="grades">SM1〜SM3</p>
+    </div>
+    <p class="theme"><span class="lbl">テーマ</span>チーム間の相乗効果</p>
+    <dl class="figures">
+      <div><dt>期待売上高</dt><dd>2,009〜2,261万円</dd></div>
+      <div><dt>基本給</dt><dd>450,001〜540,000円</dd></div>
+      <div><dt>目安</dt><dd>14年目 / 34歳</dd></div>
+    </dl>
+    <p class="roster"><span class="lbl">在籍</span><span class="vacant">現在なし（将来枠）</span></p>
+    <div class="two">
+      <div class="blk">
+        <h3>期待される役割</h3>
+        <p class="tag">チームをつなぐ管理者</p>
+        <ol>
+          <li>自チームの成果だけでなく、他チームと連携して法人全体の成果を上げられる人</li>
+          <li>部門をまたぐ課題を自ら拾い、関係者を巻き込んで解決できる人</li>
+          <li>自チームの利益より法人全体の利益を優先できる人</li>
+        </ol>
+      </div>
+      <div class="blk">
+        <h3>昇格の条件（D へ）</h3>
+        <ul>
+          <li>所内ハンドブック試験（マネージャー用）<span class="prov">要決定</span></li>
+          <li>半年間に6冊以上の読書（要レポート）</li>
+          <li>宣言書＆面接試験</li>
+        </ul>
+      </div>
+    </div>
+    <div class="two">
+      <div class="blk">
+        <h3>測定指標1 ／ 関与先担当</h3>
+        <ol>
+          <li>労働分配率43%（部下の売上10%計上）</li>
+          <li>他チームとの共同案件を主導し、収益化できている</li>
+          <li>繁忙期の応援・引き継ぎをチーム間で設計し、特定の個人に負荷が偏らない状態を作れる</li>
+          <li>複数チーム（計6名以上）に影響を及ぼす立場にある<span class="prov">仮</span></li>
+        </ol>
+      </div>
+      <div class="blk">
+        <h3>測定指標2 ／ 総務・経理</h3>
+        <ol>
+          <li>部門をまたぐ業務フローの再設計を提案し、実行できる</li>
+        </ol>
+      </div>
+    </div>
+    <div class="two">
+      <div class="blk">
+        <h3>期待されるプロセス</h3>
+        <ol>
+          <li>他チームの部長と定例で情報連携している</li>
+          <li>チーム間の異動・応援の調整を自ら行っている</li>
+          <li>所内ハンドブックの更新を提案し、実際に更新ができる</li>
+        </ol>
+      </div>
+      <div class="blk">
+        <h3>必要なインプット</h3>
+        <ul class="books">
+          <li>考える技術・書く技術</li>
+          <li>絆徳経営のすゝめ</li>
+        </ul>
+      </div>
+    </div>
+  </article>
   <article class="lv lv-d" id="d">
     <div class="lv-head">
-      <span class="sym">D・SD</span>
+      <span class="sym on-dark">D</span>
       <h2>拠点長<span class="en">DIRECTOR</span></h2>
-      <p class="grades">D1〜SD3</p>
+      <p class="grades">D1〜D3</p>
     </div>
-    <p class="role">予算策定と拠点経営</p>
+    <p class="theme"><span class="lbl">テーマ</span>マネジャーの育成</p>
     <dl class="figures">
-      <div><dt>期待売上高</dt><dd>2,386〜3,014<em>万円</em></dd></div>
-      <div><dt>基本給</dt><dd>540,001〜720,000<em>円</em></dd></div>
+      <div><dt>期待売上高</dt><dd>2,386〜2,637万円</dd></div>
+      <div><dt>基本給</dt><dd>540,001〜630,000円</dd></div>
       <div><dt>目安</dt><dd>16年目 / 36歳</dd></div>
     </dl>
     <p class="roster"><span class="lbl">在籍</span><span class="vacant">現在なし（将来枠）</span></p>
-
     <div class="two">
       <div class="blk">
         <h3>期待される役割</h3>
         <p class="tag">有能な管理者</p>
         <ol>
-          <li>法人目標の達成に向けたリアリティある計画（予算策定）と、所外との交渉・契約締結、部門横断的な働きかけができる人</li>
-          <li>リーダーシップを発揮して、組織を精鋭集団にできる人</li>
+          <li>部長（M・SM）以下の指導育成ができる人</li>
+          <li>働く幸せの実現に向けて、自己利益より部下利益を優先できる人</li>
           <li>事務所経営に生じる矛盾を受け入れつつ、うまく昇華できる人</li>
         </ol>
       </div>
       <div class="blk">
-        <h3>昇格の条件（P へ）</h3>
+        <h3>昇格の条件（SD へ）</h3>
         <ul>
           <li>所内ハンドブック試験（マネージャー用）<span class="prov">要決定</span></li>
-          <li>半年間に8冊以上の読書（要レポート）</li>
+          <li>半年間に7冊以上の読書（要レポート）</li>
           <li>宣言書＆面接試験</li>
-          <li>税理士登録済であること<span class="prov">仮</span></li>
+          <li>税理士試験科目合格3科目以上（または同等と代表が認めるもの）<span class="prov">仮</span></li>
         </ul>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
         <h3>測定指標1 ／ 関与先担当</h3>
         <ol>
-          <li>労働分配率 43%（部下の売上10%計上）</li>
+          <li>労働分配率43%（部下の売上10%計上）</li>
           <li>6名以上の組織（拠点・部門）を運営できる<span class="prov">仮</span></li>
           <li>担当拠点の財務状況を把握し、単月黒字を達成できている</li>
-          <li>ゼロから業務を企画して組織化・収益化する力を有している</li>
+          <li>自らの専門領域において、部長を率いて自らで判断ができる</li>
         </ol>
       </div>
       <div class="blk">
         <h3>測定指標2 ／ 総務・経理</h3>
-        <ol><li>自らの専門以外の分野にも積極的に関与し、法人視点での経営への提案ができる</li></ol>
+        <ol>
+          <li>総務・経理の担当者を育成し、業務の属人化を解消できる</li>
+        </ol>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
-        <h3>プロセス</h3>
+        <h3>期待されるプロセス</h3>
         <ol>
           <li>定期的に部下を昇格させている</li>
           <li>マニュアルの作成・更新指示を行っている</li>
@@ -696,24 +749,88 @@
       </div>
     </div>
   </article>
-
-  <!-- ============ P ============ -->
+  <article class="lv lv-sd" id="sd">
+    <div class="lv-head">
+      <span class="sym on-dark">SD</span>
+      <h2>拠点長<span class="en">SENIOR DIRECTOR</span></h2>
+      <p class="grades">SD1〜SD3</p>
+    </div>
+    <p class="theme"><span class="lbl">テーマ</span>計画策定と事業推進</p>
+    <dl class="figures">
+      <div><dt>期待売上高</dt><dd>2,763〜3,014万円</dd></div>
+      <div><dt>基本給</dt><dd>630,001〜720,000円</dd></div>
+      <div><dt>目安</dt><dd>17年目 / 37歳</dd></div>
+    </dl>
+    <p class="roster"><span class="lbl">在籍</span><span class="vacant">現在なし（将来枠）</span></p>
+    <div class="two">
+      <div class="blk">
+        <h3>期待される役割</h3>
+        <p class="tag">事業を前に進める管理者</p>
+        <ol>
+          <li>法人目標の達成に向けたリアリティある計画（予算策定）ができる人</li>
+          <li>所外との交渉・契約締結、部門横断的な働きかけができる人</li>
+          <li>リーダーシップを発揮して、組織を精鋭集団にできる人</li>
+        </ol>
+      </div>
+      <div class="blk">
+        <h3>昇格の条件（P へ）</h3>
+        <ul>
+          <li>所内ハンドブック試験（マネージャー用）<span class="prov">要決定</span></li>
+          <li>半年間に8冊以上の読書（要レポート）</li>
+          <li>宣言書＆面接試験</li>
+          <li>税理士登録済であること<span class="prov">仮</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="two">
+      <div class="blk">
+        <h3>測定指標1 ／ 関与先担当</h3>
+        <ol>
+          <li>労働分配率43%（部下の売上10%計上）</li>
+          <li>担当領域の予算を自ら策定し、期中の軌道修正を含めて達成できる</li>
+          <li>ゼロから業務を企画して組織化・収益化する力を有している</li>
+          <li>6名以上の組織を運営できる<span class="prov">仮</span></li>
+        </ol>
+      </div>
+      <div class="blk">
+        <h3>測定指標2 ／ 総務・経理</h3>
+        <ol>
+          <li>自らの専門以外の分野にも積極的に関与し、法人視点での経営への提案ができる</li>
+        </ol>
+      </div>
+    </div>
+    <div class="two">
+      <div class="blk">
+        <h3>期待されるプロセス</h3>
+        <ol>
+          <li>財務コーチングの実技試験を行える</li>
+          <li>所内ハンドブックの更新を提案し、実際に更新ができる</li>
+        </ol>
+      </div>
+      <div class="blk">
+        <h3>必要なインプット</h3>
+        <ul class="books">
+          <li>経営12カ条（稲盛和夫）</li>
+          <li>TQ（Time Quest）</li>
+        </ul>
+      </div>
+    </div>
+  </article>
   <article class="lv lv-p" id="p">
     <div class="lv-head">
-      <span class="sym">P</span>
+      <span class="sym on-dark">P</span>
       <h2>パートナー<span class="en">PARTNER</span></h2>
       <p class="grades">P1〜P3</p>
     </div>
-    <p class="role">事業計画と経営管理</p>
+    <p class="theme"><span class="lbl">テーマ</span>事業計画と経営管理</p>
     <dl class="figures">
-      <div><dt>期待売上高</dt><dd>3,140〜3,391<em>万円</em></dd></div>
-      <div><dt>基本給</dt><dd>720,001〜810,000<em>円</em></dd></div>
+      <div><dt>期待売上高</dt><dd>3,140〜3,391万円</dd></div>
+      <div><dt>基本給</dt><dd>720,001〜810,000円</dd></div>
       <div><dt>目安</dt><dd>19年目 / 39歳</dd></div>
     </dl>
     <p class="roster"><span class="lbl">在籍</span>
       <span class="who"><b>福田 秀幸</b><code>P1・所長</code></span>
     </p>
-
     <div class="two">
       <div class="blk">
         <h3>期待される役割</h3>
@@ -733,12 +850,11 @@
         </ul>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
         <h3>測定指標1 ／ 関与先担当</h3>
         <ol>
-          <li>労働分配率 43%（部下の売上10%＆メンバーの売上5%計上）</li>
+          <li>労働分配率43%（部下の売上10%＆メンバーの売上5%計上）</li>
           <li>10名以上の組織を運営できる<span class="prov">仮</span></li>
           <li>代表から経営者代理としての信頼を得ている</li>
           <li>数年後のビジョンを明確にして、組織によい刺激を与えている</li>
@@ -747,13 +863,14 @@
       </div>
       <div class="blk">
         <h3>測定指標2 ／ 総務・経理</h3>
-        <ol><li>投資判断や意思決定において、法人全体最適を見据えつつ、自掌握組織に有益な意思決定ができる</li></ol>
+        <ol>
+          <li>投資判断や意思決定において、法人全体最適を見据えつつ、自掌握組織に有益な意思決定ができる</li>
+        </ol>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
-        <h3>プロセス</h3>
+        <h3>期待されるプロセス</h3>
         <ol>
           <li>財務コーチングの実技指導を行える</li>
           <li>所内ハンドブックの更新を提案し、実際に更新ができる</li>
@@ -762,29 +879,25 @@
       <div class="blk">
         <h3>必要なインプット</h3>
         <ul class="books">
-          <li>経営12カ条（稲盛和夫）</li>
-          <li>TQ（Time Quest）</li>
-          <li>経営者の条件</li>
+          <li>経営者の条件（ドラッカー）</li>
+          <li>アメーバ経営（稲盛和夫）</li>
         </ul>
       </div>
     </div>
   </article>
-
-  <!-- ============ EP ============ -->
   <article class="lv lv-ep" id="ep">
     <div class="lv-head">
-      <span class="sym">EP</span>
+      <span class="sym on-dark">EP</span>
       <h2>執行社員<span class="en">EXECUTIVE PARTNER</span></h2>
       <p class="grades">EP1〜EP3</p>
     </div>
-    <p class="role">戦略的意思決定</p>
+    <p class="theme"><span class="lbl">テーマ</span>戦略的意思決定</p>
     <dl class="figures">
-      <div><dt>期待売上高</dt><dd>3,516〜3,767<em>万円</em></dd></div>
-      <div><dt>基本給</dt><dd>810,001〜900,000<em>円</em></dd></div>
+      <div><dt>期待売上高</dt><dd>3,516〜3,767万円</dd></div>
+      <div><dt>基本給</dt><dd>810,001〜900,000円</dd></div>
       <div><dt>目安</dt><dd>22年目 / 42歳</dd></div>
     </dl>
     <p class="roster"><span class="lbl">在籍</span><span class="vacant">現在なし（将来枠）</span></p>
-
     <div class="two">
       <div class="blk">
         <h3>期待される役割</h3>
@@ -801,12 +914,11 @@
         </ul>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
         <h3>測定指標1 ／ 関与先担当</h3>
         <ol>
-          <li>労働分配率 43%（部下の売上10%＆メンバーの売上5%計上）</li>
+          <li>労働分配率43%（部下の売上10%＆メンバーの売上5%計上）</li>
           <li>15名以上の組織を運営できる<span class="prov">仮</span></li>
           <li>年商3,000万円規模の新サービス・新拠点を立ち上げた経験がある<span class="prov">仮</span></li>
           <li>期待売上高（3,516万円以上）を達成している</li>
@@ -820,10 +932,9 @@
         </ol>
       </div>
     </div>
-
     <div class="two">
       <div class="blk">
-        <h3>プロセス</h3>
+        <h3>期待されるプロセス</h3>
         <ol>
           <li>所内ハンドブック・報酬制度の改定を主導できる</li>
           <li>後継者育成計画を持ち、実行している</li>
@@ -833,46 +944,16 @@
         <h3>必要なインプット</h3>
         <ul class="books">
           <li>ビジョナリー・カンパニー②</li>
-          <li>アメーバ経営（稲盛和夫）</li>
           <li>人を動かす</li>
         </ul>
       </div>
     </div>
   </article>
-
-  <!-- ============ 入社前 ============ -->
-  <article class="lv lv-pre" id="pre">
-    <div class="lv-head">
-      <span class="sym">―</span>
-      <h2>入社前<span class="en">PRE-HIRE</span></h2>
-      <p class="grades">試用期間</p>
-    </div>
-    <p class="role">スムーズな合流</p>
-    <div class="two">
-      <div class="blk">
-        <h3>昇格の条件（試用期間修了）</h3>
-        <ul>
-          <li>面接</li>
-          <li>税理士法人福田会計の理念（MVV）への共感</li>
-        </ul>
-      </div>
-      <div class="blk">
-        <h3>必要なインプット</h3>
-        <ul class="books">
-          <li>所内ハンドブック</li>
-          <li>税理士を活用して業績を3倍にする方法</li>
-        </ul>
-      </div>
-    </div>
-  </article>
-
 </main>
 
-<!-- ============ 運用ルール ============ -->
 <section class="rules" id="rules">
   <h2>運用ルール</h2>
   <p class="lead">グレード判定・賞与算定と直結する数値。基本給テーブルおよび賞与算定シートと一致させています。</p>
-
   <div class="rule-card">
     <h3>期待売上高（想定貢献報酬額）</h3>
     <div class="formula">期待売上高 ＝ 基本給上限 × 2 × 1.3 × 1.15 × 14
@@ -884,14 +965,12 @@
       <li>×14 … 賞与（夏冬2ヶ月）込みの支給月数</li>
     </ul>
   </div>
-
   <div class="rule-card">
     <h3>労働分配率</h3>
+    <p>基準値は 43%。新卒は12ヶ月分、中途採用は6ヶ月分の給与を計算上考慮しません。</p>
     <div class="formula">労働分配率 ＝ 給与総支給（6ヶ月・絶対値）
              ÷ （契約報酬6ヶ月 ÷ 2）</div>
-    <p>基準値は <b>43%</b>。新卒は12ヶ月分、中途採用は6ヶ月分の給与を計算上考慮しません。</p>
   </div>
-
   <div class="rule-card">
     <h3>賞与判定との連動</h3>
     <div class="formula">修正貢献報酬額 ＝ 契約報酬(6ヶ月)
@@ -901,7 +980,6 @@
   差額 ≧ 0 → 支給額 ＝ 差額
   差額 &lt; 0 → 支給額 ＝ 基本給1ヶ月分</div>
   </div>
-
   <div class="rule-card">
     <h3>残業ペナルティ</h3>
     <p>月平均残業が30時間を超えた場合、評価グレードを引き下げます。</p>
@@ -911,36 +989,34 @@
       <li>T1 … 考慮しない</li>
     </ul>
   </div>
-
   <div class="rule-card">
     <h3>読書レポートと宣言書</h3>
-    <p>レポートの提出に伴い、<b>1通ごとに2,000円</b>の補助を支給します。</p>
+    <p>レポートの提出に伴い、1通ごとに2,000円の補助を支給します。</p>
     <p>宣言書は、自身が期待される役割・測定指標を満たしていることを、根拠と共に記した文書。昇格申請時に提出します。</p>
   </div>
-
   <div class="rule-card">
     <h3>フィードバックの進め方</h3>
-    <p>半期（12月〜5月／6月〜11月）ごとの評価面談で、<b>この表の文言そのものを使って</b>フィードバックします。文言は直属上司が起案し、代表が承認、上司から本人へ通知します。</p>
+    <p>半期（12月〜5月／6月〜11月）ごとの評価面談で、この表の文言そのものを使ってフィードバックします。文言は直属上司が起案し、代表が承認、上司から本人へ通知します。</p>
     <p>そのため上司は、日頃から部下を観察し、この表の項目で語れる状態にしておくこと。</p>
   </div>
 </section>
 
-<!-- ============ 要決定 ============ -->
 <section class="decide" id="decide">
   <h2>運用開始前に決めること</h2>
-  <p class="lead">EMP版から移す際に、福田会計として決め切れていない項目。上の「要決定」「仮」の印はここに対応します。</p>
+  <p class="lead">EMP版から移す際に、福田会計として決め切れていない項目。各カードの「要決定」「仮」の印はここに対応します。</p>
   <ol>
     <li><b>所内ハンドブックと昇格試験</b><span>EMP版の「EMPハンドブック」「MBS1〜5」に相当する研修体系が福田会計には未整備。試験の実体をどうするか。</span></li>
     <li><b>資格要件を必須にするか</b><span>簿記3級(S)／簿記2級(SS)／税理士3科目(D)／税理士登録(P・EP) は仮置き。必須条件か、参考条件に留めるか。</span></li>
-    <li><b>組織人数要件</b><span>EP=15名／P=10名／D=6名／M=3名。EMP版（20/10/6/3）を所属約10名の規模に合わせて縮小した仮置き値。</span></li>
-    <li><b>「拠点」の定義</b><span>現在は単一拠点。部門（法人担当／個人担当／総務）を拠点とみなすかどうか。</span></li>
+    <li><b>組織人数要件</b><span>EP=15名／P=10名／D・SD=6名／SM=計6名／M=3名。EMP版（20/10/6/3）を所属約10名の規模に合わせて縮小した仮置き値。</span></li>
+    <li><b>「拠点」の定義</b><span>現在は単一拠点。部門（法人担当／個人担当／総務）を拠点とみなすかどうか。D・SDは在籍者ゼロの将来枠。</span></li>
     <li><b>新サービス立ち上げ額</b><span>EP=3,000万円／P=1,000万円。EMP版（3億／1億）を法人規模に合わせて1/10に縮小した仮置き値。</span></li>
-    <li><b>バックオフィス職の評価軸</b><span>総務・経理は契約報酬なしでT1扱い。期待売上高に代わる評価軸（処理件数・期限遵守率など）を何にするか。</span></li>
+    <li><b>バックオフィス職の評価軸</b><span>総務・経理は契約報酬なしでT1扱い。期待売上高に代わる測定指標（処理件数・期限遵守率など）を何にするか。</span></li>
+    <li><b>M と SM の線引き</b><span>テーマは「チーム力の向上」と「チーム間の相乗効果」で分けたが、現在の組織にチームが1つしかないため、SMの測定指標は実質運用できない。チーム分割の時期とあわせて要検討。</span></li>
   </ol>
 </section>
 
 <footer>
-  <p>税理士法人福田会計　期待職能　2026-08-13版（たたき台）</p>
+  <p>税理士法人福田会計　期待職能　2026-08-15版（たたき台）</p>
   <p>原型：EMPグループ「給与テーブル期待職能」2024-09-01版</p>
   <p>連動：グレード制度 基本給テーブル／賞与算定ロジック</p>
 </footer>
