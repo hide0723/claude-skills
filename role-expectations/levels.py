@@ -23,8 +23,8 @@ VERSION = "2026-08-15版"
 LEVELS = [
     {
         "sym": "EP",
-        "title": "執行社員",
-        "en": "EXECUTIVE PARTNER",
+        "title": "代表社員",
+        "en": "REPRESENTATIVE PARTNER",
         "grades": "EP1〜EP3",
         "theme": "戦略的意思決定",
         "revenue": "3,516〜3,767万円",
