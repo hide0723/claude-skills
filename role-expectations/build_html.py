@@ -618,7 +618,7 @@ def main() -> None:
     )
 
     n_levels = len(LEVELS)
-    doc = f"""<title>福田会計 期待職能</title>
+    doc = f"""<title>職階別の期待職能</title>
 <style>{CSS}</style>
 
 <div class="topbar" id="topbar">
@@ -633,8 +633,8 @@ def main() -> None:
 <section class="slide" id="cover" data-label="表紙" style="--rank:var(--r-doc)">
   <div class="inner cover">
     <p class="kicker">税理士法人福田会計</p>
-    <h1>期待職能</h1>
-    <p class="sub">職階ごとに、何を期待されているか</p>
+    <h1>職階別の期待職能</h1>
+    <p class="sub">何を期待され、どう測られるか</p>
     <p class="note">横にスワイプすると職階が移ります。並びは下から上（{esc(order[0]["title"])} → {esc(order[-1]["title"])}）。上のチップからも飛べます。</p>
     <p class="note">研究生（T1）が入口です。試用期間中もこの職階を見てください。</p>
     <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は最後のスライドに対応します。</p>
