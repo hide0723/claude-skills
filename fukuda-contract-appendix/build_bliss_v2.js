@@ -131,7 +131,7 @@ rows1.push(itemRow('1', '税務監査、税務相談業務：', true, '12　ヶ�
 rows1.push(itemRow('2', '記帳代行報酬：', true, '12　ケ月', '5,000', '60,000', '',
   ['会計ソフトの入力処理をご依頼の場合']));
 
-rows1.push(itemRow('', 'なお、年仕訳数1,201件～＠50にて別途請求', null, '', '', '', '決算時に別途請求'));
+rows1.push(itemRow('', 'なお、1事業年度4,800仕訳を超える部分は＠50にて別途請求（本契約第2項）', null, '', '', '', 'R8.4月期実績 5,525件／決算時に精算'));
 
 rows1.push(itemRow('3', '資料預り、打合せ方法：', false, '―　ケ月', '5,000', '0', '来所・オンライン',
   ['訪問ありの場合は＠5,000', '来所・オンラインはゼロ']));
@@ -277,7 +277,7 @@ rateRows.push(rateRow('別紙1の項目3及び項目4で合意した頻度・方
   ['別紙1の当該項目の単価による']));
 
 rateRows.push(rateGroupRow('９　記帳代行（仕訳数の超過分）'));
-rateRows.push(rateRow('別紙1に記載の年仕訳数が1,201件を超過した場合の超過分　※6', '1仕訳あたり', '￥50'));
+rateRows.push(rateRow('1事業年度あたり4,800仕訳を超過した場合の超過分（本契約第2項）　※6', '1仕訳あたり', '￥50'));
 
 const rateTable = new Table({
   columnWidths: RCOL, width: { size: RFULL, type: WidthType.DXA }, rows: rateRows,
