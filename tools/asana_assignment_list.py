@@ -632,6 +632,7 @@ body.no-others .rec-table td:last-child { display: none; }
 .sheet[hidden] { display: none; }
 .list-view td.namecell { min-width: 240px; }
 td.date { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12px; }
+th.sum-label { text-align: left; white-space: nowrap; }
 th.col-yen, td.col-yen {
   text-align: right;
   font-family: var(--mono);
@@ -1193,8 +1194,6 @@ function renderNew() {
   const priced = recs.filter(r => r.fee !== "").length;  // 0 円も「入っている」扱い
   document.getElementById("newCaption").textContent =
     `${wareki(year)}中に Asana に登録された関与先 ${recs.length} 件（登録日順）。` +
-    `年間報酬額の合計 ${total.toLocaleString("ja-JP")} 円` +
-    (priced < recs.length ? `（金額が入っているのは ${priced} 件）` : "") + "。" +
     `CAV他関与と補助業務行「補ー決算／補ー月次」は除いています。`;
   document.getElementById("new-body").innerHTML = recs.length
     ? recs.map(r =>
@@ -1205,7 +1204,10 @@ function renderNew() {
         `<td>${badgeHTML(r.rank)}</td>` +
         `<td class="col-yen">${yen(r.fee)}</td>` +
         `<td><span class="others">${esc(r.channel)}</span></td></tr>`
-      ).join("")
+      ).join("") +
+      `<tr class="total"><th class="sum-label" colspan="5">合計　${recs.length} 件` +
+      (priced < recs.length ? `（うち金額入力 ${priced} 件）` : "") + `</th>` +
+      `<td class="col-yen">${total.toLocaleString("ja-JP")}</td><td></td></tr>`
     : `<tr><td colspan="7"><p class="empty">該当する関与先はありません。</p></td></tr>`;
 }
 
