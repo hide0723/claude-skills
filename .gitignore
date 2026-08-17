@@ -1,0 +1,5 @@
+# 顧客情報を含む生成物・中間ファイル（このリポジトリは公開）
+担当一覧表*.html
+*_担当一覧表.html
+asana_tasks*.json
+page*.json
