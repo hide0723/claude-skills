@@ -188,6 +188,11 @@ TEMPLATE = r"""<title>担当一覧表</title>
   --rank-sup: #6b7785;
   /* ランク未設定。明暗どちらの地でも濃い文字が載るので 1 つで足りる。 */
   --rank-none: #9aa6b3;
+  /* セル幅の上限。画面は担当者列を多く並べたいので詰め、A3 に刷るときは横に
+     余裕があるので広げる（縦に伸びると縮小率が下がって字が小さくなるため）。
+     実測: 画面 1500px で 17em→6 列、12em→8 列、11em 以下は列数が増えない。 */
+  --entry-cap: 12em;
+  --entry-cap-print: 17em;
   --badge-ink-strong: #ffffff;
   --badge-ink-pale: #16202b;
   --done: #b04a3f;
@@ -522,12 +527,17 @@ tbody tr.total td { text-align: right; }
   gap: 2px 6px;
   padding: 1px 0;
   line-height: 1.45;
-  max-width: 17em;
+  max-width: var(--entry-cap);
   white-space: normal;
   overflow-wrap: anywhere;
 }
 .entry + .entry { border-top: 1px dotted var(--rule); }
 .entry .nm { flex: 0 1 auto; min-width: 0; }
+/* 括弧書きを 2 行目に送るのはマトリクスだけ。一覧側は名前の列が広いので
+   1 行のまま出す。 */
+#matrix .nm-sub { display: block; }
+/* 印刷前に紙と同じ組み方で実測するための一時クラス（preparePrint が付け外しする）。 */
+body.measuring-print .entry { max-width: var(--entry-cap-print); }
 .entry.is-dim { opacity: .22; }
 
 /* 関与先名は Asana のタスクへのリンク。250 件並ぶので、下線は控えめにしておいて
@@ -721,6 +731,7 @@ footer b { color: var(--ink-soft); }
   tbody tr { break-inside: avoid; }
   thead th, th.rowhead, thead th.corner { position: static; }
   th, td { border-color: var(--rule); }
+  .entry { max-width: var(--entry-cap-print); }
   a.nm { color: inherit; text-decoration: none; }
   a.nm.is-done { text-decoration: line-through; }
 
@@ -1002,13 +1013,31 @@ function activeRecords() {
   );
 }
 
+/* 名前の後ろにつく括弧書きを切り出す。マトリクスではこれを 2 行目に送って
+   列幅を「本体と括弧書きの長いほう」で済ませ、担当者列を 1 画面に多く出す。
+
+   先頭の法人格（(医)(一社)(株) など）は名前の一部なので切らない。末尾が
+   (同)(資) のような短い法人格だけのときも、切ると縦に伸びるだけなので残す。 */
+const CORP_PREFIX = /^[（(][^）)]{1,4}[）)]\s*/;
+
+function splitName(name) {
+  const lead = (name.match(CORP_PREFIX) || [""])[0];
+  const rest = name.slice(lead.length);
+  const at = rest.search(/[（(]/);
+  if (at <= 0) return [name, ""];
+  const tail = rest.slice(at);
+  if (tail.length < 5) return [name, ""];
+  return [(lead + rest.slice(0, at)).replace(/\s+$/, ""), tail];
+}
+
 /* 関与先名は Asana のタスクへのリンク。permalink_url が取れていない古い書き出し
    では url が空になるので、そのときは素の文字として出す。 */
 function nameHTML(rec) {
   const cls = "nm" + (rec.done ? " is-done" : "");
-  const label = esc(rec.name);
+  const [head, tail] = splitName(rec.name);
+  const label = esc(head) + (tail ? `<span class="nm-sub">${esc(tail)}</span>` : "");
   return rec.url
-    ? `<a class="${cls}" href="${esc(rec.url)}" target="_blank" rel="noopener" title="Asana のタスクを開く：${label}">${label}</a>`
+    ? `<a class="${cls}" href="${esc(rec.url)}" target="_blank" rel="noopener" title="Asana のタスクを開く：${esc(rec.name)}">${label}</a>`
     : `<span class="${cls}">${label}</span>`;
 }
 
@@ -1322,7 +1351,12 @@ function preparePrint() {
   pageStyle.textContent = "@page { size: A3 landscape; margin: 10mm; }";
   const sheet = document.querySelector(".sheet.matrix");
   const table = document.getElementById("matrix");
+
+  // 紙では画面より広いセル幅を使うので、その組み方に一度切り替えてから測る。
+  // scrollWidth の読み出しでレイアウトが確定するため、この場で正しい値が取れる。
+  document.body.classList.add("measuring-print");
   const w = table.scrollWidth, h = table.scrollHeight;
+  document.body.classList.remove("measuring-print");
 
   // 紙に載るのは表題と表だけ（集計と注記は刷らない）。表題が使う高さを差し引いた
   // 残りに表を収める。画面表示の実測なので、印刷時より大きめに出るぶん縮小率は
