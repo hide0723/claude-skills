@@ -313,6 +313,28 @@ body {
 .meta code { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
 
 /* ── 集計 ─────────────────────────────── */
+.stats-panel { border: none; }
+.stats-panel > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 2px 4px 6px;
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: var(--ink-faint);
+  cursor: pointer;
+  list-style: none;
+}
+.stats-panel > summary::-webkit-details-marker { display: none; }
+.stats-panel > summary::before {
+  content: "▾";
+  font-size: 10px;
+  transition: transform .12s;
+}
+.stats-panel:not([open]) > summary::before { transform: rotate(-90deg); }
+.stats-panel > summary:hover { color: var(--ink); }
+
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
@@ -537,6 +559,9 @@ a.nm.is-done:hover { color: var(--done); }
 }
 .badge.rank-c, .badge.rank-none { color: var(--badge-ink-pale); }
 .others { flex: none; font-size: 10.5px; color: var(--ink-faint); }
+/* 「他関与者を表示」を外したときは、一覧とドリルダウンの最終列ごと畳む。 */
+body.no-others .rec-table th:last-child,
+body.no-others .rec-table td:last-child { display: none; }
 
 /* ── タブと各表示 ─────────────────────── */
 .views { display: flex; flex-direction: column; }
@@ -679,17 +704,13 @@ footer b { color: var(--ink-soft); }
   .wrap { max-width: none; padding: 0; gap: 10px; }
   .controls { display: none; }
   .tabs { display: none; }
+  .stats-panel { display: none; }
   dialog { display: none; }
   .views .sheet { border-radius: 0; }
   .caption { position: static; border-color: var(--rule); }
   .print-note { display: inline; }
   .masthead { padding-bottom: 8px; }
   .masthead h1 { font-size: 24px; }
-  .stats { grid-template-columns: repeat(6, 1fr); border-color: var(--rule); }
-  .stat { padding: 5px 8px; }
-  .stat-label { font-size: 8.5px; letter-spacing: .08em; }
-  .stat-label::after { content: none !important; }
-  .stat-value { font-size: 15px; color: var(--ink) !important; text-decoration: none !important; }
   footer { font-size: 9px; line-height: 1.6; }
 
   .sheet {
@@ -730,7 +751,10 @@ footer b { color: var(--ink-soft); }
     </div>
   </header>
 
-  <section class="stats" id="stats" aria-label="集計"></section>
+  <details class="stats-panel" open>
+    <summary>集計</summary>
+    <section class="stats" id="stats" aria-label="集計"></section>
+  </details>
 
   <section class="controls" aria-label="絞り込み">
     <div class="control-group">
@@ -742,6 +766,7 @@ footer b { color: var(--ink-soft); }
       <span id="staffChips" style="display:contents"></span>
     </div>
     <input class="search" type="search" id="q" placeholder="関与先名で検索" aria-label="関与先名で検索">
+    <label class="toggle"><input type="checkbox" id="showOthers" checked> 他関与者を表示</label>
     <label class="toggle"><input type="checkbox" id="showDone"> 解約・完了済を表示</label>
     <button type="button" class="btn ghost" id="syncBtn">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5a6.5 6.5 0 0 1 5.9 3.8l1.4-.9V9h-4.2l1.5-1a4.9 4.9 0 0 0-9.1 1H1.9A6.5 6.5 0 0 1 8 1.5zm0 13a6.5 6.5 0 0 1-5.9-3.8L.7 11.6V7h4.2L3.4 8a4.9 4.9 0 0 0 9.1-1h1.6A6.5 6.5 0 0 1 8 14.5z"/></svg>
@@ -764,7 +789,7 @@ footer b { color: var(--ink-soft); }
     </div>
 
     <div class="sheet list-view" id="view-list" role="tabpanel" hidden>
-      <table id="list">
+      <table id="list" class="rec-table">
         <thead><tr><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th><th>他関与者</th></tr></thead>
         <tbody id="list-body"></tbody>
       </table>
@@ -858,6 +883,7 @@ const state = {
   cols: new Set(ALL_COLUMNS),
   query: "",
   showDone: false,
+  showOthers: true,
   tab: "matrix",
 };
 
@@ -996,7 +1022,7 @@ function entryHTML(rec) {
   const hit = state.query && rec.name.toLowerCase().includes(state.query);
   const dim = state.query && !hit;
   const cls = ["entry", hit ? "is-hit" : "", dim ? "is-dim" : ""].filter(Boolean).join(" ");
-  const others = rec.others ? `<span class="others">＋${esc(rec.others)}</span>` : "";
+  const others = rec.others && state.showOthers ? `<span class="others">＋${esc(rec.others)}</span>` : "";
   return `<div class="${cls}">${nameHTML(rec)}${badgeHTML(rec.rank)}${others}</div>`;
 }
 
@@ -1141,7 +1167,7 @@ function openDrill(key) {
   document.getElementById("drillTitle").textContent = def.label;
   document.getElementById("drillTally").textContent = `${recs.length} 件`;
   document.getElementById("drillBody").innerHTML = recs.length
-    ? `<table><thead><tr><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th><th>他関与者</th></tr></thead>` +
+    ? `<table class="rec-table"><thead><tr><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th><th>他関与者</th></tr></thead>` +
       `<tbody>${recs.map(listRowHTML).join("")}</tbody></table>`
     : `<p class="empty">該当する関与先はありません。</p>`;
   drill.showModal();
@@ -1178,6 +1204,11 @@ document.getElementById("q").addEventListener("input", e => {
 });
 document.getElementById("showDone").addEventListener("change", e => {
   state.showDone = e.target.checked;
+  render();
+});
+document.getElementById("showOthers").addEventListener("change", e => {
+  state.showOthers = e.target.checked;
+  document.body.classList.toggle("no-others", !state.showOthers);
   render();
 });
 /* ── 同期日の表示（年月と同じ和暦の組み方） ── */
@@ -1295,12 +1326,11 @@ function preparePrint() {
   const table = document.getElementById("matrix");
   const w = table.scrollWidth, h = table.scrollHeight;
 
-  // 表題・集計・注記が使う高さを差し引いた残りに表を収める。画面表示の実測なので
-  // 印刷時（文字が小さくなる）より大きめに出るぶん、縮小率は安全側に振れる。
+  // 表題と注記が使う高さを差し引いた残りに表を収める（集計は刷らないので数えない）。
+  // 画面表示の実測なので、印刷時より大きめに出るぶん縮小率は安全側に振れる。
   const box = el => el ? el.getBoundingClientRect().height : 0;
   const gap = parseFloat(getComputedStyle(document.querySelector(".wrap")).rowGap) || 0;
-  const reserve = box(document.querySelector(".masthead")) + box(document.querySelector(".stats")) +
-    box(document.querySelector("footer")) + gap * 3;
+  const reserve = box(document.querySelector(".masthead")) + box(document.querySelector("footer")) + gap * 2;
 
   // A3 横 420×297mm から余白 10mm×2 を引いた印刷可能域
   const scale = Math.min(1, (400 * MM) / w, Math.max(0.2, 277 * MM - reserve) / h);
