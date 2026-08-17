@@ -180,12 +180,14 @@ TEMPLATE = r"""<title>担当一覧表</title>
   --rule-strong: #b9c5d1;
   --seal: #2b4c7e;
   --seal-soft: #eaf0f8;
-  --rank-a: #1b3f6b;
-  --rank-b: #35608c;
-  --rank-c: #93b0cb;
-  --rank-d: #c2cfdb;
-  --rank-kyu: #d8ab4a;
-  --rank-sup: #b7abd4;
+  --rank-a: #b3261e;
+  --rank-b: #1f5aa6;
+  --rank-c: #e8b923;
+  --rank-d: #6b3fa0;
+  --rank-kyu: #1f7a52;
+  --rank-sup: #6b7785;
+  /* ランク未設定。明暗どちらの地でも濃い文字が載るので 1 つで足りる。 */
+  --rank-none: #9aa6b3;
   --badge-ink-strong: #ffffff;
   --badge-ink-pale: #16202b;
   --done: #b04a3f;
@@ -208,12 +210,12 @@ TEMPLATE = r"""<title>担当一覧表</title>
     --rule-strong: #3c4956;
     --seal: #8fb4e0;
     --seal-soft: #1e2a3a;
-    --rank-a: #a8c8ee;
-    --rank-b: #86a9d3;
-    --rank-c: #6b8cb3;
-    --rank-d: #55708c;
-    --rank-kyu: #c99b3f;
-    --rank-sup: #9b8bc0;
+    --rank-a: #f0918a;
+    --rank-b: #7fb0e8;
+    --rank-c: #e8c95a;
+    --rank-d: #bfa0ea;
+    --rank-kyu: #74c79c;
+    --rank-sup: #a3aebb;
     --badge-ink-strong: #11161c;
     --badge-ink-pale: #11161c;
     --done: #d97b6d;
@@ -233,12 +235,12 @@ TEMPLATE = r"""<title>担当一覧表</title>
   --rule-strong: #3c4956;
   --seal: #8fb4e0;
   --seal-soft: #1e2a3a;
-  --rank-a: #a8c8ee;
-  --rank-b: #86a9d3;
-  --rank-c: #6b8cb3;
-  --rank-d: #55708c;
-  --rank-kyu: #c99b3f;
-  --rank-sup: #9b8bc0;
+  --rank-a: #f0918a;
+  --rank-b: #7fb0e8;
+  --rank-c: #e8c95a;
+  --rank-d: #bfa0ea;
+  --rank-kyu: #74c79c;
+  --rank-sup: #a3aebb;
   --badge-ink-strong: #11161c;
   --badge-ink-pale: #11161c;
   --done: #d97b6d;
@@ -394,7 +396,7 @@ button.stat .stat-label::after { content: " ▸"; }
 .rank-d { background: var(--rank-d); }
 .rank-kyu { background: var(--rank-kyu); }
 .rank-sup { background: var(--rank-sup); }
-.rank-none { background: var(--rule-strong); }
+.rank-none { background: var(--rank-none); }
 
 .search {
   flex: 1 1 180px;
@@ -533,7 +535,7 @@ a.nm.is-done:hover { color: var(--done); }
   color: var(--badge-ink-strong);
   letter-spacing: .04em;
 }
-.badge.rank-c, .badge.rank-d, .badge.rank-kyu, .badge.rank-sup, .badge.rank-none { color: var(--badge-ink-pale); }
+.badge.rank-c, .badge.rank-none { color: var(--badge-ink-pale); }
 .others { flex: none; font-size: 10.5px; color: var(--ink-faint); }
 
 /* ── タブと各表示 ─────────────────────── */
@@ -661,12 +663,12 @@ footer b { color: var(--ink-soft); }
     --rule-strong: #55606b;
     --seal: #1b3f6b;
     --seal-soft: #ffffff;
-    --rank-a: #1b3f6b;
-    --rank-b: #35608c;
-    --rank-c: #93b0cb;
-    --rank-d: #c2cfdb;
-    --rank-kyu: #d8ab4a;
-    --rank-sup: #b7abd4;
+    --rank-a: #b3261e;
+    --rank-b: #1f5aa6;
+    --rank-c: #e8b923;
+    --rank-d: #6b3fa0;
+    --rank-kyu: #1f7a52;
+    --rank-sup: #6b7785;
     --badge-ink-strong: #ffffff;
     --badge-ink-pale: #000000;
     --done: #7a2f26;
