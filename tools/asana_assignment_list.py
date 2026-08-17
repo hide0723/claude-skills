@@ -173,6 +173,8 @@ TEMPLATE = r"""<title>担当一覧表</title>
   --paper: #f4f6f8;
   --card: #ffffff;
   --card-alt: #f8fafb;
+  --stripe: #eef2f6;
+  --stripe-strong: #e4eaf1;
   --ink: #16202b;
   --ink-soft: #4a5765;
   --ink-faint: #7d8b99;
@@ -208,6 +210,8 @@ TEMPLATE = r"""<title>担当一覧表</title>
     --paper: #11161c;
     --card: #171e26;
     --card-alt: #1c242e;
+    --stripe: #1b232c;
+    --stripe-strong: #202a35;
     --ink: #e7edf3;
     --ink-soft: #a9b6c4;
     --ink-faint: #78879a;
@@ -233,6 +237,8 @@ TEMPLATE = r"""<title>担当一覧表</title>
   --paper: #11161c;
   --card: #171e26;
   --card-alt: #1c242e;
+  --stripe: #1b232c;
+  --stripe-strong: #202a35;
   --ink: #e7edf3;
   --ink-soft: #a9b6c4;
   --ink-faint: #78879a;
@@ -509,8 +515,13 @@ th.rowhead, thead th.corner {
 thead th.corner { z-index: 4; }
 th.col-count, td.col-count { text-align: right; background: var(--card-alt); }
 th.col-cav, td.col-cav { border-left: 2px solid var(--rule-strong); }
-tbody tr:nth-child(even) td:not(.col-count) { background: color-mix(in srgb, var(--card-alt) 55%, transparent); }
-tbody tr.total th, tbody tr.total td {
+/* 行ごとの縞。決算月の見出し列と件数列はもともと地色が付いているので、
+   そのぶん濃いほうの縞を当てる。合計行は縞から外す（後ろに置いて上書き）。 */
+tbody tr:nth-child(even) > td { background: var(--stripe); }
+tbody tr:nth-child(even) > th.rowhead,
+tbody tr:nth-child(even) > td.col-count { background: var(--stripe-strong); }
+tbody tr.total > th, tbody tr.total > td,
+tbody tr.total > th.rowhead, tbody tr.total > td.col-count {
   border-top: 2px solid var(--ink);
   background: var(--card-alt);
   font-weight: 600;
@@ -699,6 +710,8 @@ footer b { color: var(--ink-soft); }
     --paper: #ffffff;
     --card: #ffffff;
     --card-alt: #ffffff;
+    --stripe: #f0f0f0;
+    --stripe-strong: #e6e6e6;
     --ink: #000000;
     --ink-soft: #333333;
     --ink-faint: #555555;
