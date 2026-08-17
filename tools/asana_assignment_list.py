@@ -517,6 +517,91 @@ footer b {{ color: var(--ink-soft); }}
   .meta {{ text-align: left; }}
   .sheet {{ max-height: 70vh; }}
 }}
+
+/* ── 印刷・PDF ─────────────────────────── */
+.print-btn {{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 12.5px;
+  padding: 5px 12px;
+  border: 1px solid var(--seal);
+  border-radius: 3px;
+  background: var(--seal);
+  color: #fff;
+  cursor: pointer;
+  transition: filter .12s;
+}}
+:root[data-theme="dark"] .print-btn {{ color: #11161c; }}
+@media (prefers-color-scheme: dark) {{
+  :root:not([data-theme="light"]) .print-btn {{ color: #11161c; }}
+}}
+.print-btn:hover {{ filter: brightness(1.12); }}
+.print-btn svg {{ width: 13px; height: 13px; fill: currentColor; }}
+.print-note {{ display: none; }}
+
+@media print {{
+  /* 画面のテーマに関わらず白地・黒字で刷る */
+  :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {{
+    --paper: #ffffff;
+    --card: #ffffff;
+    --card-alt: #ffffff;
+    --ink: #000000;
+    --ink-soft: #333333;
+    --ink-faint: #555555;
+    --rule: #9aa6b2;
+    --rule-strong: #55606b;
+    --seal: #1b3f6b;
+    --seal-soft: #ffffff;
+    --rank-a: #1b3f6b;
+    --rank-b: #35608c;
+    --rank-c: #93b0cb;
+    --rank-d: #c2cfdb;
+    --rank-kyu: #d8ab4a;
+    --rank-sup: #b7abd4;
+    --badge-ink-strong: #ffffff;
+    --badge-ink-pale: #000000;
+    --done: #7a2f26;
+    --shadow: none;
+  }}
+  * {{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }}
+  body {{ background: #fff; }}
+  .wrap {{ max-width: none; padding: 0; gap: 10px; }}
+  .controls {{ display: none; }}
+  .print-note {{ display: inline; }}
+  .masthead {{ padding-bottom: 8px; }}
+  .masthead h1 {{ font-size: 24px; }}
+  .stats {{ grid-template-columns: repeat(6, 1fr); border-color: var(--rule); }}
+  .stat {{ padding: 5px 8px; }}
+  .stat-label {{ font-size: 8.5px; letter-spacing: .08em; }}
+  .stat-value {{ font-size: 15px; }}
+  footer {{ font-size: 9px; line-height: 1.6; }}
+
+  .sheet {{
+    max-height: none;
+    overflow: visible;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }}
+  thead {{ display: table-header-group; }}
+  tbody tr {{ break-inside: avoid; }}
+  thead th, th.rowhead, thead th.corner {{ position: static; }}
+  th, td {{ border-color: var(--rule); }}
+
+  /* マトリクスは 1 ページに収まるよう実測して縮小する（--print-scale は JS が入れる） */
+  body:not(.mode-list) .sheet.matrix {{
+    width: calc(var(--pt-w, 100%) * var(--print-scale, 1));
+    height: calc(var(--pt-h, auto) * var(--print-scale, 1));
+    overflow: hidden;
+  }}
+  body:not(.mode-list) #matrix {{
+    transform: scale(var(--print-scale, 1));
+    transform-origin: top left;
+  }}
+  body.mode-list .list-view td.nm {{ white-space: normal; }}
+}}
 </style>
 
 <div class="wrap">
@@ -545,6 +630,10 @@ footer b {{ color: var(--ink-soft); }}
     <input class="search" type="search" id="q" placeholder="関与先名で検索" aria-label="関与先名で検索">
     <label class="toggle"><input type="checkbox" id="showDone"> 解約・完了済を表示</label>
     <label class="toggle"><input type="checkbox" id="listMode"> 一覧形式</label>
+    <button type="button" class="print-btn" id="printBtn">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h8v3H4zM2 5h12a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2v3H4v-3H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm3 7h6v3H5zm7.5-5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5z"/></svg>
+      印刷 / PDF保存
+    </button>
   </section>
 
   <div class="sheet matrix">
@@ -565,7 +654,8 @@ footer b {{ color: var(--ink-soft); }}
     <b>件数</b>＝各決算月行の担当者列の合計（CAV列・補助業務行「補ー決算／補ー月次」を除く）。
     <b>合計</b>＝各列に載る全件数。<br>
     出典は Asana プロジェクト「40.税務業務：契約・提案用」のタスクと、カスタムフィールド「決算月」「ランク」「他関与者1」。
-    列はタスクが属するセクション（担当者）。書式は SharePoint「30.担当一覧表」の月次 Excel に合わせています。
+    列はタスクが属するセクション（担当者）。書式は SharePoint「30.担当一覧表」の月次 Excel に合わせています。<br>
+    <span class="print-note">絞り込んだ状態のまま印刷しています。マトリクスは A3 横 1 枚、一覧形式は A4 縦。</span>
   </footer>
 </div>
 
@@ -691,6 +781,36 @@ document.getElementById("showDone").addEventListener("change", e => {{
 }});
 document.getElementById("listMode").addEventListener("change", e => {{
   document.body.classList.toggle("mode-list", e.target.checked);
+}});
+
+/* ── 印刷・PDF ──────────────────────────
+   画面に出ている絞り込みのまま刷る。マトリクスは A3 横 1 枚に収まるよう
+   実測して縮小し、一覧形式は A4 縦で見出し行を各ページに繰り返す。      */
+const MM = 96 / 25.4;
+const pageStyle = document.createElement("style");
+document.head.appendChild(pageStyle);
+
+function preparePrint() {{
+  const listMode = document.body.classList.contains("mode-list");
+  if (listMode) {{
+    pageStyle.textContent = "@page {{ size: A4 portrait; margin: 12mm; }}";
+    return;
+  }}
+  pageStyle.textContent = "@page {{ size: A3 landscape; margin: 10mm; }}";
+  const sheet = document.querySelector(".sheet.matrix");
+  const table = document.getElementById("matrix");
+  const w = table.scrollWidth, h = table.scrollHeight;
+  // A3 横 420×297mm から余白 10mm×2 を引いた印刷可能域
+  const scale = Math.min(1, (400 * MM) / w, (277 * MM) / h);
+  sheet.style.setProperty("--print-scale", scale);
+  sheet.style.setProperty("--pt-w", w + "px");
+  sheet.style.setProperty("--pt-h", h + "px");
+}}
+
+window.addEventListener("beforeprint", preparePrint);
+document.getElementById("printBtn").addEventListener("click", () => {{
+  preparePrint();
+  window.print();
 }});
 
 render();
