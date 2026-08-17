@@ -673,8 +673,6 @@ footer b { color: var(--ink-soft); }
 }
 
 /* ── 印刷・PDF ─────────────────────────── */
-.print-note { display: none; }
-
 @media print {
   /* 画面のテーマに関わらず白地・黒字で刷る */
   :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
@@ -705,13 +703,12 @@ footer b { color: var(--ink-soft); }
   .controls { display: none; }
   .tabs { display: none; }
   .stats-panel { display: none; }
+  footer { display: none; }
   dialog { display: none; }
   .views .sheet { border-radius: 0; }
   .caption { position: static; border-color: var(--rule); }
-  .print-note { display: inline; }
   .masthead { padding-bottom: 8px; }
   .masthead h1 { font-size: 24px; }
-  footer { font-size: 9px; line-height: 1.6; }
 
   .sheet {
     max-height: none;
@@ -812,7 +809,8 @@ footer b { color: var(--ink-soft); }
     <b>関与先名</b>を押すと Asana のタスクが別のタブで開きます。<br>
     <b>新規タブ</b>の「登録日」は Asana にタスクが登録された日です。Asana に契約開始日の項目がないため、
     これを新規関与先の目安にしています。解約済の先を含めるには「解約・完了済を表示」を入れてください。<br>
-    <span class="print-note">絞り込んだ状態のまま印刷しています。担当一覧表は A3 横 1 枚、その他のタブは A4 縦。</span>
+    <b>印刷</b>は画面に出ている絞り込みのまま。担当一覧表タブは A3 横 1 枚、その他のタブは A4 縦。
+    集計とこの注記は刷りません。
   </footer>
 </div>
 
@@ -1326,11 +1324,12 @@ function preparePrint() {
   const table = document.getElementById("matrix");
   const w = table.scrollWidth, h = table.scrollHeight;
 
-  // 表題と注記が使う高さを差し引いた残りに表を収める（集計は刷らないので数えない）。
-  // 画面表示の実測なので、印刷時より大きめに出るぶん縮小率は安全側に振れる。
+  // 紙に載るのは表題と表だけ（集計と注記は刷らない）。表題が使う高さを差し引いた
+  // 残りに表を収める。画面表示の実測なので、印刷時より大きめに出るぶん縮小率は
+  // 安全側に振れる。
   const box = el => el ? el.getBoundingClientRect().height : 0;
   const gap = parseFloat(getComputedStyle(document.querySelector(".wrap")).rowGap) || 0;
-  const reserve = box(document.querySelector(".masthead")) + box(document.querySelector("footer")) + gap * 2;
+  const reserve = box(document.querySelector(".masthead")) + gap;
 
   // A3 横 420×297mm から余白 10mm×2 を引いた印刷可能域
   const scale = Math.min(1, (400 * MM) / w, Math.max(0.2, 277 * MM - reserve) / h);
