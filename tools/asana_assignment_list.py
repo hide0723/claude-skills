@@ -9,7 +9,8 @@ SharePoint の `RX年MM月担当一覧表.xlsx` と同じ書式
     # 1. Asana からタスクを書き出す（Asana MCP / REST どちらでも可）
     curl -H "Authorization: Bearer $ASANA_TOKEN" \
       "https://app.asana.com/api/1.0/tasks?project=$PROJECT_GID&limit=100&opt_fields=\
-name,completed,memberships.section.name,custom_fields.name,custom_fields.display_value" \
+name,completed,created_at,permalink_url,attachments.name,memberships.section.name,\
+custom_fields.name,custom_fields.display_value" \
       > page1.json   # next_page.offset を辿って全ページ取得する
 
     # 2. HTML を組み立てる
@@ -65,6 +66,9 @@ SUPPLEMENT_RANKS = ["補ー決算", "補ー月次"]
 # タスク名の頭についている整理用の接頭辞。
 NAME_PREFIX = re.compile(r"^(?:\[Duplicate\]\s*)?(?:\d{2}|個|給)_\s*")
 
+# 顧問契約書とみなす添付ファイル名（HTML 側の CONTRACT_PATTERN と揃える）。
+CONTRACT_PATTERN = re.compile(r"契約")
+
 
 def load_tasks(paths: Iterable[Path]) -> list[dict[str, Any]]:
     """JSON ファイル群を読み込み、gid で重複を除いたタスク配列を返す。"""
@@ -97,6 +101,19 @@ def section_of(task: dict[str, Any]) -> str | None:
     return None
 
 
+def attachments_of(task: dict[str, Any]) -> tuple[int | None, bool | None]:
+    """添付の件数と、顧問契約書らしきものがあるか。
+
+    opt_fields に attachments を入れていない書き出しでは判定できないので
+    (None, None) を返し、画面側では「未取得」として扱う。
+    """
+    atts = task.get("attachments")
+    if atts is None:
+        return None, None
+    names = [(a or {}).get("name") or "" for a in atts]
+    return len(names), any(CONTRACT_PATTERN.search(n) for n in names)
+
+
 def task_url(task: dict[str, Any]) -> str:
     """タスクを開く URL。opt_fields に permalink_url が無くても gid から組める。"""
     if task.get("permalink_url"):
@@ -113,6 +130,7 @@ def normalize(tasks: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
     """
     records = []
     for task in tasks:
+        att_count, has_contract = attachments_of(task)
         section = section_of(task)
         column = section if section in STAFF_COLUMNS or section == CAV_COLUMN else INBOX_COLUMN
 
@@ -126,6 +144,8 @@ def normalize(tasks: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
 
         records.append(
             {
+                # 前月との照合に使う鍵。名前は変わりうるので gid で突き合わせる。
+                "gid": task.get("gid", ""),
                 "name": NAME_PREFIX.sub("", task.get("name", "")).strip(),
                 "row": row,
                 "col": column,
@@ -137,6 +157,9 @@ def normalize(tasks: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
                 "created": (task.get("created_at") or "")[:10],
                 "channel": custom_field(task, "契約・紹介チャネル") or "",
                 "fee": custom_field(task, "契約報酬額（年額）") or "",
+                # 添付の件数と、顧問契約書らしき添付の有無。未取得なら None。
+                "att": att_count,
+                "contract": has_contract,
                 "url": task_url(task),
             }
         )
@@ -144,8 +167,57 @@ def normalize(tasks: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
     return records
 
 
-def build_page(records: list[dict[str, Any]], era: str, synced: str, source: str) -> str:
+SNAPSHOT_SUFFIX = ".json"
+
+
+def snapshot_label(era: str, today: dt.date) -> str:
+    """スナップショットの名前。並べ替えたときに月順になるよう和暦を 0 埋めで持つ。"""
+    m = re.match(r"令和(\d+)年(\d+)月", era)
+    if m:
+        return f"R{int(m.group(1)):02d}年{int(m.group(2)):02d}月"
+    return f"R{today.year - 2018:02d}年{today.month:02d}月"
+
+
+def load_previous(snapshot_dir: Path, current_label: str) -> dict[str, Any] | None:
+    """今回ぶんを除いた最新のスナップショットを返す。無ければ None。"""
+    if not snapshot_dir.is_dir():
+        return None
+    files = sorted(
+        (f for f in snapshot_dir.glob(f"*{SNAPSHOT_SUFFIX}") if f.stem != current_label),
+        key=lambda f: f.stem,
+    )
+    if not files:
+        return None
+    try:
+        snap = json.loads(files[-1].read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as err:
+        print(f"前月のスナップショットを読めませんでした（{files[-1]}）: {err}", file=sys.stderr)
+        return None
+    if not isinstance(snap.get("records"), list):
+        print(f"前月のスナップショットの形が違います（{files[-1]}）", file=sys.stderr)
+        return None
+    return snap
+
+
+def save_snapshot(snapshot_dir: Path, label: str, synced: str, records: list[dict[str, Any]]) -> Path:
+    snapshot_dir.mkdir(parents=True, exist_ok=True)
+    path = snapshot_dir / f"{label}{SNAPSHOT_SUFFIX}"
+    payload = {"label": label, "synced": synced, "records": records}
+    path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+def build_page(
+    records: list[dict[str, Any]],
+    era: str,
+    synced: str,
+    source: str,
+    label: str,
+    previous: dict[str, Any] | None,
+) -> str:
     data = {
+        "label": label,
+        "previous": previous,
         "records": records,
         "columns": STAFF_COLUMNS + [INBOX_COLUMN],
         "inboxColumn": INBOX_COLUMN,
@@ -633,6 +705,33 @@ body.no-others .rec-table td:last-child { display: none; }
 .list-view td.namecell { min-width: 240px; }
 td.date { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12px; }
 th.sum-label { text-align: left; white-space: nowrap; }
+
+/* 前月比 */
+.diff-head {
+  margin: 0;
+  padding: 12px 12px 6px;
+  font-family: var(--mincho);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.diff-count { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); letter-spacing: 0; }
+.diff-table { border-top: 1px solid var(--rule); }
+.diff-table + .diff-head { border-top: 1px solid var(--rule); margin-top: 8px; }
+.chg {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-right: 12px;
+  white-space: nowrap;
+}
+.chg-key { font-size: 10.5px; color: var(--ink-faint); }
+.chg-from { color: var(--ink-faint); text-decoration: line-through; text-decoration-thickness: 1px; }
+.chg-arrow { color: var(--ink-faint); font-size: 11px; }
+.chg-to { font-weight: 600; }
 th.col-yen, td.col-yen {
   text-align: right;
   font-family: var(--mono);
@@ -834,6 +933,19 @@ footer b { color: var(--ink-soft); }
       </table>
     </div>
 
+    <div class="sheet nocontract-view" id="view-nocontract" role="tabpanel" hidden>
+      <p class="caption" id="ncCaption"></p>
+      <table id="ncTable">
+        <thead><tr><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th><th class="col-yen">年間報酬額</th><th class="col-yen">添付</th></tr></thead>
+        <tbody id="nc-body"></tbody>
+      </table>
+    </div>
+
+    <div class="sheet diff-view" id="view-diff" role="tabpanel" hidden>
+      <p class="caption" id="diffCaption"></p>
+      <div id="diff-body"></div>
+    </div>
+
     <div class="sheet new-view" id="view-new" role="tabpanel" hidden>
       <p class="caption" id="newCaption"></p>
       <table id="newTable">
@@ -898,6 +1010,8 @@ const DATA = __DATA__;
 const RANK_CLASS = {"A": "a", "B": "b", "C": "c", "D": "d", "給": "kyu", "補ー決算": "sup", "補ー月次": "sup"};
 const RANK_ORDER = {"A": 0, "B": 1, "C": 2, "D": 3, "給": 4, "補ー決算": 5, "補ー月次": 6};
 const NAME_PREFIX = /^(?:\[Duplicate\]\s*)?(?:\d{2}|個|給)_\s*/;
+// 顧問契約書とみなす添付ファイル名（Python 側の CONTRACT_PATTERN と揃える）。
+const CONTRACT_PATTERN = /契約/;
 const NO_RANK = "―";
 const MONTHS = DATA.baseRows.slice(0, 12);
 
@@ -985,6 +1099,7 @@ function normalizeTasks(tasks) {
     else row = DATA.unsetRow;
 
     out.push({
+      gid: t.gid || "",
       name: String(t.name || "").replace(NAME_PREFIX, "").trim(),
       row, col,
       rank: cf("ランク") || "",
@@ -993,6 +1108,10 @@ function normalizeTasks(tasks) {
       created: String(t.created_at || "").slice(0, 10),
       channel: cf("契約・紹介チャネル") || "",
       fee: cf("契約報酬額（年額）") || "",
+      att: t.attachments ? t.attachments.length : null,
+      contract: t.attachments
+        ? t.attachments.some(a => CONTRACT_PATTERN.test((a && a.name) || ""))
+        : null,
       url: t.permalink_url || (t.gid ? `https://app.asana.com/0/${DATA.projectGid}/${t.gid}` : ""),
     });
   }
@@ -1211,12 +1330,161 @@ function renderNew() {
     : `<tr><td colspan="7"><p class="empty">該当する関与先はありません。</p></td></tr>`;
 }
 
+/* ── 契約書未添付 ────────────────────────
+   Asana の添付に顧問契約書らしきファイルが無い先を並べる。opt_fields に
+   attachments を入れずに書き出したデータでは判定できないので、その場合は
+   タブに取得方法を出すだけにする。 */
+const hasAttachmentInfo = () => DATA.records.some(r => r.att !== null && r.att !== undefined);
+
+function noContract() {
+  return activeRecords()
+    .filter(r => isEngagement(r) && r.contract === false)
+    .filter(r => !state.query || r.name.toLowerCase().includes(state.query))
+    .sort((a, b) => (Number(b.fee) || 0) - (Number(a.fee) || 0) || a.name.localeCompare(b.name, "ja"));
+}
+
+function renderNoContract() {
+  const caption = document.getElementById("ncCaption");
+  const body = document.getElementById("nc-body");
+  if (!hasAttachmentInfo()) {
+    caption.textContent =
+      "添付の情報が取り込まれていません。Asana から取り直すときに opt_fields へ attachments.name を足してください" +
+      "（「Asanaと同期」ボタンからの取り込みでは自動で付きます）。";
+    body.innerHTML = "";
+    return;
+  }
+  const recs = noContract();
+  const total = recs.reduce((sum, r) => sum + (Number(r.fee) || 0), 0);
+  caption.textContent =
+    `添付に「契約」を含むファイルが無い関与先 ${recs.length} 件（年間報酬額の大きい順）。` +
+    `CAV他関与と補助業務行「補ー決算／補ー月次」、解約・完了済は除いています。`;
+  body.innerHTML = recs.length
+    ? recs.map(r =>
+        `<tr><th class="rowhead">${esc(r.row)}</th>` +
+        `<td class="namecell">${nameHTML(r)}</td>` +
+        `<td>${esc(r.col)}</td>` +
+        `<td>${badgeHTML(r.rank)}</td>` +
+        `<td class="col-yen">${yen(r.fee)}</td>` +
+        `<td class="col-yen">${r.att ? r.att + " 件" : "なし"}</td></tr>`
+      ).join("") +
+      `<tr class="total"><th class="sum-label" colspan="4">合計　${recs.length} 件</th>` +
+      `<td class="col-yen">${total.toLocaleString("ja-JP")}</td><td></td></tr>`
+    : `<tr><td colspan="6"><p class="empty">全ての関与先に契約書らしき添付があります。</p></td></tr>`;
+}
+
+/* ── 前月比 ──────────────────────────────
+   前月のスナップショットと突き合わせて、増えた先・消えた先・変わった項目を出す。
+   照合は gid。名前は変わりうるので、名称変更も「変更」として拾える。
+   ランク・担当の絞り込みは効かせない（変更の全件を見せたいため）。 */
+const DIFF_FIELDS = [
+  {key: "col", label: "担当"},
+  {key: "rank", label: "ランク"},
+  {key: "row", label: "決算月"},
+  {key: "fee", label: "年間報酬額", money: true},
+  {key: "name", label: "関与先名"},
+  {key: "others", label: "他関与者"},
+];
+
+function byGid(records) {
+  const map = new Map();
+  for (const r of records) if (r.gid) map.set(r.gid, r);
+  return map;
+}
+
+/* 「載っている」＝解約・完了していない、の意味。消えた先の判定に使う。 */
+const onBooks = r => r && !r.done;
+
+function diffAll() {
+  if (!DATA.previous) return [];
+  const before = byGid(DATA.previous.records);
+  const after = byGid(DATA.records);
+  const out = [];
+
+  for (const [gid, now] of after) {
+    const was = before.get(gid);
+    if (!onBooks(now)) {
+      if (onBooks(was)) out.push({kind: "gone", rec: now, was});
+      continue;
+    }
+    if (!was || !onBooks(was)) { out.push({kind: "added", rec: now, was}); continue; }
+    const changes = DIFF_FIELDS
+      .filter(f => (was[f.key] || "") !== (now[f.key] || ""))
+      .map(f => ({field: f, from: was[f.key] || "", to: now[f.key] || ""}));
+    if (changes.length) out.push({kind: "changed", rec: now, was, changes});
+  }
+  // 前月にあって今月のデータから消えた（タスクごと削除された）先
+  for (const [gid, was] of before) {
+    if (!after.has(gid) && onBooks(was)) out.push({kind: "gone", rec: was, was});
+  }
+  return out;
+}
+
+function diffRowHTML(r, extraCells) {
+  return `<tr><th class="rowhead">${esc(r.row)}</th>` +
+    `<td class="namecell">${nameHTML(r)}</td>` +
+    `<td>${esc(r.col)}</td>` +
+    `<td>${badgeHTML(r.rank)}</td>` +
+    (extraCells || "") + `</tr>`;
+}
+
+function diffSection(title, rows, headExtra, bodyFn) {
+  if (!rows.length) return "";
+  return `<h3 class="diff-head">${esc(title)}<span class="diff-count">${rows.length} 件</span></h3>` +
+    `<table class="diff-table"><thead><tr><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th>` +
+    headExtra + `</tr></thead><tbody>${rows.map(bodyFn).join("")}</tbody></table>`;
+}
+
+function renderDiff() {
+  const caption = document.getElementById("diffCaption");
+  const body = document.getElementById("diff-body");
+  if (!DATA.previous) {
+    caption.textContent = "前月のスナップショットがありません。今回ぶんを保存したので、来月から差分が出ます。";
+    body.innerHTML = "";
+    return;
+  }
+
+  const q = state.query;
+  const all = diffAll().filter(d => !q || d.rec.name.toLowerCase().includes(q));
+  const added = all.filter(d => d.kind === "added").map(d => d.rec);
+  const gone = all.filter(d => d.kind === "gone").map(d => d.rec);
+  const changed = all.filter(d => d.kind === "changed");
+
+  const sum = rs => rs.reduce((a, r) => a + (Number(r.fee) || 0), 0);
+  const feeDelta = sum(added) - sum(gone) + changed.reduce((a, d) => {
+    const f = d.changes.find(c => c.field.key === "fee");
+    return f ? a + (Number(f.to) || 0) - (Number(f.from) || 0) : a;
+  }, 0);
+  const sign = n => (n > 0 ? "＋" : n < 0 ? "△" : "±") + Math.abs(n).toLocaleString("ja-JP");
+
+  caption.textContent =
+    `${DATA.previous.label} → ${DATA.label} の変更。` +
+    `新規 ${added.length} 件、解約・完了 ${gone.length} 件、変更 ${changed.length} 件、` +
+    `年間報酬額 ${sign(feeDelta)} 円。` +
+    `ランク・担当の絞り込みは効きません（変更は全件出します）。`;
+
+  body.innerHTML =
+    diffSection("今月増えた先", added, '<th class="col-yen">年間報酬額</th>',
+      r => diffRowHTML(r, `<td class="col-yen">${yen(r.fee)}</td>`)) +
+    diffSection("今月消えた先（解約・完了）", gone, '<th class="col-yen">年間報酬額</th>',
+      r => diffRowHTML(r, `<td class="col-yen">${yen(r.fee)}</td>`)) +
+    diffSection("変わった先", changed, "<th>変更点</th>",
+      d => diffRowHTML(d.rec, `<td>${d.changes.map(c =>
+        `<span class="chg"><span class="chg-key">${esc(c.field.label)}</span>` +
+        `<span class="chg-from">${c.field.money ? yen(c.from) : (esc(c.from) || "—")}</span>` +
+        `<span class="chg-arrow">→</span>` +
+        `<span class="chg-to">${c.field.money ? yen(c.to) : (esc(c.to) || "—")}</span></span>`
+      ).join("")}</td>`)) ||
+    `<p class="empty">${q ? "検索に当てはまる変更はありません。" : "前月から変わった先はありません。"}</p>`;
+}
+
 /* ── タブ ── */
 function tabDefs() {
   return [
     {key: "matrix", label: "担当一覧表"},
     {key: "list", label: "一覧"},
     ...newYears().map(y => ({key: "new" + y, label: `${wareki(y)}新規`, count: newRecords(y).length})),
+    {key: "nocontract", label: "契約書未添付", count: hasAttachmentInfo() ? noContract().length : 0},
+    {key: "diff", label: "前月比", count: DATA.previous ? diffAll().length : 0},
   ];
 }
 
@@ -1233,6 +1501,8 @@ function renderTabs() {
   document.getElementById("view-matrix").hidden = !isMatrix;
   document.getElementById("view-list").hidden = state.tab !== "list";
   document.getElementById("view-new").hidden = !state.tab.startsWith("new");
+  document.getElementById("view-diff").hidden = state.tab !== "diff";
+  document.getElementById("view-nocontract").hidden = state.tab !== "nocontract";
 }
 
 document.getElementById("tabs").addEventListener("click", e => {
@@ -1246,6 +1516,8 @@ function render() {
   renderMatrix();
   renderList();
   renderNew();
+  renderNoContract();
+  renderDiff();
   renderTabs();
 }
 
@@ -1336,20 +1608,38 @@ function say(text, kind) {
   syncMsg.className = "msg" + (kind ? " " + kind : "");
 }
 
-async function fetchAllTasks(token) {
-  const fields = "name,completed,memberships.section.name,custom_fields.name,custom_fields.display_value";
+const BASE_FIELDS = "name,completed,created_at,permalink_url,memberships.section.name," +
+  "custom_fields.name,custom_fields.display_value";
+
+async function fetchPages(token, fields) {
   let url = `https://app.asana.com/api/1.0/tasks?project=${DATA.projectGid}&limit=100&opt_fields=${encodeURIComponent(fields)}`;
   const tasks = [];
   for (let page = 1; url && page <= 50; page++) {
     say(`取得中… ${tasks.length} 件`);
     const res = await fetch(url, {headers: {Authorization: "Bearer " + token}});
     if (res.status === 401) throw new Error("トークンが受け付けられませんでした。個人用アクセストークンを確認してください。");
-    if (!res.ok) throw new Error(`Asana から ${res.status} が返りました。`);
+    if (!res.ok) {
+      const err = new Error(`Asana から ${res.status} が返りました。`);
+      err.status = res.status;
+      throw err;
+    }
     const json = await res.json();
     tasks.push(...(json.data || []));
     url = json.next_page ? json.next_page.uri : null;
   }
   return tasks;
+}
+
+async function fetchAllTasks(token) {
+  // 添付まで取れれば契約書未添付タブが埋まる。この項目を受け付けない環境では
+  // 400 が返るので、添付なしでもう一度取りに行って表そのものは作れるようにする。
+  try {
+    return await fetchPages(token, BASE_FIELDS + ",attachments.name");
+  } catch (err) {
+    if (err.status !== 400) throw err;
+    say("添付の取得は通らなかったため、添付なしで取り込みます。", "err");
+    return await fetchPages(token, BASE_FIELDS);
+  }
 }
 
 function applyTasks(tasks, label) {
@@ -1462,6 +1752,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--era", default="", help='表題横の年月（例: "令和8年8月度"）')
     parser.add_argument("--source", default="Asana / 40.税務業務：契約・提案用", help="出典の表示文字列")
     parser.add_argument("--synced", default="", help="Asana との同期日時（ISO 8601、既定は実行時刻）")
+    parser.add_argument(
+        "--snapshot-dir",
+        type=Path,
+        default=Path("snapshots"),
+        help="月次スナップショットの置き場（既定: snapshots）。顧客情報を含むのでリポジトリ外を指すこと",
+    )
+    parser.add_argument("--label", default="", help='スナップショット名（既定は年月から。例: "R8年08月"）')
+    parser.add_argument("--no-snapshot", action="store_true", help="スナップショットを読み書きしない")
     args = parser.parse_args(argv)
 
     tasks = load_tasks(args.inputs)
@@ -1473,8 +1771,21 @@ def main(argv: list[str] | None = None) -> int:
     now = dt.datetime.now()
     era = args.era or f"令和{now.year - 2018}年{now.month}月度"
     synced = args.synced or now.astimezone().isoformat(timespec="minutes")
-    args.output.write_text(build_page(records, era, synced, args.source), encoding="utf-8")
+    label = args.label or snapshot_label(era, now.date())
+
+    previous = None if args.no_snapshot else load_previous(args.snapshot_dir, label)
+    args.output.write_text(
+        build_page(records, era, synced, args.source, label, previous), encoding="utf-8"
+    )
     print(f"{args.output} を書き出しました（{len(records)} 件）")
+    if previous:
+        print(f"前月比の相手: {previous.get('label')}（{len(previous['records'])} 件）")
+    else:
+        print("前月のスナップショットが無いため、前月比タブは空になります")
+
+    if not args.no_snapshot:
+        path = save_snapshot(args.snapshot_dir, label, synced, records)
+        print(f"{path} に今回ぶんを保存しました")
     return 0
 
 
