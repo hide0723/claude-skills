@@ -569,6 +569,16 @@ a.nm.is-done:hover { color: var(--done); }
 }
 .badge.rank-c, .badge.rank-none { color: var(--badge-ink-pale); }
 .others { flex: none; font-size: 10.5px; color: var(--ink-faint); }
+/* 「その他」列で、元の担当が誰かを示す小さな札。 */
+.src {
+  flex: none;
+  font-size: 10px;
+  line-height: 1.5;
+  padding: 0 4px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
+  color: var(--ink-faint);
+}
 /* 「他関与者を表示」を外したときは、一覧とドリルダウンの最終列ごと畳む。 */
 body.no-others .rec-table th:last-child,
 body.no-others .rec-table td:last-child { display: none; }
@@ -774,6 +784,7 @@ footer b { color: var(--ink-soft); }
       <span id="staffChips" style="display:contents"></span>
     </div>
     <input class="search" type="search" id="q" placeholder="関与先名で検索" aria-label="関与先名で検索">
+    <label class="toggle" title="南雲・齋籐・英明・高崎：石倉・未割当・CAV を 1 列にまとめる"><input type="checkbox" id="groupOther"> その他にまとめる</label>
     <label class="toggle"><input type="checkbox" id="showOthers" checked> 他関与者を表示</label>
     <label class="toggle"><input type="checkbox" id="showDone"> 解約・完了済を表示</label>
     <button type="button" class="btn ghost" id="syncBtn">
@@ -893,8 +904,30 @@ const state = {
   query: "",
   showDone: false,
   showOthers: true,
+  groupOther: false,
   tab: "matrix",
 };
+
+/* 件数の少ない担当と CAV・未割当を 1 列に畳む。畳んでも record.col は元のまま
+   なので、件数の数え方（CAV を除く）や一覧タブの担当名には影響しない。 */
+const OTHER_COLUMN = "その他";
+const OTHER_MEMBERS = ["南雲", "齋籐", "英明", "高崎：石倉", DATA.inboxColumn, DATA.cavColumn];
+
+const isOtherMember = col => OTHER_MEMBERS.includes(col);
+const membersOf = col => col === OTHER_COLUMN ? OTHER_MEMBERS : [col];
+const colEnabled = col => membersOf(col).some(m => state.cols.has(m));
+const displayColOf = r => state.groupOther && isOtherMember(r.col) ? OTHER_COLUMN : r.col;
+
+/* 件数列の左に並ぶ担当者列。 */
+function staffColumns() {
+  return state.groupOther
+    ? DATA.columns.filter(c => !isOtherMember(c)).concat([OTHER_COLUMN])
+    : DATA.columns;
+}
+/* 担当チップの並び。まとめているときは CAV も「その他」に含まれる。 */
+function chipColumns() {
+  return state.groupOther ? staffColumns() : DATA.columns.concat([DATA.cavColumn]);
+}
 
 /* 和暦。令和は 2019 年から。 */
 const wareki = year => year >= 2019 ? `令和${year - 2018}年` : `${year}年`;
@@ -982,8 +1015,8 @@ function renderChrome() {
     `<span class="chip-count">${count}</span></button>`
   ).join("");
 
-  document.getElementById("staffChips").innerHTML = ALL_COLUMNS.map(col =>
-    `<button type="button" class="chip" data-col="${esc(col)}" aria-pressed="${state.cols.has(col)}">${esc(col)}</button>`
+  document.getElementById("staffChips").innerHTML = chipColumns().map(col =>
+    `<button type="button" class="chip" data-col="${esc(col)}" aria-pressed="${colEnabled(col)}">${esc(col)}</button>`
   ).join("");
 
   const live = liveRecords();
@@ -997,7 +1030,7 @@ function renderChrome() {
 }
 
 /* ── 表の描画 ── */
-function visibleColumns() { return DATA.columns.filter(c => state.cols.has(c)); }
+function visibleColumns() { return staffColumns().filter(colEnabled); }
 
 function tableRows() {
   const rows = DATA.baseRows.slice();
@@ -1045,17 +1078,20 @@ function badgeHTML(rank) {
   return rank ? `<span class="badge ${rankClass(rank)}">${esc(rank)}</span>` : "";
 }
 
-function entryHTML(rec) {
+function entryHTML(rec, withSource) {
   const hit = state.query && rec.name.toLowerCase().includes(state.query);
   const dim = state.query && !hit;
   const cls = ["entry", hit ? "is-hit" : "", dim ? "is-dim" : ""].filter(Boolean).join(" ");
   const others = rec.others && state.showOthers ? `<span class="others">＋${esc(rec.others)}</span>` : "";
-  return `<div class="${cls}">${nameHTML(rec)}${badgeHTML(rec.rank)}${others}</div>`;
+  // 「その他」に畳んだ列では、どの担当のぶんかが分からなくなるので添える。
+  const src = withSource ? `<span class="src">${esc(rec.col)}</span>` : "";
+  return `<div class="${cls}">${nameHTML(rec)}${badgeHTML(rec.rank)}${src}${others}</div>`;
 }
 
 function renderMatrix() {
   const cols = visibleColumns();
-  const showCav = state.cols.has(DATA.cavColumn);
+  // CAV を独立した列に出すのは、まとめていないときだけ（まとめたら「その他」に入る）。
+  const showCav = !state.groupOther && state.cols.has(DATA.cavColumn);
   const recs = activeRecords();
 
   document.getElementById("matrix-head").innerHTML = ['<th class="corner">決算月</th>']
@@ -1065,23 +1101,25 @@ function renderMatrix() {
     .join("");
 
   const totals = {};
-  ALL_COLUMNS.forEach(c => totals[c] = 0);
-  let grand = 0;
+  cols.forEach(c => totals[c] = 0);
+  let cavTotal = 0, grand = 0;
 
   const body = tableRows().map(row => {
     const inRow = recs.filter(r => r.row === row);
     if (!inRow.length && !MONTHS.includes(row)) return "";
     let count = 0;
     const cells = cols.map(col => {
-      const list = inRow.filter(r => r.col === col);
+      const list = inRow.filter(r => displayColOf(r) === col);
       totals[col] += list.length;
-      count += list.filter(r => !SUPPLEMENT.has(r.rank)).length;
-      return `<td>${list.map(entryHTML).join("")}</td>`;
+      // 件数は CAV他関与と補助業務行を除く。まとめても元の担当で判断する。
+      count += list.filter(r => !SUPPLEMENT.has(r.rank) && r.col !== DATA.cavColumn).length;
+      const src = col === OTHER_COLUMN;
+      return `<td>${list.map(r => entryHTML(r, src)).join("")}</td>`;
     });
     grand += count;
-    const cav = inRow.filter(r => r.col === DATA.cavColumn);
-    totals[DATA.cavColumn] += cav.length;
-    const cavCell = showCav ? `<td class="col-cav">${cav.map(entryHTML).join("")}</td>` : "";
+    const cav = showCav ? inRow.filter(r => r.col === DATA.cavColumn) : [];
+    cavTotal += cav.length;
+    const cavCell = showCav ? `<td class="col-cav">${cav.map(r => entryHTML(r)).join("")}</td>` : "";
     return `<tr><th class="rowhead">${esc(row)}</th>${cells.join("")}` +
       `<td class="col-count"><span class="count${count ? "" : " zero"}">${count}</span></td>${cavCell}</tr>`;
   }).join("");
@@ -1089,7 +1127,7 @@ function renderMatrix() {
   const totalRow = `<tr class="total"><th class="rowhead">合計</th>` +
     cols.map(c => `<td><span class="count">${totals[c]}</span></td>`).join("") +
     `<td class="col-count"><span class="count">${grand}</span></td>` +
-    (showCav ? `<td class="col-cav"><span class="count">${totals[DATA.cavColumn]}</span></td>` : "") +
+    (showCav ? `<td class="col-cav"><span class="count">${cavTotal}</span></td>` : "") +
     `</tr>`;
 
   document.getElementById("matrix-body").innerHTML = body + totalRow;
@@ -1222,7 +1260,7 @@ document.getElementById("staffChips").addEventListener("click", e => {
   const col = chip.dataset.col;
   const on = chip.getAttribute("aria-pressed") === "true";
   chip.setAttribute("aria-pressed", String(!on));
-  on ? state.cols.delete(col) : state.cols.add(col);
+  for (const m of membersOf(col)) on ? state.cols.delete(m) : state.cols.add(m);
   render();
 });
 document.getElementById("q").addEventListener("input", e => {
@@ -1232,6 +1270,10 @@ document.getElementById("q").addEventListener("input", e => {
 document.getElementById("showDone").addEventListener("change", e => {
   state.showDone = e.target.checked;
   render();
+});
+document.getElementById("groupOther").addEventListener("change", e => {
+  state.groupOther = e.target.checked;
+  renderAll();
 });
 document.getElementById("showOthers").addEventListener("change", e => {
   state.showOthers = e.target.checked;
