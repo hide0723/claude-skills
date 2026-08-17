@@ -10,7 +10,8 @@ HTML ページを組み立てます。
 
 - **行** … 決算月（1月〜12月／個人／給(有)／給(無)）＝カスタムフィールド「決算月」
 - **列** … 担当者＝タスクが属する Asana セクション（＋未割当／CAV）
-- **セル** … 関与先名＋ランクバッジ＋他関与者＝「ランク」「他関与者1」
+- **セル** … 関与先名＋ランクバッジ＋他関与者＝「ランク」「他関与者1」。
+  関与先名は Asana のタスクへのリンク（`permalink_url`、無ければ gid から組む）
 - **件数** … 各決算月行の担当者列の合計（CAV 列と補助業務行「補ー決算／補ー月次」を除く）
 - **合計** … 各列に載る全件数
 
@@ -68,7 +69,7 @@ PDF にするときはブラウザの印刷ダイアログで「PDF に保存」
 # 1. Asana からタスクを書き出す（next_page.offset を辿って全ページ取得する）
 curl -H "Authorization: Bearer $ASANA_TOKEN" \
   "https://app.asana.com/api/1.0/tasks?project=1204361669585488&limit=100&opt_fields=\
-name,completed,created_at,memberships.section.name,custom_fields.name,custom_fields.display_value" \
+name,completed,created_at,permalink_url,memberships.section.name,custom_fields.name,custom_fields.display_value" \
   > page1.json
 
 # 2. HTML を組み立てる
@@ -78,7 +79,7 @@ python3 tools/asana_assignment_list.py page*.json -o 担当一覧表.html --era 
 Claude Code から Asana MCP（`get_tasks`）で取得した JSON もそのまま渡せます。
 `--era` を省略すると実行日から和暦を組み立て、`--synced` を省略すると実行時刻を
 同期日時にします。`created_at` を落とすと新規タブが空になるので、opt_fields に
-必ず入れてください。
+必ず入れてください。`permalink_url` は無くても gid からリンクを組みます。
 
 依存パッケージはありません（Python 3.10 以降の標準ライブラリのみ）。
 

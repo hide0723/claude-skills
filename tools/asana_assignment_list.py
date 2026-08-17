@@ -97,6 +97,14 @@ def section_of(task: dict[str, Any]) -> str | None:
     return None
 
 
+def task_url(task: dict[str, Any]) -> str:
+    """タスクを開く URL。opt_fields に permalink_url が無くても gid から組める。"""
+    if task.get("permalink_url"):
+        return task["permalink_url"]
+    gid = task.get("gid")
+    return f"https://app.asana.com/0/{PROJECT_GID}/{gid}" if gid else ""
+
+
 def normalize(tasks: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
     """Asana タスクを一覧表の 1 セル分のレコードに変換する。
 
@@ -128,6 +136,7 @@ def normalize(tasks: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
                 # 新規関与先を年度で拾うにはこれが一番近い。
                 "created": (task.get("created_at") or "")[:10],
                 "channel": custom_field(task, "契約・紹介チャネル") or "",
+                "url": task_url(task),
             }
         )
     records.sort(key=lambda r: (BASE_ROWS.index(r["row"]) if r["row"] in BASE_ROWS else 99, r["name"]))
@@ -495,8 +504,24 @@ tbody tr.total td { text-align: right; }
 }
 .entry + .entry { border-top: 1px dotted var(--rule); }
 .entry .nm { flex: 0 1 auto; min-width: 0; }
-.entry.is-done .nm { color: var(--done); text-decoration: line-through; text-decoration-thickness: 1px; }
 .entry.is-dim { opacity: .22; }
+
+/* 関与先名は Asana のタスクへのリンク。250 件並ぶので、下線は控えめにしておいて
+   ホバー・フォーカスで確かめられる程度にする。 */
+a.nm {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--seal) 32%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+a.nm:hover {
+  color: var(--seal);
+  text-decoration-color: currentColor;
+}
+.nm.is-done { color: var(--done); text-decoration: line-through; text-decoration-thickness: 1px; }
+a.nm.is-done:hover { color: var(--done); }
 .entry.is-hit .nm { background: color-mix(in srgb, var(--seal) 18%, transparent); border-radius: 2px; }
 .badge {
   flex: none;
@@ -547,7 +572,7 @@ tbody tr.total td { text-align: right; }
   left: 0;
 }
 .sheet[hidden] { display: none; }
-.list-view td.nm { min-width: 240px; }
+.list-view td.namecell { min-width: 240px; }
 td.date { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12px; }
 
 /* ── ダイアログ ───────────────────────── */
@@ -676,6 +701,8 @@ footer b { color: var(--ink-soft); }
   tbody tr { break-inside: avoid; }
   thead th, th.rowhead, thead th.corner { position: static; }
   th, td { border-color: var(--rule); }
+  a.nm { color: inherit; text-decoration: none; }
+  a.nm.is-done { text-decoration: line-through; }
 
   /* マトリクスは 1 ページに収まるよう実測して縮小する（--print-scale は JS が入れる） */
   body:not(.mode-list) .sheet.matrix {
@@ -687,7 +714,7 @@ footer b { color: var(--ink-soft); }
     transform: scale(var(--print-scale, 1));
     transform-origin: top left;
   }
-  body.mode-list td.nm { white-space: normal; }
+  body.mode-list td.namecell { white-space: normal; }
 }
 </style>
 
@@ -755,6 +782,7 @@ footer b { color: var(--ink-soft); }
     <b>合計</b>＝各列に載る全件数。<br>
     出典は Asana プロジェクト「40.税務業務：契約・提案用」のタスクと、カスタムフィールド「決算月」「ランク」「他関与者1」。
     列はタスクが属するセクション（担当者）。書式は SharePoint「30.担当一覧表」の月次 Excel に合わせています。<br>
+    <b>関与先名</b>を押すと Asana のタスクが別のタブで開きます。<br>
     <b>新規タブ</b>の「登録日」は Asana にタスクが登録された日です。Asana に契約開始日の項目がないため、
     これを新規関与先の目安にしています。解約済の先を含めるには「解約・完了済を表示」を入れてください。<br>
     <span class="print-note">絞り込んだ状態のまま印刷しています。担当一覧表は A3 横 1 枚、その他のタブは A4 縦。</span>
@@ -872,6 +900,7 @@ function normalizeTasks(tasks) {
       done: !!t.completed,
       created: String(t.created_at || "").slice(0, 10),
       channel: cf("契約・紹介チャネル") || "",
+      url: t.permalink_url || (t.gid ? `https://app.asana.com/0/${DATA.projectGid}/${t.gid}` : ""),
     });
   }
   const idx = r => {
@@ -947,13 +976,26 @@ function activeRecords() {
   );
 }
 
+/* 関与先名は Asana のタスクへのリンク。permalink_url が取れていない古い書き出し
+   では url が空になるので、そのときは素の文字として出す。 */
+function nameHTML(rec) {
+  const cls = "nm" + (rec.done ? " is-done" : "");
+  const label = esc(rec.name);
+  return rec.url
+    ? `<a class="${cls}" href="${esc(rec.url)}" target="_blank" rel="noopener" title="Asana のタスクを開く：${label}">${label}</a>`
+    : `<span class="${cls}">${label}</span>`;
+}
+
+function badgeHTML(rank) {
+  return rank ? `<span class="badge ${rankClass(rank)}">${esc(rank)}</span>` : "";
+}
+
 function entryHTML(rec) {
   const hit = state.query && rec.name.toLowerCase().includes(state.query);
   const dim = state.query && !hit;
-  const cls = ["entry", rec.done ? "is-done" : "", hit ? "is-hit" : "", dim ? "is-dim" : ""].filter(Boolean).join(" ");
+  const cls = ["entry", hit ? "is-hit" : "", dim ? "is-dim" : ""].filter(Boolean).join(" ");
   const others = rec.others ? `<span class="others">＋${esc(rec.others)}</span>` : "";
-  const badge = rec.rank ? `<span class="badge ${rankClass(rec.rank)}">${esc(rec.rank)}</span>` : "";
-  return `<div class="${cls}"><span class="nm">${esc(rec.name)}</span>${badge}${others}</div>`;
+  return `<div class="${cls}">${nameHTML(rec)}${badgeHTML(rec.rank)}${others}</div>`;
 }
 
 function renderMatrix() {
@@ -1000,9 +1042,9 @@ function renderMatrix() {
 
 function listRowHTML(r) {
   return `<tr><th class="rowhead">${esc(r.row)}</th>` +
-    `<td class="nm${r.done ? " is-done" : ""}">${esc(r.name)}</td>` +
+    `<td class="namecell">${nameHTML(r)}</td>` +
     `<td>${esc(r.col)}</td>` +
-    `<td>${r.rank ? `<span class="badge ${rankClass(r.rank)}">${esc(r.rank)}</span>` : ""}</td>` +
+    `<td>${badgeHTML(r.rank)}</td>` +
     `<td><span class="others">${esc(r.others)}</span></td></tr>`;
 }
 
@@ -1039,9 +1081,9 @@ function renderNew() {
     ? recs.map(r =>
         `<tr><td class="date">${esc(r.created)}</td>` +
         `<th class="rowhead">${esc(r.row)}</th>` +
-        `<td class="nm${r.done ? " is-done" : ""}">${esc(r.name)}</td>` +
+        `<td class="namecell">${nameHTML(r)}</td>` +
         `<td>${esc(r.col)}</td>` +
-        `<td>${r.rank ? `<span class="badge ${rankClass(r.rank)}">${esc(r.rank)}</span>` : ""}</td>` +
+        `<td>${badgeHTML(r.rank)}</td>` +
         `<td><span class="others">${esc(r.channel)}</span></td></tr>`
       ).join("")
     : `<tr><td colspan="6"><p class="empty">該当する関与先はありません。</p></td></tr>`;
