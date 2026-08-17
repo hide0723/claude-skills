@@ -136,6 +136,7 @@ def normalize(tasks: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
                 # 新規関与先を年度で拾うにはこれが一番近い。
                 "created": (task.get("created_at") or "")[:10],
                 "channel": custom_field(task, "契約・紹介チャネル") or "",
+                "fee": custom_field(task, "契約報酬額（年額）") or "",
                 "url": task_url(task),
             }
         )
@@ -173,8 +174,8 @@ TEMPLATE = r"""<title>担当一覧表</title>
   --paper: #f4f6f8;
   --card: #ffffff;
   --card-alt: #f8fafb;
-  --stripe: #eef2f6;
-  --stripe-strong: #e4eaf1;
+  --stripe: #e3eaf2;
+  --stripe-strong: #d3dde8;
   --ink: #16202b;
   --ink-soft: #4a5765;
   --ink-faint: #7d8b99;
@@ -210,8 +211,8 @@ TEMPLATE = r"""<title>担当一覧表</title>
     --paper: #11161c;
     --card: #171e26;
     --card-alt: #1c242e;
-    --stripe: #1b232c;
-    --stripe-strong: #202a35;
+    --stripe: #232e3a;
+    --stripe-strong: #2c3a48;
     --ink: #e7edf3;
     --ink-soft: #a9b6c4;
     --ink-faint: #78879a;
@@ -237,8 +238,8 @@ TEMPLATE = r"""<title>担当一覧表</title>
   --paper: #11161c;
   --card: #171e26;
   --card-alt: #1c242e;
-  --stripe: #1b232c;
-  --stripe-strong: #202a35;
+  --stripe: #232e3a;
+  --stripe-strong: #2c3a48;
   --ink: #e7edf3;
   --ink-soft: #a9b6c4;
   --ink-faint: #78879a;
@@ -542,7 +543,6 @@ tbody tr.total td { text-align: right; }
   white-space: normal;
   overflow-wrap: anywhere;
 }
-.entry + .entry { border-top: 1px dotted var(--rule); }
 .entry .nm { flex: 0 1 auto; min-width: 0; }
 /* 括弧書きを 2 行目に送るのはマトリクスだけ。一覧側は名前の列が広いので
    1 行のまま出す。 */
@@ -632,6 +632,12 @@ body.no-others .rec-table td:last-child { display: none; }
 .sheet[hidden] { display: none; }
 .list-view td.namecell { min-width: 240px; }
 td.date { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12px; }
+th.col-yen, td.col-yen {
+  text-align: right;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 
 /* ── ダイアログ ───────────────────────── */
 dialog {
@@ -710,8 +716,8 @@ footer b { color: var(--ink-soft); }
     --paper: #ffffff;
     --card: #ffffff;
     --card-alt: #ffffff;
-    --stripe: #f0f0f0;
-    --stripe-strong: #e6e6e6;
+    --stripe: #e6e6e6;
+    --stripe-strong: #d8d8d8;
     --ink: #000000;
     --ink-soft: #333333;
     --ink-faint: #555555;
@@ -830,7 +836,7 @@ footer b { color: var(--ink-soft); }
     <div class="sheet new-view" id="view-new" role="tabpanel" hidden>
       <p class="caption" id="newCaption"></p>
       <table id="newTable">
-        <thead><tr><th>登録日</th><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th><th>紹介チャネル</th></tr></thead>
+        <thead><tr><th>登録日</th><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th><th class="col-yen">年間報酬額</th><th>紹介チャネル</th></tr></thead>
         <tbody id="new-body"></tbody>
       </table>
     </div>
@@ -842,7 +848,8 @@ footer b { color: var(--ink-soft); }
     出典は Asana プロジェクト「40.税務業務：契約・提案用」のタスクと、カスタムフィールド「決算月」「ランク」「他関与者1」。
     列はタスクが属するセクション（担当者）。書式は SharePoint「30.担当一覧表」の月次 Excel に合わせています。<br>
     <b>関与先名</b>を押すと Asana のタスクが別のタブで開きます。<br>
-    <b>新規タブ</b>の「登録日」は Asana にタスクが登録された日です。Asana に契約開始日の項目がないため、
+    <b>新規タブ</b>の「年間報酬額」は Asana の「契約報酬額（年額）」、
+    「登録日」は Asana にタスクが登録された日です。Asana に契約開始日の項目がないため、
     これを新規関与先の目安にしています。解約済の先を含めるには「解約・完了済を表示」を入れてください。<br>
     <b>印刷</b>は画面に出ている絞り込みのまま。担当一覧表タブは A3 横 1 枚、その他のタブは A4 縦。
     集計とこの注記は刷りません。
@@ -894,6 +901,7 @@ const NO_RANK = "―";
 const MONTHS = DATA.baseRows.slice(0, 12);
 
 const rankClass = r => "rank-" + (RANK_CLASS[r] || "none");
+const yen = v => Number(v) ? Number(v).toLocaleString("ja-JP") : (v === "0" ? "0" : "—");
 const rankOrder = r => [RANK_ORDER[r] === undefined ? 9 : RANK_ORDER[r], r];
 const SUPPLEMENT = new Set(DATA.supplementRanks);
 const ALL_COLUMNS = DATA.columns.concat([DATA.cavColumn]);
@@ -983,6 +991,7 @@ function normalizeTasks(tasks) {
       done: !!t.completed,
       created: String(t.created_at || "").slice(0, 10),
       channel: cf("契約・紹介チャネル") || "",
+      fee: cf("契約報酬額（年額）") || "",
       url: t.permalink_url || (t.gid ? `https://app.asana.com/0/${DATA.projectGid}/${t.gid}` : ""),
     });
   }
@@ -1180,8 +1189,12 @@ function renderNew() {
   const year = Number(state.tab.replace("new", ""));
   if (!year) return;
   const recs = newRecords(year);
+  const total = recs.reduce((sum, r) => sum + (Number(r.fee) || 0), 0);
+  const priced = recs.filter(r => r.fee !== "").length;  // 0 円も「入っている」扱い
   document.getElementById("newCaption").textContent =
     `${wareki(year)}中に Asana に登録された関与先 ${recs.length} 件（登録日順）。` +
+    `年間報酬額の合計 ${total.toLocaleString("ja-JP")} 円` +
+    (priced < recs.length ? `（金額が入っているのは ${priced} 件）` : "") + "。" +
     `CAV他関与と補助業務行「補ー決算／補ー月次」は除いています。`;
   document.getElementById("new-body").innerHTML = recs.length
     ? recs.map(r =>
@@ -1190,9 +1203,10 @@ function renderNew() {
         `<td class="namecell">${nameHTML(r)}</td>` +
         `<td>${esc(r.col)}</td>` +
         `<td>${badgeHTML(r.rank)}</td>` +
+        `<td class="col-yen">${yen(r.fee)}</td>` +
         `<td><span class="others">${esc(r.channel)}</span></td></tr>`
       ).join("")
-    : `<tr><td colspan="6"><p class="empty">該当する関与先はありません。</p></td></tr>`;
+    : `<tr><td colspan="7"><p class="empty">該当する関与先はありません。</p></td></tr>`;
 }
 
 /* ── タブ ── */
