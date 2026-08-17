@@ -619,8 +619,12 @@ tbody tr.total td { text-align: right; }
 /* 括弧書きを 2 行目に送るのはマトリクスだけ。一覧側は名前の列が広いので
    1 行のまま出す。 */
 #matrix .nm-sub { display: block; }
-/* 印刷前に紙と同じ組み方で実測するための一時クラス（preparePrint が付け外しする）。 */
+/* 印刷前に紙と同じ組み方で実測するための一時クラス（preparePrint が付け外しする）。
+   @media print 側と同じ値を当てておかないと、余白の見積もりがずれる。 */
 body.measuring-print .entry { max-width: var(--entry-cap-print); }
+body.measuring-print .wrap { gap: 10px; }
+body.measuring-print .masthead { padding-bottom: 8px; }
+body.measuring-print .masthead h1 { font-size: 24px; }
 .entry.is-dim { opacity: .22; }
 
 /* 関与先名は Asana のタスクへのリンク。250 件並ぶので、下線は控えめにしておいて
@@ -871,6 +875,7 @@ footer b { color: var(--ink-soft); }
     overflow: hidden;
   }
   body:not(.mode-list) #matrix {
+    width: var(--pt-tw, max-content);
     transform: scale(var(--print-scale, 1));
     transform-origin: top left;
   }
@@ -1712,25 +1717,53 @@ function preparePrint() {
   pageStyle.textContent = "@page { size: A3 landscape; margin: 10mm; }";
   const sheet = document.querySelector(".sheet.matrix");
   const table = document.getElementById("matrix");
+  const root = document.documentElement;
 
-  // 紙では画面より広いセル幅を使うので、その組み方に一度切り替えてから測る。
-  // scrollWidth の読み出しでレイアウトが確定するため、この場で正しい値が取れる。
   document.body.classList.add("measuring-print");
-  const w = table.scrollWidth, h = table.scrollHeight;
-  document.body.classList.remove("measuring-print");
 
-  // 紙に載るのは表題と表だけ（集計と注記は刷らない）。表題が使う高さを差し引いた
-  // 残りに表を収める。画面表示の実測なので、印刷時より大きめに出るぶん縮小率は
-  // 安全側に振れる。
+  // 紙に載るのは表題と表だけ（集計と注記は刷らない）。A3 横 420×297mm から
+  // 余白 10mm×2 を引いた領域から、表題ぶんを差し引いた残りが表の取り分。
   const box = el => el ? el.getBoundingClientRect().height : 0;
   const gap = parseFloat(getComputedStyle(document.querySelector(".wrap")).rowGap) || 0;
-  const reserve = box(document.querySelector(".masthead")) + gap;
+  const availW = 400 * MM;
+  const availH = Math.max(200, 277 * MM - box(document.querySelector(".masthead")) - gap);
 
-  // A3 横 420×297mm から余白 10mm×2 を引いた印刷可能域
-  const scale = Math.min(1, (400 * MM) / w, Math.max(0.2, 277 * MM - reserve) / h);
-  sheet.style.setProperty("--print-scale", scale);
-  sheet.style.setProperty("--pt-w", w + "px");
-  sheet.style.setProperty("--pt-h", h + "px");
+  // 表をどの幅で組むと一番大きく刷れるかを探す。幅を詰めると折り返しが増えて
+  // 縦に伸び、広げると縦に縮む。倍率は min(横の余裕/幅, 縦の余裕/高さ) なので、
+  // 表の縦横比が紙の縦横比に一致したところが最大になる。幅に対して単調なので
+  // 二分探索でその点を挟み込む。片方だけ決め打ちにすると右か下が余る。
+  root.style.setProperty("--entry-cap-print", "24em");
+  table.style.width = "";
+
+  let best = null;
+  const at = width => {
+    // width が null のときは幅を指定しない自然な組み方。幅を明示すると列に余りが
+    // 配られて折り返し方が変わることがあるので、この状態も候補に入れておく。
+    table.style.width = width === null ? "" : width + "px";
+    const w = table.scrollWidth, h = table.scrollHeight;
+    const scale = Math.min(1, availW / w, availH / h);
+    if (!best || scale > best.scale) best = {w, h, scale, css: width === null ? "max-content" : width + "px"};
+    return availW / w - availH / h;   // 正なら高さが、負なら幅が効いている
+  };
+
+  at(null);
+  let hi = table.scrollWidth;          // 折り返さずに組んだときの幅
+  let lo = Math.max(320, Math.round(hi * 0.3));
+  at(hi);
+  if (at(lo) > 0) {
+    for (let i = 0; i < 9 && hi - lo > 8; i++) {
+      const mid = Math.round((lo + hi) / 2);
+      if (at(mid) > 0) lo = mid; else hi = mid;
+    }
+  }
+
+  table.style.width = "";
+  document.body.classList.remove("measuring-print");
+
+  sheet.style.setProperty("--print-scale", best.scale);
+  sheet.style.setProperty("--pt-w", best.w + "px");
+  sheet.style.setProperty("--pt-h", best.h + "px");
+  sheet.style.setProperty("--pt-tw", best.css);
 }
 
 window.addEventListener("beforeprint", preparePrint);
