@@ -631,7 +631,7 @@ def main() -> None:
     )
 
     n_levels = len(LEVELS)
-    doc = f"""<title>✏職階別の期待職能</title>
+    doc = f"""<title>【仕事】職階別の期待職能</title>
 <style>{CSS}</style>
 
 <div class="topbar" id="topbar">
@@ -646,7 +646,7 @@ def main() -> None:
 <section class="slide" id="cover" data-label="表紙" style="--rank:var(--r-doc)">
   <div class="inner cover">
     <p class="kicker">税理士法人福田会計</p>
-    <h1>✏職階別の期待職能</h1>
+    <h1>【仕事】職階別の期待職能</h1>
     <p class="sub">何を期待され、どう測られるか</p>
     <p class="src">作成経緯：<a href="{SESSION_URL}">Claude Code セッション</a></p>
     <p class="note">横にスワイプすると職階が移ります。並びは下から上（{esc(order[0]["title"])} → {esc(order[-1]["title"])}）。上のチップからも飛べます。</p>
