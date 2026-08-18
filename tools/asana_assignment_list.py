@@ -157,6 +157,10 @@ def normalize(tasks: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
                 "created": (task.get("created_at") or "")[:10],
                 "channel": custom_field(task, "契約・紹介チャネル") or "",
                 "fee": custom_field(task, "契約報酬額（年額）") or "",
+                # 契約報酬のうち所長ぶん・所内の他関与者ぶん。符号は入力によって
+                # まちまちなので、表示側で絶対値にして扱う。
+                "boss": custom_field(task, "▲所長の関与日数×5万円") or "",
+                "inhouse": custom_field(task, "▲所内関与日数×3万円") or "",
                 # 添付の件数と、顧問契約書らしき添付の有無。未取得なら None。
                 "att": att_count,
                 "contract": has_contract,
@@ -736,6 +740,7 @@ th.sum-label { text-align: left; white-space: nowrap; }
 .chg-from { color: var(--ink-faint); text-decoration: line-through; text-decoration-thickness: 1px; }
 .chg-arrow { color: var(--ink-faint); font-size: 11px; }
 .chg-to { font-weight: 600; }
+td.col-yen.pct { color: var(--ink-soft); }
 th.col-yen, td.col-yen {
   text-align: right;
   font-family: var(--mono);
@@ -879,7 +884,12 @@ footer b { color: var(--ink-soft); }
     transform: scale(var(--print-scale, 1));
     transform-origin: top left;
   }
-  body.mode-list td.namecell { white-space: normal; }
+  body.mode-list td.namecell { white-space: normal; min-width: 0; }
+  /* マトリクス以外のタブは列数が多く、そのままだと A4 の刷り幅を超える。
+     紙の上では少し詰めて刷る。 */
+  body.mode-list table { font-size: 11px; }
+  body.mode-list th, body.mode-list td { padding: 3px 6px; }
+  body.mode-list .caption { font-size: 9.5px; padding: 6px 8px; }
 }
 </style>
 
@@ -933,7 +943,11 @@ footer b { color: var(--ink-soft); }
 
     <div class="sheet list-view" id="view-list" role="tabpanel" hidden>
       <table id="list" class="rec-table">
-        <thead><tr><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th><th>他関与者</th></tr></thead>
+        <thead><tr><th>決算月</th><th>関与先名</th><th>担当</th><th>ランク</th>
+          <th class="col-yen">年間報酬額</th>
+          <th class="col-yen">所長</th><th class="col-yen">所長割合</th>
+          <th class="col-yen">他関与者</th><th class="col-yen">他関与者割合</th>
+          <th>他関与者(名前)</th></tr></thead>
         <tbody id="list-body"></tbody>
       </table>
     </div>
@@ -969,8 +983,8 @@ footer b { color: var(--ink-soft); }
     <b>新規タブ</b>の「年間報酬額」は Asana の「契約報酬額（年額）」、
     「登録日」は Asana にタスクが登録された日です。Asana に契約開始日の項目がないため、
     これを新規関与先の目安にしています。解約済の先を含めるには「解約・完了済を表示」を入れてください。<br>
-    <b>印刷</b>は画面に出ている絞り込みのまま。担当一覧表タブは A3 横 1 枚、その他のタブは A4 縦。
-    集計とこの注記は刷りません。
+    <b>印刷</b>は画面に出ている絞り込みのまま。担当一覧表タブは A3 横 1 枚、一覧タブは A4 横、
+    その他のタブは A4 縦。集計とこの注記は刷りません。
   </footer>
 </div>
 
@@ -1113,6 +1127,8 @@ function normalizeTasks(tasks) {
       created: String(t.created_at || "").slice(0, 10),
       channel: cf("契約・紹介チャネル") || "",
       fee: cf("契約報酬額（年額）") || "",
+      boss: cf("▲所長の関与日数×5万円") || "",
+      inhouse: cf("▲所内関与日数×3万円") || "",
       att: t.attachments ? t.attachments.length : null,
       contract: t.attachments
         ? t.attachments.some(a => CONTRACT_PATTERN.test((a && a.name) || ""))
@@ -1280,17 +1296,35 @@ function renderMatrix() {
   document.getElementById("matrix-body").innerHTML = body + totalRow;
 }
 
-function listRowHTML(r) {
+/* 契約報酬のうち所長ぶん・他関与者ぶんと、その割合。符号は入力によってまちまち
+   なので絶対値で見る。未入力は「—」、0 は 0 として出す。 */
+function shareCells(r) {
+  const fee = Number(r.fee) || 0;
+  const pair = v => {
+    if (v === "" || v === null || v === undefined) return ["—", "—"];
+    const n = Math.abs(Number(v) || 0);
+    return [n.toLocaleString("ja-JP"), fee ? (n / fee * 100).toFixed(1) + "%" : "—"];
+  };
+  const [boss, bossPct] = pair(r.boss);
+  const [inhouse, inhousePct] = pair(r.inhouse);
+  return `<td class="col-yen">${yen(r.fee)}</td>` +
+    `<td class="col-yen">${boss}</td><td class="col-yen pct">${bossPct}</td>` +
+    `<td class="col-yen">${inhouse}</td><td class="col-yen pct">${inhousePct}</td>`;
+}
+
+/* wide は一覧タブ用。ドリルダウンは幅が狭いので配分の列を出さない。 */
+function listRowHTML(r, wide) {
   return `<tr><th class="rowhead">${esc(r.row)}</th>` +
     `<td class="namecell">${nameHTML(r)}</td>` +
     `<td>${esc(r.col)}</td>` +
     `<td>${badgeHTML(r.rank)}</td>` +
+    (wide ? shareCells(r) : "") +
     `<td><span class="others">${esc(r.others)}</span></td></tr>`;
 }
 
 function renderList() {
   const recs = activeRecords().filter(r => !state.query || r.name.toLowerCase().includes(state.query));
-  document.getElementById("list-body").innerHTML = recs.map(listRowHTML).join("");
+  document.getElementById("list-body").innerHTML = recs.map(r => listRowHTML(r, true)).join("");
 }
 
 /* ── 新規関与先タブ ── */
@@ -1711,7 +1745,9 @@ document.head.appendChild(pageStyle);
 
 function preparePrint() {
   if (document.body.classList.contains("mode-list")) {
-    pageStyle.textContent = "@page { size: A4 portrait; margin: 12mm; }";
+    // 一覧タブは報酬の配分まで並ぶので A4 縦には収まらない。ここだけ横向き。
+    const size = state.tab === "list" ? "A4 landscape" : "A4 portrait";
+    pageStyle.textContent = `@page { size: ${size}; margin: 12mm; }`;
     return;
   }
   pageStyle.textContent = "@page { size: A3 landscape; margin: 10mm; }";
