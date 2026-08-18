@@ -505,3 +505,66 @@ def flag_of(item):
     if isinstance(item, tuple):
         return item[0], item[1]
     return item, None
+
+
+# ---- グレード表（31グレード） --------------------------------------------
+#
+# (記号, 直下職階の基本給上限, 1グレードあたりの昇給幅, グレード数)。
+# グレード n の基本給レンジは「上限 + 幅×(n-1) + 1 円 〜 上限 + 幅×n 円」。
+# 「グレード制度_基本給テーブル_福田会計」と一致させること。
+GRADE_BANDS = [
+    ("EP", 810_000, 30_000, 3),
+    ("P", 720_000, 30_000, 3),
+    ("SD", 630_000, 30_000, 3),
+    ("D", 540_000, 30_000, 3),
+    ("SM", 450_000, 30_000, 3),
+    ("M", 360_000, 30_000, 3),
+    ("SS", 270_000, 15_000, 6),
+    ("S", 180_000, 15_000, 6),
+    ("T", 0, 180_000, 1),
+]
+
+# 期待売上高＝基本給上限 × 2 × 1.3 × 1.15 × 14。整数演算のため 2093/50 で持つ。
+REVENUE_NUM, REVENUE_DEN = 2093, 50
+
+
+def expected_revenue(cap):
+    """基本給上限（円）から年間の期待売上高を出す。
+
+    円額は千円未満切上、万円表示は四捨五入。levels.py の各職階の
+    "revenue" と一致する。戻り値は (円, "3,767" のような万円表記)。
+    """
+    yen = cap * REVENUE_NUM // REVENUE_DEN
+    if cap * REVENUE_NUM % REVENUE_DEN:
+        yen += 1
+    yen = -(-yen // 1000) * 1000
+    man = (yen + 5_000) // 10_000
+    return yen, f"{man:,}"
+
+
+def grade_rows():
+    """31グレードを上（EP3）から下（T1）へ1行ずつ返す。"""
+    by_sym = {lv["sym"]: lv for lv in LEVELS}
+    rows = []
+    for sym, base, step, n in GRADE_BANDS:
+        lv = by_sym[sym]
+        who = {}
+        for name, g in lv["roster"]:
+            who.setdefault(g.split("・")[0], []).append(name)
+        for i in range(n, 0, -1):
+            low, high = base + step * (i - 1), base + step * i
+            code = f"{sym}{i}"
+            rows.append(
+                {
+                    "sym": sym,
+                    "code": code,
+                    "level": lv,
+                    "low": low + 1 if low else None,  # T1 は下限なし
+                    "high": high,
+                    "revenue": expected_revenue(high)[1],
+                    "roster": who.get(code, []),
+                    "entry": i == 1,  # その職階の入口グレード
+                    "first": i == n,  # 表の中でその職階の先頭に出る行
+                }
+            )
+    return rows

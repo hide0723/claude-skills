@@ -5,7 +5,8 @@
 使い方: python3 build_md.py  → 職階別の期待職能.md
 """
 
-from levels import DECISIONS, LEVELS, NOTES, RULES, VERSION, flag_of, is_prov
+from levels import (DECISIONS, LEVELS, NOTES, RULES, VERSION, flag_of,
+                    grade_rows, is_prov)
 
 OUT = "職階別の期待職能.md"
 
@@ -67,6 +68,26 @@ def level_section(lv):
     return "\n".join(out)
 
 
+def grade_table():
+    """31グレードを1行ずつ並べた表。上（EP3）から下（T1）へ。"""
+    out = [
+        "| グレード | 職階 | 基本給レンジ（月額） | 期待売上高（年間） | 在籍 |",
+        "|---|---|---|---|---|",
+    ]
+    for r in grade_rows():
+        pay = (
+            f"〜{r['high']:,}円"
+            if r["low"] is None
+            else f"{r['low']:,}〜{r['high']:,}円"
+        )
+        who = "／".join(r["roster"])
+        out.append(
+            f"| **{r['code']}** | {r['level']['title']} | {pay} "
+            f"| {r['revenue']}万円 | {who} |"
+        )
+    return out
+
+
 def main() -> None:
     p = []
     p += [
@@ -111,6 +132,19 @@ def main() -> None:
         "",
         "※ 期待売上高＝基本給上限 × 2 × 1.3 × 1.15 × 14（千円未満切上）。"
         "「グレード制度 基本給テーブル」と一致。",
+        "",
+        "---",
+        "",
+        "## 1-2. グレード表（全31グレード）",
+        "",
+        "基本給レンジは月額、期待売上高は年間。上ほど上位。",
+        "",
+    ]
+    p += grade_table()
+    p += [
+        "",
+        "各職階の「昇格の条件」は職階をまたぐときの判定。"
+        "同じ職階の中のグレード上げ（例：S3→S4）の基準は、この表にはまだない。",
         "",
         "---",
         "",

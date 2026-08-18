@@ -11,7 +11,8 @@
 import html as _html
 
 from atc_map import ATC_TOPICS, LINKS
-from levels import DECISIONS, LEVELS, RULES, VERSION, flag_of, is_prov
+from levels import (DECISIONS, LEVELS, RULES, VERSION, flag_of, grade_rows,
+                    is_prov)
 
 OUT = "職階別の期待職能.html"
 
@@ -285,6 +286,51 @@ CSS = """
     margin:2.2rem 0 0;font-family:var(--mono);font-size:.72rem;
     color:var(--ink-3);letter-spacing:.1em;
   }
+
+  /* ---- グレード表 ---- */
+  .tbl-wrap{
+    overflow-x:auto;margin:1.2rem 0 0;
+    border:1px solid var(--rule);background:var(--surface);
+  }
+  table.gradetbl{
+    border-collapse:collapse;width:100%;min-width:28rem;font-size:.84rem;
+  }
+  table.gradetbl th,table.gradetbl td{
+    padding:.34rem .6rem;border-bottom:1px solid var(--rule-soft);
+    text-align:left;white-space:nowrap;
+  }
+  table.gradetbl thead th{
+    position:sticky;top:0;z-index:1;background:var(--surface-2);
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.11em;
+    color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--rule);
+  }
+  table.gradetbl thead th.num{text-align:right;}
+  table.gradetbl tr.band th{
+    background:var(--rank);color:#14203A;white-space:normal;
+    font-family:var(--gothic);font-size:.8rem;font-weight:600;letter-spacing:.04em;
+  }
+  table.gradetbl tr.band.on-dark th{color:#FFFFFF;}
+  :root[data-theme="dark"] table.gradetbl tr.band th,
+  :root[data-theme="dark"] table.gradetbl tr.band.on-dark th{color:#0D111C;}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) table.gradetbl tr.band th,
+    :root:not([data-theme="light"]) table.gradetbl tr.band.on-dark th{color:#0D111C;}
+  }
+  table.gradetbl tr.band th .g{
+    font-family:var(--mono);font-size:.64rem;font-weight:400;
+    opacity:.72;margin-left:.55rem;
+  }
+  table.gradetbl td.code{
+    font-family:var(--mono);font-weight:700;font-size:.78rem;color:var(--ink);
+  }
+  table.gradetbl td.num{
+    font-family:var(--mono);font-variant-numeric:tabular-nums;
+    text-align:right;color:var(--ink-2);letter-spacing:-.01em;
+  }
+  table.gradetbl td.num i{font-style:normal;color:var(--ink-3);font-size:.9em;}
+  table.gradetbl tr.here td{background:var(--flag-soft);}
+  table.gradetbl td.who{font-size:.76rem;color:var(--ink-2);white-space:normal;}
+  table.gradetbl td.who b{font-weight:600;color:var(--ink);}
 
   /* ---- rules / decisions slides ---- */
   .slide h2.sec{
@@ -572,11 +618,55 @@ def level_slide(lv):
     return "\n".join(o)
 
 
+def grade_table():
+    """31グレードを1行ずつ並べた表。上（EP3）から下（T1）へ。"""
+    o = [
+        '<div class="tbl-wrap">',
+        '<table class="gradetbl">',
+        "  <thead><tr>"
+        "<th>グレード</th>"
+        '<th class="num">基本給レンジ（月額）</th>'
+        '<th class="num">期待売上高（年間）</th>'
+        "<th>在籍</th>"
+        "</tr></thead>",
+        "  <tbody>",
+    ]
+    for r in grade_rows():
+        lv = r["level"]
+        if r["first"]:
+            dark = " on-dark" if r["sym"] in LIGHT_TEXT_ON_BAND else ""
+            o.append(
+                f'    <tr class="band{dark}" style="--rank:var(--r-{SLUG[r["sym"]]})">'
+                f'<th colspan="4">{esc(lv["sym"])}｜{esc(lv["title"])}　'
+                f'{esc(lv["theme"])}'
+                f'<span class="g">入口の目安 {esc(lv["entry"])}</span></th></tr>'
+            )
+        pay = (
+            f'<i>〜</i>{r["high"]:,}'
+            if r["low"] is None
+            else f'{r["low"]:,}<i>〜</i>{r["high"]:,}'
+        )
+        who = "／".join(f"<b>{esc(n)}</b>" for n in r["roster"])
+        here = ' class="here"' if r["roster"] else ""
+        o.append(
+            f"    <tr{here}>"
+            f'<td class="code">{esc(r["code"])}</td>'
+            f'<td class="num">{pay} <i>円</i></td>'
+            f'<td class="num">{r["revenue"]} <i>万円</i></td>'
+            f'<td class="who">{who}</td></tr>'
+        )
+    o += ["  </tbody>", "</table>", "</div>"]
+    return "\n".join(o)
+
+
 def main() -> None:
     order = list(reversed(LEVELS))  # 下位から上位へ
 
     # チップの並びはスライドの並びと一致させる
-    chips = ['<li><a href="#cover">表紙</a></li>']
+    chips = [
+        '<li><a href="#cover">表紙</a></li>',
+        '<li><a href="#grades">グレード表</a></li>',
+    ]
     chips += [
         f'<li><a href="#{SLUG[lv["sym"]]}">{esc(nav_label(lv))}</a></li>'
         for lv in order
@@ -586,6 +676,8 @@ def main() -> None:
         '<li><a href="#rules">運用ルール</a></li>',
         '<li><a href="#decide">要決定</a></li>',
     ]
+
+    grades_tbl = grade_table()
 
     rules = []
     for r in RULES:
@@ -649,7 +741,7 @@ def main() -> None:
     <h1>【仕事】職階別の期待職能</h1>
     <p class="sub">何を期待され、どう測られるか</p>
     <p class="src">作成経緯：<a href="{SESSION_URL}">Claude Code セッション</a></p>
-    <p class="note">横にスワイプすると職階が移ります。並びは下から上（{esc(order[0]["title"])} → {esc(order[-1]["title"])}）。上のチップからも飛べます。</p>
+    <p class="note">次はグレード表（全31グレード）、その先が職階ごとのスライドです。並びは下から上（{esc(order[0]["title"])} → {esc(order[-1]["title"])}）。横にスワイプするか、上のチップから飛べます。</p>
     <p class="note">研究生（T1）が入口です。試用期間中もこの職階を見てください。</p>
     <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は最後のスライドに対応します。</p>
     <div class="meta">
@@ -658,6 +750,15 @@ def main() -> None:
       <span>全{n_levels}段階 / 31グレード</span>
     </div>
     <p class="swipe">SWIPE →</p>
+  </div>
+</section>
+
+<section class="slide" id="grades" data-label="グレード表" style="--rank:var(--r-doc)">
+  <div class="inner">
+    <h2 class="sec">グレード表</h2>
+    <p class="lead">全31グレード。上ほど上位です。基本給レンジは月額、期待売上高は年間で、いずれも「グレード制度 基本給テーブル」と一致します。色の付いた行に現在の在籍者がいます。</p>
+{grades_tbl}
+    <p class="lead" style="margin-top:1.2rem">期待売上高＝そのグレードの基本給上限 × 2 × 1.3 × 1.15 × 14（千円未満切上）。各職階の「昇格の条件」は職階をまたぐときの判定です。同じ職階の中のグレード上げ（例：S3→S4）の基準は、この表にはまだありません。</p>
   </div>
 </section>
 

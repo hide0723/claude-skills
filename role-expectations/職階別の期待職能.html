@@ -261,6 +261,51 @@
     color:var(--ink-3);letter-spacing:.1em;
   }
 
+  /* ---- グレード表 ---- */
+  .tbl-wrap{
+    overflow-x:auto;margin:1.2rem 0 0;
+    border:1px solid var(--rule);background:var(--surface);
+  }
+  table.gradetbl{
+    border-collapse:collapse;width:100%;min-width:28rem;font-size:.84rem;
+  }
+  table.gradetbl th,table.gradetbl td{
+    padding:.34rem .6rem;border-bottom:1px solid var(--rule-soft);
+    text-align:left;white-space:nowrap;
+  }
+  table.gradetbl thead th{
+    position:sticky;top:0;z-index:1;background:var(--surface-2);
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.11em;
+    color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--rule);
+  }
+  table.gradetbl thead th.num{text-align:right;}
+  table.gradetbl tr.band th{
+    background:var(--rank);color:#14203A;white-space:normal;
+    font-family:var(--gothic);font-size:.8rem;font-weight:600;letter-spacing:.04em;
+  }
+  table.gradetbl tr.band.on-dark th{color:#FFFFFF;}
+  :root[data-theme="dark"] table.gradetbl tr.band th,
+  :root[data-theme="dark"] table.gradetbl tr.band.on-dark th{color:#0D111C;}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) table.gradetbl tr.band th,
+    :root:not([data-theme="light"]) table.gradetbl tr.band.on-dark th{color:#0D111C;}
+  }
+  table.gradetbl tr.band th .g{
+    font-family:var(--mono);font-size:.64rem;font-weight:400;
+    opacity:.72;margin-left:.55rem;
+  }
+  table.gradetbl td.code{
+    font-family:var(--mono);font-weight:700;font-size:.78rem;color:var(--ink);
+  }
+  table.gradetbl td.num{
+    font-family:var(--mono);font-variant-numeric:tabular-nums;
+    text-align:right;color:var(--ink-2);letter-spacing:-.01em;
+  }
+  table.gradetbl td.num i{font-style:normal;color:var(--ink-3);font-size:.9em;}
+  table.gradetbl tr.here td{background:var(--flag-soft);}
+  table.gradetbl td.who{font-size:.76rem;color:var(--ink-2);white-space:normal;}
+  table.gradetbl td.who b{font-weight:600;color:var(--ink);}
+
   /* ---- rules / decisions slides ---- */
   .slide h2.sec{
     font-family:var(--mincho);font-size:1.7rem;font-weight:600;
@@ -344,6 +389,7 @@
   <div class="progress"><i id="bar"></i></div>
   <ul class="chips">
     <li><a href="#cover">表紙</a></li>
+    <li><a href="#grades">グレード表</a></li>
     <li><a href="#t1">T 研究生</a></li>
     <li><a href="#s">S 担当職</a></li>
     <li><a href="#ss">SS 主任</a></li>
@@ -367,7 +413,7 @@
     <h1>【仕事】職階別の期待職能</h1>
     <p class="sub">何を期待され、どう測られるか</p>
     <p class="src">作成経緯：<a href="https://claude.ai/code/session_01V97Y5cPta2HCqQvMyJKU9n">Claude Code セッション</a></p>
-    <p class="note">横にスワイプすると職階が移ります。並びは下から上（研究生 → 代表社員）。上のチップからも飛べます。</p>
+    <p class="note">次はグレード表（全31グレード）、その先が職階ごとのスライドです。並びは下から上（研究生 → 代表社員）。横にスワイプするか、上のチップから飛べます。</p>
     <p class="note">研究生（T1）が入口です。試用期間中もこの職階を見てください。</p>
     <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は最後のスライドに対応します。</p>
     <div class="meta">
@@ -376,6 +422,61 @@
       <span>全9段階 / 31グレード</span>
     </div>
     <p class="swipe">SWIPE →</p>
+  </div>
+</section>
+
+<section class="slide" id="grades" data-label="グレード表" style="--rank:var(--r-doc)">
+  <div class="inner">
+    <h2 class="sec">グレード表</h2>
+    <p class="lead">全31グレード。上ほど上位です。基本給レンジは月額、期待売上高は年間で、いずれも「グレード制度 基本給テーブル」と一致します。色の付いた行に現在の在籍者がいます。</p>
+<div class="tbl-wrap">
+<table class="gradetbl">
+  <thead><tr><th>グレード</th><th class="num">基本給レンジ（月額）</th><th class="num">期待売上高（年間）</th><th>在籍</th></tr></thead>
+  <tbody>
+    <tr class="band on-dark" style="--rank:var(--r-ep)"><th colspan="4">EP｜代表社員　戦略的意思決定<span class="g">入口の目安 22年目 / 42歳</span></th></tr>
+    <tr><td class="code">EP3</td><td class="num">870,001<i>〜</i>900,000 <i>円</i></td><td class="num">3,767 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">EP2</td><td class="num">840,001<i>〜</i>870,000 <i>円</i></td><td class="num">3,642 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">EP1</td><td class="num">810,001<i>〜</i>840,000 <i>円</i></td><td class="num">3,516 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="band on-dark" style="--rank:var(--r-p)"><th colspan="4">P｜パートナー　事業計画と経営管理<span class="g">入口の目安 19年目 / 39歳</span></th></tr>
+    <tr><td class="code">P3</td><td class="num">780,001<i>〜</i>810,000 <i>円</i></td><td class="num">3,391 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">P2</td><td class="num">750,001<i>〜</i>780,000 <i>円</i></td><td class="num">3,265 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="here"><td class="code">P1</td><td class="num">720,001<i>〜</i>750,000 <i>円</i></td><td class="num">3,140 <i>万円</i></td><td class="who"><b>福田 秀幸</b></td></tr>
+    <tr class="band on-dark" style="--rank:var(--r-sd)"><th colspan="4">SD｜拠点長　計画策定と事業推進<span class="g">入口の目安 17年目 / 37歳</span></th></tr>
+    <tr><td class="code">SD3</td><td class="num">690,001<i>〜</i>720,000 <i>円</i></td><td class="num">3,014 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">SD2</td><td class="num">660,001<i>〜</i>690,000 <i>円</i></td><td class="num">2,888 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">SD1</td><td class="num">630,001<i>〜</i>660,000 <i>円</i></td><td class="num">2,763 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="band on-dark" style="--rank:var(--r-d)"><th colspan="4">D｜拠点長　マネジャーの育成<span class="g">入口の目安 16年目 / 36歳</span></th></tr>
+    <tr><td class="code">D3</td><td class="num">600,001<i>〜</i>630,000 <i>円</i></td><td class="num">2,637 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">D2</td><td class="num">570,001<i>〜</i>600,000 <i>円</i></td><td class="num">2,512 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">D1</td><td class="num">540,001<i>〜</i>570,000 <i>円</i></td><td class="num">2,386 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="band on-dark" style="--rank:var(--r-sm)"><th colspan="4">SM｜部長　チーム間の相乗効果<span class="g">入口の目安 14年目 / 34歳</span></th></tr>
+    <tr><td class="code">SM3</td><td class="num">510,001<i>〜</i>540,000 <i>円</i></td><td class="num">2,261 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">SM2</td><td class="num">480,001<i>〜</i>510,000 <i>円</i></td><td class="num">2,135 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">SM1</td><td class="num">450,001<i>〜</i>480,000 <i>円</i></td><td class="num">2,009 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="band on-dark" style="--rank:var(--r-m)"><th colspan="4">M｜部長　チーム力の向上<span class="g">入口の目安 12年目 / 32歳</span></th></tr>
+    <tr><td class="code">M3</td><td class="num">420,001<i>〜</i>450,000 <i>円</i></td><td class="num">1,884 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">M2</td><td class="num">390,001<i>〜</i>420,000 <i>円</i></td><td class="num">1,758 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">M1</td><td class="num">360,001<i>〜</i>390,000 <i>円</i></td><td class="num">1,633 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="band on-dark" style="--rank:var(--r-ss)"><th colspan="4">SS｜主任　どれだけ自走できるか<span class="g">入口の目安 8年目 / 28歳</span></th></tr>
+    <tr><td class="code">SS6</td><td class="num">345,001<i>〜</i>360,000 <i>円</i></td><td class="num">1,507 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="here"><td class="code">SS5</td><td class="num">330,001<i>〜</i>345,000 <i>円</i></td><td class="num">1,444 <i>万円</i></td><td class="who"><b>福田 純夫</b></td></tr>
+    <tr class="here"><td class="code">SS4</td><td class="num">315,001<i>〜</i>330,000 <i>円</i></td><td class="num">1,381 <i>万円</i></td><td class="who"><b>荻原 真之</b></td></tr>
+    <tr><td class="code">SS3</td><td class="num">300,001<i>〜</i>315,000 <i>円</i></td><td class="num">1,319 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">SS2</td><td class="num">285,001<i>〜</i>300,000 <i>円</i></td><td class="num">1,256 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="here"><td class="code">SS1</td><td class="num">270,001<i>〜</i>285,000 <i>円</i></td><td class="num">1,193 <i>万円</i></td><td class="who"><b>松崎 恵</b>／<b>越沼 浩美</b></td></tr>
+    <tr class="band" style="--rank:var(--r-s)"><th colspan="4">S｜担当職　実行力の習得<span class="g">入口の目安 4年目 / 24歳</span></th></tr>
+    <tr><td class="code">S6</td><td class="num">255,001<i>〜</i>270,000 <i>円</i></td><td class="num">1,130 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">S5</td><td class="num">240,001<i>〜</i>255,000 <i>円</i></td><td class="num">1,068 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">S4</td><td class="num">225,001<i>〜</i>240,000 <i>円</i></td><td class="num">1,005 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="here"><td class="code">S3</td><td class="num">210,001<i>〜</i>225,000 <i>円</i></td><td class="num">942 <i>万円</i></td><td class="who"><b>須藤 佑介</b>／<b>小島 浩子</b></td></tr>
+    <tr><td class="code">S2</td><td class="num">195,001<i>〜</i>210,000 <i>円</i></td><td class="num">879 <i>万円</i></td><td class="who"></td></tr>
+    <tr><td class="code">S1</td><td class="num">180,001<i>〜</i>195,000 <i>円</i></td><td class="num">816 <i>万円</i></td><td class="who"></td></tr>
+    <tr class="band" style="--rank:var(--r-t1)"><th colspan="4">T｜研究生　文化に慣れる<span class="g">入口の目安 1年目 / 20歳</span></th></tr>
+    <tr class="here"><td class="code">T1</td><td class="num"><i>〜</i>180,000 <i>円</i></td><td class="num">754 <i>万円</i></td><td class="who"><b>根本 綺夏</b></td></tr>
+  </tbody>
+</table>
+</div>
+    <p class="lead" style="margin-top:1.2rem">期待売上高＝そのグレードの基本給上限 × 2 × 1.3 × 1.15 × 14（千円未満切上）。各職階の「昇格の条件」は職階をまたぐときの判定です。同じ職階の中のグレード上げ（例：S3→S4）の基準は、この表にはまだありません。</p>
   </div>
 </section>
 

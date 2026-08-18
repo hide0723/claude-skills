@@ -10,6 +10,7 @@ EMPグループの「給与テーブル期待職能（2024-09-01版）」を原�
 
 ```
 levels.py             ← 内容（職階・テーマ・測定指標・運用ルール・要決定事項）
+                        ＋ グレード表（31グレード）を grade_rows() で生成
   ├─ build_md.py     → 職階別の期待職能.md    本文
   ├─ build_xlsx.py   → 職階別の期待職能.xlsx  A3横1枚の印刷用
   └─ build_html.py   → 職階別の期待職能.html  スマホ閲覧用（スライド形式）
@@ -39,6 +40,14 @@ python3 build_md.py && python3 build_xlsx.py && python3 build_html.py && python3
 | ラーニングラダー必須書籍リスト | 必要なインプット |
 
 測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用する。兼任者は両方を見る。
+
+## グレード表
+
+`levels.py` の `GRADE_BANDS`（職階ごとの基本給上限・昇給幅・グレード数）から
+`grade_rows()` が31グレードを1行ずつ生成し、md と html の「グレード表」に出す。
+期待売上高は `expected_revenue()` が基本給上限から計算する（千円未満切上、万円は四捨五入）。
+各職階の `revenue` / `salary` と一致することを確認済み。基本給テーブルを直すときは
+`GRADE_BANDS` と各職階の `revenue` / `salary` の両方を直すこと。
 
 ## 職階とテーマ
 
