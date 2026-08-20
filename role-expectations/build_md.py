@@ -6,7 +6,7 @@
 """
 
 from levels import (DECISIONS, LEVELS, NOTES, REVISIONS, RULES, VERSION,
-                    flag_of, grade_rows, is_prov, roster_names)
+                    flag_of, grade_rows, is_prov, roster_names, vacant_text)
 
 OUT = "職階別の期待職能.md"
 
@@ -43,7 +43,7 @@ def level_section(lv):
         )
         out += [f"**在籍者**：{who}", ""]
     elif lv["sym"] not in ("―",):
-        out += ["**在籍者**：現在なし（将来枠）", ""]
+        out += [f"**在籍者**：{vacant_text(lv)}", ""]
 
     def m(key):
         return "　**【仮】**" if is_prov(lv, key) else ""

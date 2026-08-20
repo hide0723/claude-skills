@@ -12,7 +12,8 @@ import html as _html
 
 from atc_map import ATC_TOPICS, LINKS
 from levels import (DECISIONS, LEVELS, REVISIONS, RULES, VERSION, flag_of,
-                    grade_rows, is_prov, roster_by_grade, roster_names)
+                    grade_rows, is_prov, roster_by_grade, roster_names,
+                    vacant_text)
 
 # 一般版と管理者版の2本を出す。違いは「誰がどのグレードか」を出すかどうかだけ。
 # 一般版のHTMLにはグレード別の在籍者を一切書き出さない（隠すのではなく持たせない）。
@@ -613,7 +614,7 @@ def level_slide(lv, admin=False):
     elif lv["sym"] != "―":
         o.append(
             '    <p class="roster"><span class="lbl">在籍</span>'
-            '<span class="vacant">現在なし（将来枠）</span></p>'
+            f'<span class="vacant">{esc(vacant_text(lv))}</span></p>'
         )
 
     promo_title = (
