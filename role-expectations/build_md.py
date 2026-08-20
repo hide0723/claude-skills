@@ -5,8 +5,8 @@
 使い方: python3 build_md.py  → 職階別の期待職能.md
 """
 
-from levels import (DECISIONS, LEVELS, NOTES, RULES, VERSION, flag_of,
-                    grade_rows, is_prov, roster_names)
+from levels import (DECISIONS, LEVELS, NOTES, REVISIONS, RULES, VERSION,
+                    flag_of, grade_rows, is_prov, roster_names)
 
 OUT = "職階別の期待職能.md"
 
@@ -118,6 +118,16 @@ def main() -> None:
         "- そのため上司は、日頃から部下を観察し、この表の項目で語れる状態にしておくこと。",
         "- **【要決定】** は制度自体が未整備の項目、**【仮】** は数値・条件が仮置きの項目。"
         "いずれも「4. 未確定・要決定事項」に対応する。",
+        "",
+        "---",
+        "",
+        "## 0-2. 改訂予定",
+        "",
+        "この版で決め切れておらず、次の改訂で手を入れる予定の箇所。",
+        "",
+    ]
+    p += [f"- **{t}** — {note}" for t, note in REVISIONS]
+    p += [
         "",
         "---",
         "",

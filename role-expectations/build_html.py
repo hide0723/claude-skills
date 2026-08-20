@@ -11,8 +11,8 @@
 import html as _html
 
 from atc_map import ATC_TOPICS, LINKS
-from levels import (DECISIONS, LEVELS, RULES, VERSION, flag_of, grade_rows,
-                    is_prov, roster_by_grade, roster_names)
+from levels import (DECISIONS, LEVELS, REVISIONS, RULES, VERSION, flag_of,
+                    grade_rows, is_prov, roster_by_grade, roster_names)
 
 # 一般版と管理者版の2本を出す。違いは「誰がどのグレードか」を出すかどうかだけ。
 # 一般版のHTMLにはグレード別の在籍者を一切書き出さない（隠すのではなく持たせない）。
@@ -293,6 +293,21 @@ CSS = """
   .swipe{
     margin:2.2rem 0 0;font-family:var(--mono);font-size:.72rem;
     color:var(--ink-3);letter-spacing:.1em;
+  }
+  .todo{
+    margin:1.8rem 0 0;padding:.9rem 1rem 1rem;
+    background:var(--surface);border:1px solid var(--rule);
+    border-left:3px solid var(--accent);border-radius:2px;
+  }
+  .todo .lbl{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;
+    color:var(--accent);margin:0 0 .5rem;
+  }
+  .todo ul{margin:0;padding-left:1.1rem;}
+  .todo li{font-size:.88rem;color:var(--ink);margin:.4rem 0;line-height:1.6;}
+  .todo li::marker{color:var(--ink-3);}
+  .todo li span{
+    display:block;font-size:.76rem;color:var(--ink-3);margin-top:.1rem;
   }
   .warn{
     margin:1.2rem 0 0;padding:.7rem .9rem;
@@ -751,6 +766,14 @@ def build(admin: bool) -> str:
     )
 
     n_levels = len(LEVELS)
+    revisions = (
+        '<div class="todo">\n      <p class="lbl">改訂予定</p>\n      <ul>\n'
+        + "\n".join(
+            f"        <li>{esc(t)}<span>{esc(note)}</span></li>"
+            for t, note in REVISIONS
+        )
+        + "\n      </ul>\n    </div>"
+    )
     suffix = "（管理者版）" if admin else ""
     grade_note = (
         "色の付いた行に現在の在籍者がいます。"
@@ -787,6 +810,7 @@ def build(admin: bool) -> str:
     <p class="note">次はグレード表（全31グレード）、その先が職階ごとのスライドです。並びは下から上（{esc(order[0]["title"])} → {esc(order[-1]["title"])}）。横にスワイプするか、上のチップから飛べます。</p>
     <p class="note">研究生（T1）が入口です。試用期間中もこの職階を見てください。</p>
     <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は最後のスライドに対応します。</p>
+    {revisions}
     <div class="meta">
       <span>{esc(VERSION)}（たたき台）</span>
       <span>原型：EMPグループ 2024-09-01版</span>

@@ -260,6 +260,21 @@
     margin:2.2rem 0 0;font-family:var(--mono);font-size:.72rem;
     color:var(--ink-3);letter-spacing:.1em;
   }
+  .todo{
+    margin:1.8rem 0 0;padding:.9rem 1rem 1rem;
+    background:var(--surface);border:1px solid var(--rule);
+    border-left:3px solid var(--accent);border-radius:2px;
+  }
+  .todo .lbl{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;
+    color:var(--accent);margin:0 0 .5rem;
+  }
+  .todo ul{margin:0;padding-left:1.1rem;}
+  .todo li{font-size:.88rem;color:var(--ink);margin:.4rem 0;line-height:1.6;}
+  .todo li::marker{color:var(--ink-3);}
+  .todo li span{
+    display:block;font-size:.76rem;color:var(--ink-3);margin-top:.1rem;
+  }
   .warn{
     margin:1.2rem 0 0;padding:.7rem .9rem;
     background:var(--flag-soft);border-left:3px solid var(--flag);
@@ -424,6 +439,14 @@
     <p class="note">次はグレード表（全31グレード）、その先が職階ごとのスライドです。並びは下から上（研究生 → 代表社員）。横にスワイプするか、上のチップから飛べます。</p>
     <p class="note">研究生（T1）が入口です。試用期間中もこの職階を見てください。</p>
     <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は最後のスライドに対応します。</p>
+    <div class="todo">
+      <p class="lbl">改訂予定</p>
+      <ul>
+        <li>各職階の、テーマ以外の項目の見直し<span>期待される役割・昇格の条件・測定指標・期待されるプロセス・必要なインプット</span></li>
+        <li>シニアマネージャー（SM）のテーマの見直し<span>要決定9「M と SM の線引き」に対応</span></li>
+        <li>運用ルールの見直し<span>期待売上高・労働分配率・賞与判定との連動・残業ペナルティなど</span></li>
+      </ul>
+    </div>
     <div class="meta">
       <span>2026-08-15版（たたき台）</span>
       <span>原型：EMPグループ 2024-09-01版</span>
