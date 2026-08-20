@@ -12,9 +12,17 @@ import html as _html
 
 from atc_map import ATC_TOPICS, LINKS
 from levels import (DECISIONS, LEVELS, RULES, VERSION, flag_of, grade_rows,
-                    is_prov, roster_names)
+                    is_prov, roster_by_grade, roster_names)
 
-OUT = "職階別の期待職能.html"
+# 一般版と管理者版の2本を出す。違いは「誰がどのグレードか」を出すかどうかだけ。
+# 一般版のHTMLにはグレード別の在籍者を一切書き出さない（隠すのではなく持たせない）。
+OUT = {
+    False: "職階別の期待職能.html",
+    True: "職階別の期待職能_管理者版.html",
+}
+
+# 管理者版から一般版へ渡すためのリンク。逆向きは張らない。
+PUBLIC_URL = "https://claude.ai/code/artifact/8295227f-91f0-42ec-b096-de04999f8de0"
 
 # この表を作った Claude Code セッション。表紙のサブタイトル直下に出す。
 SESSION_URL = "https://claude.ai/code/session_01V97Y5cPta2HCqQvMyJKU9n"
@@ -286,6 +294,13 @@ CSS = """
     margin:2.2rem 0 0;font-family:var(--mono);font-size:.72rem;
     color:var(--ink-3);letter-spacing:.1em;
   }
+  .warn{
+    margin:1.2rem 0 0;padding:.7rem .9rem;
+    background:var(--flag-soft);border-left:3px solid var(--flag);
+    color:var(--ink);font-size:.85rem;
+  }
+  .warn b{color:var(--flag);font-weight:600;}
+  .warn a{color:var(--flag);}
 
   /* ---- グレード表 ---- */
   .tbl-wrap{
@@ -328,6 +343,9 @@ CSS = """
     text-align:right;color:var(--ink-2);letter-spacing:-.01em;
   }
   table.gradetbl td.num i{font-style:normal;color:var(--ink-3);font-size:.9em;}
+  table.gradetbl tr.here td{background:var(--flag-soft);}
+  table.gradetbl td.who{font-size:.76rem;color:var(--ink-2);white-space:normal;}
+  table.gradetbl td.who b{font-weight:600;color:var(--ink);}
 
   /* ---- rules / decisions slides ---- */
   .slide h2.sec{
@@ -544,7 +562,7 @@ def nav_label(lv):
     return lv["title"] if lv["sym"] == "―" else f'{lv["sym"]} {lv["title"]}'
 
 
-def level_slide(lv):
+def level_slide(lv, admin=False):
     slug = SLUG[lv["sym"]]
     on_dark = " on-dark" if lv["sym"] in LIGHT_TEXT_ON_BAND else ""
     label = nav_label(lv)
@@ -572,9 +590,9 @@ def level_slide(lv):
     if lv["roster"]:
         chips = "".join(
             f'\n      <span class="who"><b>{esc(n)}</b>'
-            + (f"<code>{esc(note)}</code>" if note else "")
+            + (f"<code>{esc(tag)}</code>" if tag else "")
             + "</span>"
-            for n, note in roster_names(lv)
+            for n, tag in (lv["roster"] if admin else roster_names(lv))
         )
         o.append(f'    <p class="roster"><span class="lbl">在籍</span>{chips}\n    </p>')
     elif lv["sym"] != "―":
@@ -617,8 +635,13 @@ def level_slide(lv):
     return "\n".join(o)
 
 
-def grade_table():
-    """31グレードを1行ずつ並べた表。上（EP3）から下（T1）へ。"""
+def grade_table(admin=False):
+    """31グレードを1行ずつ並べた表。上（EP3）から下（T1）へ。
+
+    admin=True のときだけ在籍列を付ける。一般版では列そのものを出さない。
+    """
+    who_of = roster_by_grade() if admin else {}
+    ncol = 4 if admin else 3
     o = [
         '<div class="tbl-wrap">',
         '<table class="gradetbl">',
@@ -626,7 +649,8 @@ def grade_table():
         "<th>グレード</th>"
         '<th class="num">基本給レンジ（月額）</th>'
         '<th class="num">期待売上高（年間）</th>'
-        "</tr></thead>",
+        + ("<th>在籍</th>" if admin else "")
+        + "</tr></thead>",
         "  <tbody>",
     ]
     for r in grade_rows():
@@ -635,7 +659,7 @@ def grade_table():
             dark = " on-dark" if r["sym"] in LIGHT_TEXT_ON_BAND else ""
             o.append(
                 f'    <tr class="band{dark}" style="--rank:var(--r-{SLUG[r["sym"]]})">'
-                f'<th colspan="3">{esc(lv["sym"])}｜{esc(lv["title"])}　'
+                f'<th colspan="{ncol}">{esc(lv["sym"])}｜{esc(lv["title"])}　'
                 f'{esc(lv["theme"])}'
                 f'<span class="g">入口の目安 {esc(lv["entry"])}</span></th></tr>'
             )
@@ -644,17 +668,26 @@ def grade_table():
             if r["low"] is None
             else f'{r["low"]:,}<i>〜</i>{r["high"]:,}'
         )
+        names = who_of.get(r["code"], [])
+        cell = (
+            '<td class="who">'
+            + "／".join(f"<b>{esc(n)}</b>" for n in names)
+            + "</td>"
+            if admin
+            else ""
+        )
+        here = ' class="here"' if names else ""
         o.append(
-            "    <tr>"
+            f"    <tr{here}>"
             f'<td class="code">{esc(r["code"])}</td>'
             f'<td class="num">{pay} <i>円</i></td>'
-            f'<td class="num">{r["revenue"]} <i>万円</i></td></tr>'
+            f'<td class="num">{r["revenue"]} <i>万円</i></td>{cell}</tr>'
         )
     o += ["  </tbody>", "</table>", "</div>"]
     return "\n".join(o)
 
 
-def main() -> None:
+def build(admin: bool) -> str:
     order = list(reversed(LEVELS))  # 下位から上位へ
 
     # チップの並びはスライドの並びと一致させる
@@ -672,7 +705,7 @@ def main() -> None:
         '<li><a href="#decide">要決定</a></li>',
     ]
 
-    grades_tbl = grade_table()
+    grades_tbl = grade_table(admin)
 
     rules = []
     for r in RULES:
@@ -718,7 +751,21 @@ def main() -> None:
     )
 
     n_levels = len(LEVELS)
-    doc = f"""<title>【仕事】職階別の期待職能</title>
+    suffix = "（管理者版）" if admin else ""
+    grade_note = (
+        "色の付いた行に現在の在籍者がいます。"
+        if admin
+        else "誰がどのグレードかはこの表には出しません（在籍者は職階ごとのスライドに出ます）。"
+    )
+    banner = (
+        '<p class="warn"><b>管理者版・取扱注意。</b>'
+        "誰がどのグレードかを載せています。職員に見せる版は"
+        f'<a href="{PUBLIC_URL}">こちら</a>で、そちらにはグレード別の在籍者を'
+        "書き出していません。このページのリンクは配らないでください。</p>"
+        if admin
+        else ""
+    )
+    doc = f"""<title>【仕事】職階別の期待職能{suffix}</title>
 <style>{CSS}</style>
 
 <div class="topbar" id="topbar">
@@ -733,9 +780,10 @@ def main() -> None:
 <section class="slide" id="cover" data-label="表紙" style="--rank:var(--r-doc)">
   <div class="inner cover">
     <p class="kicker">税理士法人福田会計</p>
-    <h1>【仕事】職階別の期待職能</h1>
+    <h1>【仕事】職階別の期待職能{suffix}</h1>
     <p class="sub">何を期待され、どう測られるか</p>
     <p class="src">作成経緯：<a href="{SESSION_URL}">Claude Code セッション</a></p>
+    {banner}
     <p class="note">次はグレード表（全31グレード）、その先が職階ごとのスライドです。並びは下から上（{esc(order[0]["title"])} → {esc(order[-1]["title"])}）。横にスワイプするか、上のチップから飛べます。</p>
     <p class="note">研究生（T1）が入口です。試用期間中もこの職階を見てください。</p>
     <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は最後のスライドに対応します。</p>
@@ -751,13 +799,13 @@ def main() -> None:
 <section class="slide" id="grades" data-label="グレード表" style="--rank:var(--r-doc)">
   <div class="inner">
     <h2 class="sec">グレード表</h2>
-    <p class="lead">全31グレード。上ほど上位です。基本給レンジは月額、期待売上高は年間で、いずれも「グレード制度 基本給テーブル」と一致します。誰がどのグレードかはこの表には出しません（在籍者は職階ごとのスライドに出ます）。</p>
+    <p class="lead">全31グレード。上ほど上位です。基本給レンジは月額、期待売上高は年間で、いずれも「グレード制度 基本給テーブル」と一致します。{grade_note}</p>
 {grades_tbl}
     <p class="lead" style="margin-top:1.2rem">期待売上高＝そのグレードの基本給上限 × 2 × 1.3 × 1.15 × 14（千円未満切上）。各職階の「昇格の条件」は職階をまたぐときの判定です。同じ職階の中のグレード上げ（例：S3→S4）の基準は、この表にはまだありません。</p>
   </div>
 </section>
 
-{chr(10).join(level_slide(lv) for lv in order)}
+{chr(10).join(level_slide(lv, admin) for lv in order)}
 
 <section class="slide" id="atc" data-label="ATC対応" style="--rank:var(--r-doc)">
   <div class="inner">
@@ -801,9 +849,14 @@ def main() -> None:
 
 <script>{JS}</script>
 """
-    with open(OUT, "w", encoding="utf-8") as f:
-        f.write(doc)
-    print(f"wrote {OUT}")
+    return doc
+
+
+def main() -> None:
+    for admin in (False, True):
+        with open(OUT[admin], "w", encoding="utf-8") as f:
+            f.write(build(admin))
+        print(f"wrote {OUT[admin]}")
 
 
 if __name__ == "__main__":

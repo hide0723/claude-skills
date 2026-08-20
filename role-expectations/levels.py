@@ -581,3 +581,15 @@ def roster_names(lv):
         parts = grade.split("・")
         out.append((name, "・".join(parts[1:])))
     return out
+
+
+def roster_by_grade():
+    """グレード記号 → 在籍者名のリスト。管理者版の表だけで使う。
+
+    一般版はこれを呼ばないこと（誰がどのグレードかを出さないため）。
+    """
+    out = {}
+    for lv in LEVELS:
+        for name, grade in lv["roster"]:
+            out.setdefault(grade.split("・")[0], []).append(name)
+    return out
