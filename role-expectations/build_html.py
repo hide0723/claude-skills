@@ -708,6 +708,7 @@ def build(admin: bool) -> str:
     # チップの並びはスライドの並びと一致させる
     chips = [
         '<li><a href="#cover">表紙</a></li>',
+        '<li><a href="#decide">要決定</a></li>',
         '<li><a href="#grades">グレード表</a></li>',
     ]
     chips += [
@@ -717,7 +718,6 @@ def build(admin: bool) -> str:
     chips += [
         '<li><a href="#atc">ATC対応</a></li>',
         '<li><a href="#rules">運用ルール</a></li>',
-        '<li><a href="#decide">要決定</a></li>',
     ]
 
     grades_tbl = grade_table(admin)
@@ -807,9 +807,9 @@ def build(admin: bool) -> str:
     <p class="sub">何を期待され、どう測られるか</p>
     <p class="src">作成経緯：<a href="{SESSION_URL}">Claude Code セッション</a></p>
     {banner}
-    <p class="note">次はグレード表（全31グレード）、その先が職階ごとのスライドです。並びは下から上（{esc(order[0]["title"])} → {esc(order[-1]["title"])}）。横にスワイプするか、上のチップから飛べます。</p>
+    <p class="note">次が要決定事項、その次がグレード表（全31グレード）、その先が職階ごとのスライドです。並びは下から上（{esc(order[0]["title"])} → {esc(order[-1]["title"])}）。横にスワイプするか、上のチップから飛べます。</p>
     <p class="note">研究生（T1）が入口です。試用期間中もこの職階を見てください。</p>
-    <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は最後のスライドに対応します。</p>
+    <p class="note">測定指標1は関与先を担当する職員、測定指標2は総務・経理に適用します。兼任者は両方を見ます。「要決定」「仮」の印は2ページ目に対応します。</p>
     {revisions}
     <div class="meta">
       <span>{esc(VERSION)}（たたき台）</span>
@@ -817,6 +817,16 @@ def build(admin: bool) -> str:
       <span>全{n_levels}段階 / 31グレード</span>
     </div>
     <p class="swipe">SWIPE →</p>
+  </div>
+</section>
+
+<section class="slide" id="decide" data-label="要決定" style="--rank:var(--r-doc)">
+  <div class="inner">
+    <h2 class="sec">運用開始前に決めること</h2>
+    <p class="lead">EMP版から移す際に、福田会計として決め切れていない項目。各スライドの「要決定」「仮」の印はここに対応します。</p>
+    <ol class="decide">
+{decisions}
+    </ol>
   </div>
 </section>
 
@@ -845,16 +855,6 @@ def build(admin: bool) -> str:
     <h2 class="sec">運用ルール</h2>
     <p class="lead">グレード判定・賞与算定と直結する数値。基本給テーブルおよび賞与算定シートと一致させています。</p>
 {chr(10).join(rules)}
-  </div>
-</section>
-
-<section class="slide" id="decide" data-label="要決定" style="--rank:var(--r-doc)">
-  <div class="inner">
-    <h2 class="sec">運用開始前に決めること</h2>
-    <p class="lead">EMP版から移す際に、福田会計として決め切れていない項目。各スライドの「要決定」「仮」の印はここに対応します。</p>
-    <ol class="decide">
-{decisions}
-    </ol>
     <div class="colophon">
       <p>税理士法人福田会計　期待職能　{esc(VERSION)}（たたき台）</p>
       <p>原型：EMPグループ「給与テーブル期待職能」2024-09-01版</p>
