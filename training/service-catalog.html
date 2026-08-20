@@ -233,6 +233,77 @@
   .excerpt .mask { color: var(--ink-3); }
   .excerpt .item { display: block; padding-left: 2.2em; text-indent: -2.2em; }
 
+  /* ---- 契約書の紙面再現 ---- */
+  .sheet-scroll { overflow-x: auto; border: 1px solid var(--rule-strong); background: var(--surface); }
+  .sheet { min-width: 660px; padding: 28px 32px 32px; }
+  .sheet-title {
+    font-family: var(--mincho);
+    font-size: 1.5rem;
+    letter-spacing: 0.5em;
+    text-align: center;
+    margin: 0 0 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ink);
+    text-indent: 0.5em;
+  }
+  .sheet table { border-collapse: collapse; width: 100%; min-width: 0; font-size: 0.875rem; }
+  .sheet th, .sheet td { border: 1px solid var(--rule-strong); padding: 10px 14px; vertical-align: top; }
+  .sheet th {
+    width: 118px;
+    background: var(--surface-2);
+    font-family: var(--mincho);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .sheet td { font-family: var(--mincho); line-height: 1.9; }
+  .sheet .k { display: block; padding-left: 2.4em; text-indent: -2.4em; }
+  .sheet .mask { color: var(--ink-3); }
+  .sheet-close { font-family: var(--mincho); font-size: 0.9rem; margin: 22px 0 0; }
+  .sheet-sign {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 14px;
+    font-family: var(--mincho);
+    font-size: 0.875rem;
+  }
+  .sheet-sign > div { border: 1px solid var(--rule); padding: 12px 16px; line-height: 2; }
+  .sheet-sign .lbl { color: var(--ink-3); font-family: var(--gothic); font-size: 0.75rem; letter-spacing: 0.1em; }
+
+  /* ---- 資料の探し場所 ---- */
+  .where { display: grid; gap: 14px; }
+  .where article {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--ai);
+    padding: 16px 20px;
+    display: grid;
+    gap: 8px;
+  }
+  .where h4 { margin: 0; font-family: var(--mincho); font-size: var(--step-1); letter-spacing: 0.05em; }
+  .where p { margin: 0; font-size: 0.875rem; color: var(--ink-2); max-width: none; }
+  .where .path {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    background: var(--surface-2);
+    padding: 8px 12px;
+    color: var(--ink);
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .todo {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    background: var(--shu-soft);
+    color: var(--shu);
+    padding: 2px 8px;
+  }
+
   /* ---- やさしい用語メモ ---- */
   .plain {
     background: var(--surface-2);
@@ -569,6 +640,156 @@
   </section>
 
   <section class="clause wide">
+    <div class="clause-label"><span class="no">見本</span>契約書の<br>実物</div>
+    <div class="clause-body">
+      <h3>顧問契約書は、この1枚です</h3>
+      <p>
+        当事務所の顧問契約書は、条文が段落で続く形式ではなく、<strong>左に「契約事項」の見出し、右にその内容が並ぶ1枚の表</strong>です。まず実物と同じ並びで全体を見てください。以降の章は、この表の行をひとつずつ取り出して説明していきます。
+      </p>
+
+      <div class="sheet-scroll">
+        <div class="sheet">
+          <p class="sheet-title">顧　問　契　約　書</p>
+          <table>
+            <tbody>
+              <tr>
+                <th>委任範囲</th>
+                <td>
+                  <span class="k">（１）　税務書類の作成及び税務監査</span>
+                  <span class="k">（２）　税務相談及び税務調査立会い</span>
+                  <span class="k">（３）　記帳代行</span>
+                  <span class="k">（４）　給与計算代行</span>
+                  <span class="k">（５）　上記以外の業務については、別途協議のうえ、決定する。</span>
+                  <span class="k">　　　　一方、上記委任事務の遂行にあたり、必要な資料等を提供する責任は甲が負担するものとする。</span>
+                </td>
+              </tr>
+              <tr>
+                <th>年度又は期間</th>
+                <td>令和 <span class="mask">〇</span> 年 <span class="mask">〇</span> 月より１年間とする。期間満了後、契約当事者によって解除の意思表示が無い場合は１年間ずつ自動継続するものとする。</td>
+              </tr>
+              <tr>
+                <th>報酬の額</th>
+                <td>
+                  <span class="k">１．税務顧問報酬の額　　　月額　金<span class="mask">〇〇,〇〇〇</span>円也(内消費税額<span class="mask">〇,〇〇〇</span>円)</span>
+                  <span class="k">２．記帳代行報酬の額　　　月額　金<span class="mask">〇〇,〇〇〇</span>円也(内消費税額<span class="mask">〇,〇〇〇</span>円)</span>
+                  <span class="k">　　　但し、代行入力する年間仕訳数が<span class="mask">〇,〇〇〇</span>件を超える際は別途請求</span>
+                  <span class="k">３．給与計算代行の額　　　月額　金<span class="mask">〇〇,〇〇〇</span>円也(内消費税額<span class="mask">〇,〇〇〇</span>円)</span>
+                  <span class="k">※月額報酬合計額(10%対象)　合計　金<span class="mask">〇〇,〇〇〇</span>円也(内消費税額<span class="mask">〇,〇〇〇</span>円)</span>
+                  <span class="k">４．決算報酬の額(10%対象)　「1.税務顧問報酬の額」に含む。（書面添付含む）</span>
+                  <span class="k">５．税務調査立会報酬の額(10%対象)　１日当たり　金33,000円也(内消費税額3,000円)</span>
+                  <span class="k">　　　但し、修正申告書作成料は別途請求</span>
+                  <span class="k">６．（４）の報酬の額は給与計算上、必要な労働・社会保険の手続代行を含むものとする。</span>
+                  <span class="k">７．（５）の報酬の額のうち、附属明細書、年末調整、償却資産の申告については、当事務所規定に従い計算された金額</span>
+                  <span class="k">８．（５）の報酬の額のうち、税額控除の適用に係る業務については、法人税申告書別表一「３番」の金額の５％（消費税別）を別途請求する。ただし、その上限は金500,000円（消費税別）とする。</span>
+                  <span class="k">９．上記８の税額控除に係る報酬及び上記１から７までの報酬に含まれない追加業務の報酬については、次のとおり取り扱う。（金額はいずれも税抜き基準とし、同一又は一連の業務は合算して判定する。）</span>
+                  <span class="k">　①　５万円超20万円以下　　業務内容及び概算額を甲に連絡した上で着手することができる。</span>
+                  <span class="k">　②　20万円超　　　　　　　着手前に見積書を提示し、甲の承諾を得る。</span>
+                  <span class="k">　なお、甲の事前承諾を得ず実施した追加業務に係る報酬（①含む）は、１事業年度あたり合計金300,000円（税抜）を上限とする。</span>
+                </td>
+              </tr>
+              <tr>
+                <th>支払の時期<br>及び方法</th>
+                <td>
+                  <span class="k">毎月の報酬は口座振替により、毎月２０日までに下記の当事務所指定の銀行口座に振り込むものとする。</span>
+                  <span class="k">群馬銀行　桐生支店　普通預金　No.<span class="mask">〔原本を参照〕</span>　口座名義　<span class="mask">〔原本を参照〕</span></span>
+                  <span class="k">恐れ入りますが、振込手数料は貴社にてご負担をお願いいたします。</span>
+                </td>
+              </tr>
+              <tr>
+                <th>情報の取扱い</th>
+                <td>
+                  <span class="k">１．AI等の利用について　甲は、乙が本契約に基づく業務遂行のため、甲から預託を受けた資料・データ（ご相談内容を含む）を、乙及び乙が業務委託する事業者が提供・利用するAIサービスへの入力・解析に利用することに同意する。ただし、乙は当該AIサービスの提供者が学習目的で入力データを利用しない設定・契約であることを確認するものとする。</span>
+                  <span class="k">２．打ち合わせの録音等について　乙は、業務品質及び記録の正確性確保のため、打ち合わせの録音・録画及びその文字起こしを行うことができる。当該記録は乙の業務目的の範囲内でのみ利用し、第三者への開示は行わない。</span>
+                  <span class="k">なお、甲が特定の情報について上記利用を望まない場合は、事前に乙へ申し出るものとする。</span>
+                </td>
+              </tr>
+              <tr>
+                <th>その他の事項</th>
+                <td>
+                  <span class="k">　本契約について甲又は乙から契約の解除又は変更する場合は、予め３ヶ月前に相手方に対しその申出をするものとする。</span>
+                  <span class="k">　この場合、甲は解除となる月分まで上記１．税務顧問報酬の額を支払うものとする。</span>
+                  <span class="k">　一方、本契約締結の前後に問わず、乙が甲に対し、故意又は過失による債務不履行又は不法行為に基づく損害賠償債務を負担する時（重過失を含む）は、その賠償額の上限は、甲が乙に支払った当該行為があった年の年間報酬を上限とする。</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="sheet-close">上記の通り顧問契約をする。　　令和 <span class="mask">〇</span> 年 <span class="mask">〇</span> 月 <span class="mask">〇</span> 日</p>
+          <div class="sheet-sign">
+            <div>
+              <span class="lbl">お客様側</span><br>
+              所在地　<span class="mask">〔　　　　　　　　〕</span><br>
+              （甲）委嘱者　<span class="mask">〔　　　　　　　　〕</span><br>
+              代表取締役　<span class="mask">〔　　　　　　　　〕</span>
+            </div>
+            <div>
+              <span class="lbl">当事務所側</span><br>
+              所在地　群馬県桐生市東一丁目１３番３９号<br>
+              （乙）税理士　税理士法人　福田会計<br>
+              代表社員　福　田　秀　幸
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="quote">
+        この見本は書式どおりの並びで作っていますが、<strong>契約ごとに定まる金額・期間・口座情報・お客様の名称は伏せています</strong>。実際の紙面では、伏せた部分に担当先ごとの数字が入ります。また、契約によっては(3)記帳代行や(4)給与計算代行の行がない、決算報酬が別建てになっているなど、行の構成そのものが違うことがあります。<strong>必ず担当先の原本を見てください。</strong>
+      </p>
+    </div>
+  </section>
+
+  <section class="clause">
+    <div class="clause-label"><span class="no">探し方</span>担当先の<br>契約を<br>調べる</div>
+    <div class="clause-body">
+      <h3>契約書はどこにあり、契約の経緯はどこを見れば分かるか</h3>
+      <p>
+        担当を持ったら、その顧問先の契約を自分で確かめられる必要があります。見るところは3つあります。
+      </p>
+
+      <div class="where">
+        <article>
+          <h4>① 契約書そのもの（データ）</h4>
+          <p>何を引き受けているか、報酬はいくらかが書かれた本体です。Google ドライブに保存されています。契約書関係のデータは、次の2か所で見つかります。</p>
+          <div class="path">10.共有：福田秀幸ー福田公認会計士事務所ーCaster ＞ 40.請求書・入金明細書・顧問契約</div>
+          <div class="path">50.自己、社内仕事file ＞ 530.所内資料</div>
+          <p><span class="todo">要確認</span>　顧問先ごとにどちらへ入れるかの取り決めは、担当者に確認してください。改定作業中のファイルが一時的に別の場所に置かれていることもあります。</p>
+        </article>
+
+        <article>
+          <h4>② 契約書の作成・回収がどこまで進んでいるか</h4>
+          <p>顧問先ごとの契約状況をまとめた管理表があります。<strong>担当先の月額顧問料・決算月・担当者・引落口座・契約書の作成／確認／発送／捺印の各日付</strong>が一覧で確認できます。「契約書の現物がまだ返ってきていない」といった状況もここで分かります。</p>
+          <div class="path">税理士法人関係進捗表　顧問契約書・口座振替依頼書.xlsx</div>
+        </article>
+
+        <article>
+          <h4>③ なぜその契約内容・その金額になったのか</h4>
+          <p>契約書には結論しか書かれていません。「なぜこの顧問先は記帳代行を外しているのか」「なぜこの金額なのか」という理由は、契約を決めるまでのやり取りの中にあります。次の4つが手がかりです。</p>
+          <p>
+            <strong>契約内容確認表</strong>… 新規契約時にお客様から聞き取った前提条件（会計ソフトの利用状況、経理担当者の有無、給与支払の予定、想定売上高など）。契約書を作る前段の資料です。<br>
+            <strong>見積書</strong>… 報酬額の内訳。どの業務にいくらを見込んだかが分かります。<br>
+            <strong>Chatwork のやり取り</strong>… お客様との連絡記録。契約書にも「記録が残る方法」として名前が出てきます。<br>
+            <strong>打ち合わせの録音・文字起こし</strong>… 契約書の「情報の取扱い」2項に基づいて残している記録です。
+          </p>
+          <p><span class="todo">要確認</span>　これらの保存場所は顧問先・時期によって異なります。担当先の分がどこにあるかは、引き継ぎのときに担当者に確認してください。</p>
+        </article>
+      </div>
+
+      <p class="quote">
+        上に挙げたフォルダ名・ファイル名は、実際に事務所のドライブにあるものです。ただし<strong>これが唯一の保管ルールであるとは限りません</strong>。この資料を読んだ時点で場所が変わっていることもあるので、最初の1件は担当者に一緒に開いてもらうのが確実です。
+      </p>
+    </div>
+    <aside class="memo">
+      <h4>新人メモ</h4>
+      <ul>
+        <li>担当を持ったら、最初の1週間で契約書の原本データを開く</li>
+        <li>進捗表で担当先の月額顧問料・決算月・引落口座を確認する</li>
+        <li>「なぜこの内容か」が分からない契約は、経緯を担当者に聞く</li>
+        <li>契約書データの保存場所は、自分の担当先の分をメモしておく</li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="clause wide">
     <div class="clause-label"><span class="no">図1</span>契約書の<br>体系</div>
     <div class="clause-body">
       <h3>顧問契約書は6つの契約事項でできている</h3>
@@ -669,6 +890,14 @@
       <p>
         末尾の一文も重要です。<strong>資料をそろえる責任はお客様（甲）側にあります。</strong>裏を返せば、資料が届かなければ業務は進みません。督促と、その記録を残すことは新人の重要な仕事です。
       </p>
+      <p>
+        以下の5枚のカードでは、各サービスに「作業イメージ」欄を設けています。これは<strong>その業務がどんな作業でできているかを示すもので、実際の担当割りではありません。</strong>誰が何をどこまで持つかは、担当先と時期によって変わります。「この仕事にはこういう作業がある」という程度に読んでください。
+      </p>
+
+      <div class="alert">
+        <strong>5つのサービスに共通する、たったひとつの原則。</strong>どの業務でも、<em>迷ったら自分で結論を出さず、担当者に上げる</em>。これに尽きます。具体的には、判断に迷った仕訳は「不明点」として残す、税務の質問には有資格者の確認を経てから答える、内容の分からない支出を推測で科目づけしない、契約範囲外の依頼をその場で引き受けない、の4つです。<br>
+        これは新人が頼りないからではありません。<strong>顧問契約は「委任契約」であり、事務所は専門家として求められる注意をもって業務にあたる義務（善管注意義務）を負っています。</strong>誤った処理や回答は、担当者個人ではなく事務所の責任になります。以下の各サービスには、それぞれ固有の注意点だけを挙げています。
+      </div>
 
       <div class="services">
 
@@ -682,7 +911,7 @@
           毎月の点検を「税務監査」と呼びます。帳簿を見て、税務上まずい処理や説明のつかない支出がないかを確かめる作業です。決算・申告と、その内容の根拠を書いた「書面添付」も、この範囲に含まれます。</p>
           <dl class="rows">
             <div class="row">
-              <dt>新人の担当</dt>
+              <dt>作業イメージ</dt>
               <dd>仕訳日記帳からの要確認仕訳の抽出、監査不明点一覧表への転記、前期の指摘事項との照合、申告書別表の下書き、届出書の作成補助</dd>
             </div>
             <div class="row">
@@ -697,7 +926,7 @@
             </div>
             <div class="row caution">
               <dt>注意点</dt>
-              <dd>摘要の文字だけで科目や税区分を断定しない。前期に指摘した論点は今期も再発していないか必ず見る。判断に迷ったものは「不明点」として残し、自分で結論を出さない。</dd>
+              <dd>摘要（取引の内容として書かれた短い文字）だけを見て、科目や税区分を断定しない。前期に指摘した論点は、今期も同じことが起きていないか必ず確認する。</dd>
             </div>
           </dl>
         </article>
@@ -712,7 +941,7 @@
           税務調査とは、申告の内容が正しいかを税務署が確認しにくることです。数年に1度の頻度で、お客様の会社に調査官が来ます。そこに税理士が同席して受け答えをするのが立会いです。相談は月額の顧問料に含まれますが、立会いは1日いくらの別料金になります。</p>
           <dl class="rows">
             <div class="row">
-              <dt>新人の担当</dt>
+              <dt>作業イメージ</dt>
               <dd>相談内容の記録、過去の類似案件・通達・質疑応答事例の調べ物、調査当日の資料準備とコピー、議事メモの作成</dd>
             </div>
             <div class="row">
@@ -725,7 +954,7 @@
             </div>
             <div class="row caution">
               <dt>注意点</dt>
-              <dd>新人が単独で税務判断を回答しない。必ず有資格者の確認を経てから返す。口頭で答えたことも記録に残す。調査の場で調査官に聞かれたことは即答せず、担当者に引き取ってもらう。</dd>
+              <dd>口頭で答えたことも必ず記録に残す。税務調査の場で調査官から質問されたときは、その場で答えず担当者に引き取ってもらう。</dd>
             </div>
           </dl>
         </article>
@@ -740,7 +969,7 @@
           月額報酬ですが、<strong>契約書に定めた年間の仕訳件数を超えた分は別途請求</strong>になります。入力する件数が増えれば、その分だけ手間も増えるためです。お客様が自社で会計ソフトに入力している契約では、この項目自体が契約書にありません。</p>
           <dl class="rows">
             <div class="row">
-              <dt>新人の担当</dt>
+              <dt>作業イメージ</dt>
               <dd>証憑の整理とスキャン、仕訳入力、口座・カードのデータ連携、仕訳件数のカウント</dd>
             </div>
             <div class="row">
@@ -753,7 +982,7 @@
             </div>
             <div class="row caution">
               <dt>注意点</dt>
-              <dd>年間仕訳数が契約の上限に近づいていないか毎月見る（超過は別途請求の対象で、事前の説明が必要）。内容が分からない支出を勝手に科目づけしない。消費税区分（軽減8%・10%・対象外）は入力の時点で正しく。弁当代は軽減8%、外食・食事代は10%。</dd>
+              <dd>年間の仕訳件数が契約の上限に近づいていないか毎月見る（超過は別途請求の対象になり、事前の説明が必要）。消費税の区分（軽減8%・10%・対象外）は入力の時点で正しく選ぶ。弁当代は8%、店内での飲食は10%。</dd>
             </div>
           </dl>
         </article>
@@ -768,7 +997,7 @@
           契約書の本紙では、この報酬に<strong>労働保険・社会保険の手続の代行も含まれます</strong>。ただし特約で「含まない（社会保険労務士が行う）」と整理している契約もあるので、担当先ごとに確認が必要です。</p>
           <dl class="rows">
             <div class="row">
-              <dt>新人の担当</dt>
+              <dt>作業イメージ</dt>
               <dd>勤怠データの取込とチェック、給与計算、住民税の更新、社会保険料改定の反映、算定基礎届・労働保険年度更新の下準備</dd>
             </div>
             <div class="row">
@@ -796,12 +1025,12 @@
           そのほかの追加業務には、金額の大きさに応じた連絡・承諾のルールがあります（「報酬の額」の章を参照）。</p>
           <dl class="rows">
             <div class="row">
-              <dt>新人の担当</dt>
+              <dt>作業イメージ</dt>
               <dd>年末調整の資料回収と入力、償却資産申告の資産リスト整理、附属明細書の作成補助</dd>
             </div>
             <div class="row caution">
               <dt>注意点</dt>
-              <dd><strong>「ついでにこれもお願い」は無料ではありません。</strong>追加の依頼を受けたら、その場で「やります」と答えず、必ず担当者に共有してください。事前承諾のない追加業務の報酬には、1事業年度あたりの上限が定められています。</dd>
+              <dd><strong>「ついでにこれもお願い」は無料ではありません。</strong>お客様から追加の相談や依頼が出たときは、その場で「やります」「できます」と答えないでください。金額と手続の判断が必要なので、担当者に引き取ってもらいます。</dd>
             </div>
           </dl>
         </article>
@@ -822,9 +1051,12 @@
   <section class="clause">
     <div class="clause-label"><span class="no">補</span>委任範囲の<br>外側</div>
     <div class="clause-body">
-      <h3>「別途協議」の受け皿になっている業務</h3>
+      <h3>事務所のサービスは、顧問契約より広い</h3>
       <p>
-        委任範囲(5)の「上記以外の業務については、別途協議のうえ、決定する」は、単なる但し書きではありません。<strong>事務所が対外的に掲げているサービスの多くが、契約上はこの(5)に入ります。</strong>顧問契約を結んでいるお客様から相談を受けても、自動的に月額顧問料の範囲内になるわけではない、ということです。
+        事務所のウェブサイトには、資金調達の支援や事業承継など、顧問契約書の(1)〜(4)に出てこないサービスも載っています。<strong>これらは契約上、委任範囲(5)の「上記以外の業務については、別途協議のうえ、決定する」に当たります。</strong>
+      </p>
+      <p>
+        つまり、顧問契約を結んでいるお客様からこれらの相談を受けても、<strong>自動的に月額顧問料の範囲内になるわけではありません。</strong>事務所として引き受けられる仕事の幅と、いまの顧問契約でカバーしている範囲は、別物だということです。
       </p>
 
       <div class="table-scroll">
@@ -872,7 +1104,9 @@
       </div>
 
       <div class="alert">
-        <strong>新人が最初につまずくところ。</strong>お客様は「顧問料を払っているのだから相談は無料」と考えていることがあります。一方、契約書上これらは(5)です。どちらが正しいという話ではなく、<em>着手する前に金額帯を判断して連絡・承諾の手続に乗せる</em>のがルールです。相談を受けたら、まず担当者へ。
+        <strong>新人が、これらの依頼を直接受けることはまずありません。</strong>金額と手続の判断が必要なので、担当者や有資格者が窓口になります。ただし、<em>話が出てくる場面には居合わせます</em>。<br>
+        たとえば、担当者に同行した打合せでお客様が「そういえば銀行から借入の話が来ていて」と口にする。事務所の電話を取ったら「相続のことを相談したい」と言われる。資料を受け取りに伺った際の雑談で、社長が息子さんへの引き継ぎの話をする。こうした場面です。<br>
+        このとき新人がすべきことは、引き受けるかどうかの判断ではなく、<strong>聞いた話を担当者に伝えること</strong>です。契約範囲外の話は、事務所にとっては次の仕事の入口でもあります。伝えないままだと、お客様が困っていることにも、事務所が力になれる機会にも、誰も気づけません。
       </div>
       <p class="quote">
         この表は事務所ウェブサイト（tax-fukuda.net）に掲げているサービスを、顧問契約書の条項に対応づけたものです。実際にどこまでを月額顧問料の範囲とするかは担当先ごとの取り決めによります。必ず担当者に確認してください。
@@ -882,9 +1116,9 @@
       <h4>新人メモ</h4>
       <ul>
         <li>サイト掲載のサービス＝顧問料に含まれる、ではない</li>
-        <li>資金調達・事業承継の相談は着手前に担当者へ</li>
+        <li>打合せや電話で契約外の話題が出たら、担当者に伝える</li>
+        <li>その場で「できます」「やります」と答えない</li>
         <li>会計監査は税務顧問とは別の契約・別の名義</li>
-        <li>「無料の相談」と「有料の業務」の境目を自分で判断しない</li>
       </ul>
     </aside>
   </section>
