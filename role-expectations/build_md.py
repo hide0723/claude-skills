@@ -6,7 +6,8 @@
 """
 
 from levels import (DECISIONS, LEVELS, NOTES, REVISIONS, RULES, VERSION,
-                    flag_of, grade_rows, is_prov, roster_names, vacant_text)
+                    flag_of, grade_rows, is_prov, roster_names,
+                    shows_revenue, vacant_text)
 
 OUT = "職階別の期待職能.md"
 
@@ -29,11 +30,18 @@ def level_section(lv):
     out = [f"### {head}（{lv['grades']}）", ""]
     out += [f"**テーマ：{lv['theme']}**", ""]
 
-    if lv["revenue"] != "―":
+    if shows_revenue(lv["sym"]):
         out += [
-            f"| 期待売上高（年間） | 基本給レンジ | 新入年次／年齢の目安 |",
+            "| 期待売上高（年間） | 基本給レンジ | 新入年次／年齢の目安 |",
             "|---|---|---|",
             f"| {lv['revenue']} | {lv['salary']} | {lv['entry']} |",
+            "",
+        ]
+    else:
+        out += [
+            "| 基本給レンジ | 新入年次／年齢の目安 |",
+            "|---|---|",
+            f"| {lv['salary']} | {lv['entry']} |",
             "",
         ]
 
@@ -85,9 +93,9 @@ def grade_table():
             if r["low"] is None
             else f"{r['low']:,}〜{r['high']:,}円"
         )
+        rev = f"{r['revenue']}万円" if shows_revenue(r["sym"]) else "―"
         out.append(
-            f"| **{r['code']}** | {r['level']['title']} | {pay} "
-            f"| {r['revenue']}万円 |"
+            f"| **{r['code']}** | {r['level']['title']} | {pay} | {rev} |"
         )
     return out
 
@@ -152,6 +160,7 @@ def main() -> None:
         "## 1-2. グレード表（全31グレード）",
         "",
         "基本給レンジは月額、期待売上高は年間。上ほど上位。"
+        "D（拠点長）以上は個人の期待売上高を置かない。"
         "誰がどのグレードかはこの表には出さない（在籍者は職階ごとに記載）。",
         "",
     ]

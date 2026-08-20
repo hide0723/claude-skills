@@ -13,7 +13,7 @@ import html as _html
 from atc_map import ATC_TOPICS, LINKS
 from levels import (DECISIONS, LEVELS, REVISIONS, RULES, VERSION, flag_of,
                     grade_rows, is_prov, roster_by_grade, roster_names,
-                    vacant_text)
+                    shows_revenue, vacant_text)
 
 # 一般版と管理者版の2本を出す。違いは「誰がどのグレードか」を出すかどうかだけ。
 # 一般版のHTMLにはグレード別の在籍者を一切書き出さない（隠すのではなく持たせない）。
@@ -594,14 +594,12 @@ def level_slide(lv, admin=False):
         f'    <p class="theme"><span class="lbl">テーマ</span>{esc(lv["theme"])}</p>',
     ]
 
-    if lv["revenue"] != "―":
-        o += [
-            '    <dl class="figures">',
-            f'      <div><dt>期待売上高</dt><dd>{esc(lv["revenue"])}</dd></div>',
-            f'      <div><dt>基本給</dt><dd>{esc(lv["salary"])}</dd></div>',
-            f'      <div><dt>目安</dt><dd>{esc(lv["entry"])}</dd></div>',
-            "    </dl>",
-        ]
+    figs = []
+    if shows_revenue(lv["sym"]):
+        figs.append(f'      <div><dt>期待売上高</dt><dd>{esc(lv["revenue"])}</dd></div>')
+    figs.append(f'      <div><dt>基本給</dt><dd>{esc(lv["salary"])}</dd></div>')
+    figs.append(f'      <div><dt>目安</dt><dd>{esc(lv["entry"])}</dd></div>')
+    o += ['    <dl class="figures">'] + figs + ["    </dl>"]
 
     if lv["roster"]:
         chips = "".join(
@@ -684,6 +682,11 @@ def grade_table(admin=False):
             if r["low"] is None
             else f'{r["low"]:,}<i>〜</i>{r["high"]:,}'
         )
+        rev = (
+            f'{r["revenue"]} <i>万円</i>'
+            if shows_revenue(r["sym"])
+            else '<i>―</i>'
+        )
         names = who_of.get(r["code"], [])
         cell = (
             '<td class="who">'
@@ -697,7 +700,7 @@ def grade_table(admin=False):
             f"    <tr{here}>"
             f'<td class="code">{esc(r["code"])}</td>'
             f'<td class="num">{pay} <i>円</i></td>'
-            f'<td class="num">{r["revenue"]} <i>万円</i></td>{cell}</tr>'
+            f'<td class="num">{rev}</td>{cell}</tr>'
         )
     o += ["  </tbody>", "</table>", "</div>"]
     return "\n".join(o)
@@ -836,7 +839,7 @@ def build(admin: bool) -> str:
     <h2 class="sec">グレード表</h2>
     <p class="lead">全31グレード。上ほど上位です。基本給レンジは月額、期待売上高は年間で、いずれも「グレード制度 基本給テーブル」と一致します。{grade_note}</p>
 {grades_tbl}
-    <p class="lead" style="margin-top:1.2rem">期待売上高＝そのグレードの基本給上限 × 2 × 1.3 × 1.15 × 14（千円未満切上）。各職階の「昇格の条件」は職階をまたぐときの判定です。同じ職階の中のグレード上げ（例：S3→S4）の基準は、この表にはまだありません。</p>
+    <p class="lead" style="margin-top:1.2rem">期待売上高＝そのグレードの基本給上限 × 2 × 1.3 × 1.15 × 14（千円未満切上）。D（拠点長）以上は個人の期待売上高を置かず、組織運営と労働分配率で見ます。各職階の「昇格の条件」は職階をまたぐときの判定です。同じ職階の中のグレード上げ（例：S3→S4）の基準は、この表にはまだありません。</p>
   </div>
 </section>
 
