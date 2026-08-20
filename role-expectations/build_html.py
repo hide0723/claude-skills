@@ -12,7 +12,7 @@ import html as _html
 
 from atc_map import ATC_TOPICS, LINKS
 from levels import (DECISIONS, LEVELS, RULES, VERSION, flag_of, grade_rows,
-                    is_prov)
+                    is_prov, roster_names)
 
 OUT = "職階別の期待職能.html"
 
@@ -328,9 +328,6 @@ CSS = """
     text-align:right;color:var(--ink-2);letter-spacing:-.01em;
   }
   table.gradetbl td.num i{font-style:normal;color:var(--ink-3);font-size:.9em;}
-  table.gradetbl tr.here td{background:var(--flag-soft);}
-  table.gradetbl td.who{font-size:.76rem;color:var(--ink-2);white-space:normal;}
-  table.gradetbl td.who b{font-weight:600;color:var(--ink);}
 
   /* ---- rules / decisions slides ---- */
   .slide h2.sec{
@@ -574,8 +571,10 @@ def level_slide(lv):
 
     if lv["roster"]:
         chips = "".join(
-            f'\n      <span class="who"><b>{esc(n)}</b><code>{esc(g)}</code></span>'
-            for n, g in lv["roster"]
+            f'\n      <span class="who"><b>{esc(n)}</b>'
+            + (f"<code>{esc(note)}</code>" if note else "")
+            + "</span>"
+            for n, note in roster_names(lv)
         )
         o.append(f'    <p class="roster"><span class="lbl">在籍</span>{chips}\n    </p>')
     elif lv["sym"] != "―":
@@ -627,7 +626,6 @@ def grade_table():
         "<th>グレード</th>"
         '<th class="num">基本給レンジ（月額）</th>'
         '<th class="num">期待売上高（年間）</th>'
-        "<th>在籍</th>"
         "</tr></thead>",
         "  <tbody>",
     ]
@@ -637,7 +635,7 @@ def grade_table():
             dark = " on-dark" if r["sym"] in LIGHT_TEXT_ON_BAND else ""
             o.append(
                 f'    <tr class="band{dark}" style="--rank:var(--r-{SLUG[r["sym"]]})">'
-                f'<th colspan="4">{esc(lv["sym"])}｜{esc(lv["title"])}　'
+                f'<th colspan="3">{esc(lv["sym"])}｜{esc(lv["title"])}　'
                 f'{esc(lv["theme"])}'
                 f'<span class="g">入口の目安 {esc(lv["entry"])}</span></th></tr>'
             )
@@ -646,14 +644,11 @@ def grade_table():
             if r["low"] is None
             else f'{r["low"]:,}<i>〜</i>{r["high"]:,}'
         )
-        who = "／".join(f"<b>{esc(n)}</b>" for n in r["roster"])
-        here = ' class="here"' if r["roster"] else ""
         o.append(
-            f"    <tr{here}>"
+            "    <tr>"
             f'<td class="code">{esc(r["code"])}</td>'
             f'<td class="num">{pay} <i>円</i></td>'
-            f'<td class="num">{r["revenue"]} <i>万円</i></td>'
-            f'<td class="who">{who}</td></tr>'
+            f'<td class="num">{r["revenue"]} <i>万円</i></td></tr>'
         )
     o += ["  </tbody>", "</table>", "</div>"]
     return "\n".join(o)
@@ -756,7 +751,7 @@ def main() -> None:
 <section class="slide" id="grades" data-label="グレード表" style="--rank:var(--r-doc)">
   <div class="inner">
     <h2 class="sec">グレード表</h2>
-    <p class="lead">全31グレード。上ほど上位です。基本給レンジは月額、期待売上高は年間で、いずれも「グレード制度 基本給テーブル」と一致します。色の付いた行に現在の在籍者がいます。</p>
+    <p class="lead">全31グレード。上ほど上位です。基本給レンジは月額、期待売上高は年間で、いずれも「グレード制度 基本給テーブル」と一致します。誰がどのグレードかはこの表には出しません（在籍者は職階ごとのスライドに出ます）。</p>
 {grades_tbl}
     <p class="lead" style="margin-top:1.2rem">期待売上高＝そのグレードの基本給上限 × 2 × 1.3 × 1.15 × 14（千円未満切上）。各職階の「昇格の条件」は職階をまたぐときの判定です。同じ職階の中のグレード上げ（例：S3→S4）の基準は、この表にはまだありません。</p>
   </div>

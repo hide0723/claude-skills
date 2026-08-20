@@ -6,7 +6,7 @@
 """
 
 from levels import (DECISIONS, LEVELS, NOTES, RULES, VERSION, flag_of,
-                    grade_rows, is_prov)
+                    grade_rows, is_prov, roster_names)
 
 OUT = "職階別の期待職能.md"
 
@@ -38,7 +38,9 @@ def level_section(lv):
         ]
 
     if lv["roster"]:
-        who = "／".join(f"{n}（{g}）" for n, g in lv["roster"])
+        who = "／".join(
+            f"{n}（{note}）" if note else n for n, note in roster_names(lv)
+        )
         out += [f"**在籍者**：{who}", ""]
     elif lv["sym"] not in ("―",):
         out += ["**在籍者**：現在なし（将来枠）", ""]
@@ -69,10 +71,13 @@ def level_section(lv):
 
 
 def grade_table():
-    """31グレードを1行ずつ並べた表。上（EP3）から下（T1）へ。"""
+    """31グレードを1行ずつ並べた表。上（EP3）から下（T1）へ。
+
+    誰がどのグレードかは出さない。在籍者は職階単位でのみ書く。
+    """
     out = [
-        "| グレード | 職階 | 基本給レンジ（月額） | 期待売上高（年間） | 在籍 |",
-        "|---|---|---|---|---|",
+        "| グレード | 職階 | 基本給レンジ（月額） | 期待売上高（年間） |",
+        "|---|---|---|---|",
     ]
     for r in grade_rows():
         pay = (
@@ -80,10 +85,9 @@ def grade_table():
             if r["low"] is None
             else f"{r['low']:,}〜{r['high']:,}円"
         )
-        who = "／".join(r["roster"])
         out.append(
             f"| **{r['code']}** | {r['level']['title']} | {pay} "
-            f"| {r['revenue']}万円 | {who} |"
+            f"| {r['revenue']}万円 |"
         )
     return out
 
@@ -137,7 +141,8 @@ def main() -> None:
         "",
         "## 1-2. グレード表（全31グレード）",
         "",
-        "基本給レンジは月額、期待売上高は年間。上ほど上位。",
+        "基本給レンジは月額、期待売上高は年間。上ほど上位。"
+        "誰がどのグレードかはこの表には出さない（在籍者は職階ごとに記載）。",
         "",
     ]
     p += grade_table()

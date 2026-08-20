@@ -543,14 +543,15 @@ def expected_revenue(cap):
 
 
 def grade_rows():
-    """31グレードを上（EP3）から下（T1）へ1行ずつ返す。"""
+    """31グレードを上（EP3）から下（T1）へ1行ずつ返す。
+
+    誰がどのグレードかは出さない方針のため、在籍者は含めない。
+    在籍者は職階単位でのみ表示する（roster_names を使う）。
+    """
     by_sym = {lv["sym"]: lv for lv in LEVELS}
     rows = []
     for sym, base, step, n in GRADE_BANDS:
         lv = by_sym[sym]
-        who = {}
-        for name, g in lv["roster"]:
-            who.setdefault(g.split("・")[0], []).append(name)
         for i in range(n, 0, -1):
             low, high = base + step * (i - 1), base + step * i
             code = f"{sym}{i}"
@@ -562,9 +563,21 @@ def grade_rows():
                     "low": low + 1 if low else None,  # T1 は下限なし
                     "high": high,
                     "revenue": expected_revenue(high)[1],
-                    "roster": who.get(code, []),
                     "entry": i == 1,  # その職階の入口グレード
                     "first": i == n,  # 表の中でその職階の先頭に出る行
                 }
             )
     return rows
+
+
+def roster_names(lv):
+    """在籍者を (氏名, 補記) で返す。
+
+    表に出すのは職階までとし、グレード（S3・SS5 など）は落とす。
+    「所長」「総務兼任」のような役職・兼務の補記だけを残す。
+    """
+    out = []
+    for name, grade in lv["roster"]:
+        parts = grade.split("・")
+        out.append((name, "・".join(parts[1:])))
+    return out

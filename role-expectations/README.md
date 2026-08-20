@@ -49,6 +49,11 @@ python3 build_md.py && python3 build_xlsx.py && python3 build_html.py && python3
 各職階の `revenue` / `salary` と一致することを確認済み。基本給テーブルを直すときは
 `GRADE_BANDS` と各職階の `revenue` / `salary` の両方を直すこと。
 
+在籍者は **職階までしか表示しない**。誰がどのグレードかは md にも html にも出さない
+（グレード表に在籍列は置かず、`grade_rows()` も在籍者を返さない）。職階ごとの在籍者は
+`roster_names()` が氏名と「所長」「総務兼任」などの補記だけを返す。
+グレードそのものは `levels.py` の `roster` に持たせたまま、出力側で落としている。
+
 ## 職階とテーマ
 
 | 職階 | グレード | テーマ | 在籍 |
