@@ -1,6 +1,7 @@
 # tools
 
-事務所業務のちょっとしたスクリプト置き場です。
+事務所業務のちょっとしたスクリプト置き場です。他の Claude Code セッションが
+引き継ぐときの申し送りはリポジトリ直下の [`CLAUDE.md`](../CLAUDE.md) にまとめています。
 
 ## asana_assignment_list.py（担当一覧表 HTML ジェネレータ）
 
