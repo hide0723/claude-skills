@@ -9,7 +9,9 @@ EMPグループの「給与テーブル期待職能（2024-09-01版）」を原�
 3つのファイルを個別に手直しすると必ずズレるので、**必ず `levels.py` を直して再生成する**こと。
 
 ```
-levels.py             ← 内容（職階・テーマ・測定指標・運用ルール・要決定事項）
+Asana（正）           ← 職階・テーマ・期待される役割・測定指標・プロセス・昇格の条件
+  └ asana_sync.py    ← Asana の説明欄 ⇄ levels.py の相互変換
+levels.py             ← 内容（上記＋必要なインプット・運用ルール・要決定事項・在籍者）
                         ＋ グレード表（31グレード）を grade_rows() で生成
   ├─ build_md.py     → 職階別の期待職能.md    本文
   ├─ build_xlsx.py   → 職階別の期待職能.xlsx  A3横1枚の印刷用
@@ -26,6 +28,32 @@ atc_map.py            ← 期待されるプロセス × アチーブメント�
 pip install openpyxl
 python3 build_md.py && python3 build_xlsx.py && python3 build_html.py && python3 build_atc_xlsx.py
 ```
+
+## Asana が正（2026-08-20〜）
+
+各職階の **職階・テーマ・期待される役割・測定指標1／2・期待されるプロセス・昇格の条件** は
+Asana を正とする。内容を変えるときは Asana を直し、そこから `levels.py` に取り込む。
+
+```
+02.福田会計 目標設定／計画立案 ＞ 🏫人材
+  └ 評価：💮「この評価・報酬を決めているのは自分」といえる評価制度
+      └ 評価ー役割：職務記述書を作成      ← 1タスク
+          ├ T｜研究生                     ← 職階ごとのサブタスク（9件）
+          ├ S｜担当職
+          └ …（SS / M / SM / D / SD / P / EP）
+```
+
+`asana_sync.py` が説明欄の書式を決めている。`to_notes()` が levels.py → Asana、
+`parse_notes()` が Asana → levels.py。`python3 asana_sync.py` で全9職階の往復テストが走る。
+サブタスクの GID は同ファイルの `SUBTASK_GID` に持たせている。
+
+**取り込みは Claude Code 経由で行う。** Asana MCP の認証がセッションに紐づいていて、
+リポジトリ内のスクリプトから直接 Asana API を叩けないため、`parse_notes()` に渡す本文は
+Claude が MCP で読み取って渡す。「Asanaから取り込んで」と指示すれば、9件を読んで
+`levels.py` を書き換え、md / xlsx / html を再生成する。
+
+Asana に載せないもの（`levels.py` が正のまま）:
+必要なインプット／期待売上高・基本給／在籍者とグレード／運用ルール／要決定事項／ATC対応
 
 ## 項目名（EMP版からの読み替え）
 
