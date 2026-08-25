@@ -23,6 +23,23 @@ md / xlsx / html はすべてこのファイルから生成する。
 
 VERSION = "2026-08-15版"
 
+# 在籍者を並べる順（入所年月日順、所長は最後）。表示はせず並べ替えにだけ使う。
+# 年月は SharePoint の引き継ぎドキュメント（2026-06-04）の勤続年数(2026.6)から逆算。
+JOINED = {
+    "越沼 浩美": "2005-12",
+    "松崎 恵": "2015-10",
+    "福田 純夫": "2016-01",
+    "荻原 真之": "2019-03",
+    "小島 浩子": "2020-05",
+    "須藤 佑介": "2025-04",  # R7.4 入社
+    "根本 綺夏": "2026-04",  # R8.4 入社
+    "津田 茂": "",           # 未確認
+    "原澤 くみこ": "",       # 未確認
+}
+
+# 所長は入所年月にかかわらず最後に置く。
+CHIEF = "福田 秀幸"
+
 # D（拠点長）以上は個人の期待売上高の目安を出さない。組織運営と労働分配率で見るため。
 NO_REVENUE = {"EP", "P", "SD", "D"}
 
@@ -73,7 +90,7 @@ LEVELS = [
         "revenue": "―",
         "salary": "720,001〜810,000円",
         "entry": "19年目 / 39歳",
-        "roster": [("福田 秀幸", "P1・所長"), ("津田 茂", "P1")],
+        "roster": [("津田 茂", "P1"), ("福田 秀幸", "P1・所長")],
         "promo_to": "EP",
         "promo": [
             ("虎の巻試験（マネージャー用）", "要決定"),
@@ -266,10 +283,10 @@ LEVELS = [
         "salary": "270,001〜360,000円",
         "entry": "8年目 / 28歳",
         "roster": [
+            ("越沼 浩美", "SS1"),
+            ("松崎 恵", "SS1"),
             ("福田 純夫", "SS6"),
             ("荻原 真之", "SS5"),
-            ("松崎 恵", "SS1"),
-            ("越沼 浩美", "SS1"),
         ],
         "promo_to": "M",
         "promo": [
@@ -317,10 +334,10 @@ LEVELS = [
         "salary": "180,001〜270,000円",
         "entry": "4年目 / 24歳",
         "roster": [
-            ("原澤 くみこ", "S4"),
-            ("須藤 佑介", "S3"),
             ("小島 浩子", "S3・総務兼任"),
+            ("須藤 佑介", "S3"),
             ("根本 綺夏", "S2"),
+            ("原澤 くみこ", "S4"),
         ],
         "promo_to": "SS",
         "promo": [
@@ -609,7 +626,7 @@ def roster_names(lv):
     「所長」「総務兼任」のような役職・兼務の補記だけを残す。
     """
     out = []
-    for name, grade in lv["roster"]:
+    for name, grade in roster_sorted(lv):
         parts = grade.split("・")
         out.append((name, "・".join(parts[1:])))
     return out
@@ -622,7 +639,7 @@ def roster_by_grade():
     """
     out = {}
     for lv in LEVELS:
-        for name, grade in lv["roster"]:
+        for name, grade in roster_sorted(lv):
             code = grade.split("・")[0]
             if code:  # グレード未確認の人は行に載せない
                 out.setdefault(code, []).append(name)
@@ -637,3 +654,16 @@ def vacant_text(lv):
 def shows_revenue(sym):
     """その職階で期待売上高（年間）の目安を出すかどうか。"""
     return sym not in NO_REVENUE
+
+
+def roster_sorted(lv):
+    """在籍者を入所年月日順に並べる。所長は最後、入所年月が未確認の人はその手前。"""
+
+    def key(entry):
+        name = entry[0]
+        if name == CHIEF:
+            return (2, "")
+        joined = JOINED.get(name, "")
+        return (0, joined) if joined else (1, "")
+
+    return sorted(lv["roster"], key=key)

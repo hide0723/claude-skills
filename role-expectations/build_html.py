@@ -13,7 +13,7 @@ import html as _html
 from atc_map import ATC_TOPICS, LINKS
 from levels import (DECISIONS, LEVELS, REVISIONS, RULES, VERSION, flag_of,
                     grade_rows, is_prov, roster_by_grade, roster_names,
-                    shows_revenue, vacant_text)
+                    roster_sorted, shows_revenue, vacant_text)
 
 # 一般版と管理者版の2本を出す。違いは「誰がどのグレードか」を出すかどうかだけ。
 # 一般版のHTMLにはグレード別の在籍者を一切書き出さない（隠すのではなく持たせない）。
@@ -606,7 +606,7 @@ def level_slide(lv, admin=False):
             f'\n      <span class="who"><b>{esc(n)}</b>'
             + (f"<code>{esc(tag)}</code>" if tag else "")
             + "</span>"
-            for n, tag in (lv["roster"] if admin else roster_names(lv))
+            for n, tag in (roster_sorted(lv) if admin else roster_names(lv))
         )
         o.append(f'    <p class="roster"><span class="lbl">在籍</span>{chips}\n    </p>')
     elif lv["sym"] != "―":
