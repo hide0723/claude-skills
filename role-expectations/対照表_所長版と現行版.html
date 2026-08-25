@@ -1,0 +1,708 @@
+<title>期待役割 二版対照</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ground:#F5F7F9; --surface:#FFFFFF; --surface-2:#EBEEF2;
+    --ink:#15191F; --ink-2:#525A67; --ink-3:#818A97;
+    --rule:#D8DDE4; --rule-soft:#E7EBF0;
+    --a:#1D3B57;  --a-soft:#E3EAF1;   /* 所長版 */
+    --b:#8B6A2A;  --b-soft:#F2EBDC;   /* 現行版 */
+    --flag:#A6392C; --flag-soft:#F6E7E4;
+    --ok:#3D6B4A;
+
+    --mincho:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP","MS PMincho",serif;
+    --gothic:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","YuGothic","Noto Sans JP","Meiryo",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular","Menlo",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E1116; --surface:#171B22; --surface-2:#1F242D;
+      --ink:#E6E9EF; --ink-2:#A5AEBC; --ink-3:#767F8D;
+      --rule:#2A313B; --rule-soft:#232932;
+      --a:#8AAECF; --a-soft:#182531;
+      --b:#D2A85F; --b-soft:#2A2317;
+      --flag:#E29283; --flag-soft:#2E1B18;
+      --ok:#8FBF9C;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0E1116; --surface:#171B22; --surface-2:#1F242D;
+    --ink:#E6E9EF; --ink-2:#A5AEBC; --ink-3:#767F8D;
+    --rule:#2A313B; --rule-soft:#232932;
+    --a:#8AAECF; --a-soft:#182531;
+    --b:#D2A85F; --b-soft:#2A2317;
+    --flag:#E29283; --flag-soft:#2E1B18;
+    --ok:#8FBF9C;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--gothic);font-size:16px;line-height:1.8;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:74rem;margin:0 auto;padding:2.5rem 1.1rem 6rem;}
+  @media (min-width:48rem){ .wrap{padding:4rem 2rem 7rem;} }
+
+  /* ---- 見出し ---- */
+  .eyebrow{
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;
+    color:var(--ink-3);margin:0 0 1rem;text-transform:uppercase;
+  }
+  h1{
+    font-family:var(--mincho);font-weight:600;letter-spacing:.04em;
+    font-size:clamp(1.9rem,6vw,2.9rem);line-height:1.25;margin:0;
+    text-wrap:balance;
+  }
+  .standfirst{
+    font-family:var(--mincho);font-size:clamp(1rem,2.6vw,1.2rem);
+    color:var(--ink-2);margin:1.1rem 0 0;max-width:44rem;line-height:1.9;
+  }
+  .meta{
+    display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;margin:1.6rem 0 0;
+    font-family:var(--mono);font-size:.7rem;color:var(--ink-3);
+  }
+
+  h2{
+    font-family:var(--mincho);font-weight:600;letter-spacing:.05em;
+    font-size:clamp(1.3rem,3.6vw,1.7rem);line-height:1.4;
+    margin:0 0 .2rem;text-wrap:balance;
+  }
+  section{margin-top:4rem;}
+  section > .lede{color:var(--ink-2);font-size:.92rem;margin:.7rem 0 0;max-width:48rem;}
+  .secnum{
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;
+    color:var(--ink-3);display:block;margin-bottom:.5rem;
+  }
+  .hr{height:1px;background:var(--rule);border:0;margin:1.2rem 0 0;}
+
+  /* ---- 見出しの下の要点 ---- */
+  .keys{
+    display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+    margin:2.4rem 0 0;grid-template-columns:1fr 1fr;
+  }
+  @media (min-width:44rem){ .keys{grid-template-columns:repeat(4,1fr);} }
+  .keys > div{background:var(--surface);padding:.9rem 1rem 1rem;}
+  .keys dt{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;
+    color:var(--ink-3);margin:0 0 .35rem;
+  }
+  .keys dd{
+    margin:0;font-family:var(--mincho);font-size:1.02rem;line-height:1.5;
+    color:var(--ink);
+  }
+  .keys dd b{font-family:var(--mono);font-weight:600;font-size:1.5rem;letter-spacing:-.02em;}
+
+  /* ---- 表 ---- */
+  .scroll{overflow-x:auto;margin-top:1.6rem;border:1px solid var(--rule);background:var(--surface);}
+  table{border-collapse:collapse;width:100%;min-width:34rem;font-size:.87rem;}
+  th,td{
+    text-align:left;vertical-align:top;padding:.6rem .8rem;
+    border-bottom:1px solid var(--rule-soft);
+  }
+  thead th{
+    background:var(--surface-2);border-bottom:1px solid var(--rule);
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;
+    color:var(--ink-3);font-weight:600;white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:0;}
+  td.code,th.code{
+    font-family:var(--mono);font-weight:500;font-size:.78rem;
+    white-space:nowrap;color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .col-a{border-left:3px solid var(--a);}
+  .col-b{border-left:3px solid var(--b);}
+  td small{display:block;color:var(--ink-3);font-size:.78rem;line-height:1.6;margin-top:.15rem;}
+
+  /* ---- 職階ごとの対比 ---- */
+  .pair{
+    display:grid;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);margin-top:1rem;
+  }
+  @media (min-width:56rem){ .pair{grid-template-columns:1fr 1fr;} }
+  .side{background:var(--surface);padding:1rem 1.1rem 1.3rem;}
+  .side > .who{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;
+    padding:.15rem .5rem;display:inline-block;margin:0 0 .8rem;
+  }
+  .side.a .who{background:var(--a);color:var(--surface);}
+  .side.b .who{background:var(--b);color:var(--surface);}
+  :root[data-theme="dark"] .side.a .who,
+  :root[data-theme="dark"] .side.b .who{color:#0E1116;}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .side.a .who,
+    :root:not([data-theme="light"]) .side.b .who{color:#0E1116;}
+  }
+  .lvhead{
+    display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;
+    margin:3rem 0 0;padding-bottom:.5rem;border-bottom:2px solid var(--ink);
+  }
+  .lvhead .sym{
+    font-family:var(--mono);font-weight:600;font-size:.75rem;letter-spacing:.1em;
+    background:var(--ink);color:var(--ground);padding:.14rem .5rem;
+  }
+  .lvhead h3{
+    font-family:var(--mincho);font-weight:600;font-size:1.25rem;
+    letter-spacing:.04em;margin:0;
+  }
+  .lvhead .band{
+    margin-left:auto;font-family:var(--mono);font-size:.72rem;color:var(--ink-3);
+    font-variant-numeric:tabular-nums;
+  }
+  .summary{
+    font-family:var(--mincho);font-size:.95rem;color:var(--ink-2);
+    margin:0 0 .9rem;line-height:1.8;
+  }
+  .lbl{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;
+    color:var(--ink-3);margin:1rem 0 .35rem;
+  }
+  .lbl:first-of-type{margin-top:0;}
+  .side ol,.side ul{margin:0;padding-left:1.3rem;}
+  .side li{font-size:.87rem;line-height:1.75;color:var(--ink-2);margin:.22rem 0;}
+  .side li::marker{color:var(--ink-3);font-family:var(--mono);font-size:.82em;}
+  .kpi{
+    font-size:.84rem;color:var(--ink-2);background:var(--surface-2);
+    padding:.5rem .7rem;margin:.35rem 0 0;line-height:1.7;
+  }
+
+  /* ---- 印 ---- */
+  .mark{
+    display:inline-block;font-family:var(--mono);font-size:.58rem;
+    letter-spacing:.08em;padding:.02rem .35rem;margin-left:.3rem;
+    vertical-align:.08em;white-space:nowrap;
+    color:var(--flag);background:var(--flag-soft);
+    border:1px solid color-mix(in srgb, var(--flag) 32%, transparent);
+  }
+  .mark.same{color:var(--ok);background:transparent;
+    border-color:color-mix(in srgb, var(--ok) 40%, transparent);}
+
+  /* ---- 決めること ---- */
+  ol.decide{
+    list-style:none;counter-reset:d;margin:1.6rem 0 0;padding:0;
+    display:flex;flex-direction:column;gap:1px;
+    background:var(--rule);border:1px solid var(--rule);
+  }
+  ol.decide li{
+    counter-increment:d;background:var(--surface);
+    padding:1rem 1.1rem 1.1rem 3rem;position:relative;
+  }
+  ol.decide li::before{
+    content:counter(d,decimal-leading-zero);position:absolute;
+    left:1.1rem;top:1.15rem;font-family:var(--mono);font-size:.7rem;
+    color:var(--ink-3);
+  }
+  ol.decide b{display:block;font-size:.98rem;margin-bottom:.3rem;letter-spacing:.02em;}
+  ol.decide p{margin:0;color:var(--ink-2);font-size:.87rem;line-height:1.8;}
+  ol.decide .rec{
+    margin-top:.5rem;font-size:.84rem;color:var(--ink);
+    border-left:2px solid var(--b);padding-left:.7rem;
+  }
+
+  .foot{
+    margin-top:4.5rem;padding-top:1.4rem;border-top:1px solid var(--rule);
+    font-family:var(--mono);font-size:.68rem;color:var(--ink-3);line-height:2;
+  }
+  .foot a{color:var(--b);}
+</style>
+
+<div class="wrap">
+
+<p class="eyebrow">税理士法人福田会計</p>
+<h1>期待役割 二版対照</h1>
+<p class="standfirst">所長が令和8年8月2日に作成された「職階別 期待役割 詳細（別紙）」と、このセッションで組み立ててきた「職階別の期待職能」を突き合わせた表です。両者は<strong>職階の数から違います</strong>。どちらを正とするか、何を残すかを決めるための材料としてまとめました。</p>
+
+<dl class="keys">
+  <div><dt>職階数</dt><dd><b>7</b> 対 <b>9</b></dd></div>
+  <div><dt>統合されている階層</dt><dd>D／SD と M／SM</dd></div>
+  <div><dt>所長版にない項目</dt><dd>プロセス・昇格の条件・インプット</dd></div>
+  <div><dt>突合が必要な資料</dt><dd>グレード表 v9.1</dd></div>
+</dl>
+
+<section>
+  <span class="secnum">01 ── 構造</span>
+  <h2>職階の対応</h2>
+  <p class="lede">所長版は7職階。現行版が分けている D／SD と M／SM が、所長版では1階層にまとまっています。新入年次の目安は、重なる7階層すべてで一致しています。</p>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-a">所長版（7職階）</th>
+          <th class="code">グレード帯</th>
+          <th class="code">新入年次</th>
+          <th class="col-b">現行版（9職階）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-a">代表社員 ーエグゼクティブパートナー</td>
+          <td class="code">EP1〜EP3</td><td class="code">22年目</td>
+          <td class="col-b">EP 代表社員<small>テーマ：戦略的意思決定</small></td>
+        </tr>
+        <tr>
+          <td class="col-a">（執行）社員 ーパートナー</td>
+          <td class="code">P1〜P3</td><td class="code">19年目</td>
+          <td class="col-b">P （執行）社員<small>テーマ：事業計画と経営管理</small></td>
+        </tr>
+        <tr>
+          <td class="col-a">拠点長 ーディレクター<span class="mark">統合</span></td>
+          <td class="code">D1〜SD3</td><td class="code">16年目</td>
+          <td class="col-b">D 拠点長 ＋ SD 拠点長<small>テーマ：マネジャーの育成／計画策定と事業推進（16年目・17年目）</small></td>
+        </tr>
+        <tr>
+          <td class="col-a">部長 ーマネージャー<span class="mark">統合</span></td>
+          <td class="code">M1〜SM3</td><td class="code">12年目</td>
+          <td class="col-b">M 部長 ＋ SM 部長<small>テーマ：チーム力の向上／チーム間の相乗効果（12年目・14年目）</small></td>
+        </tr>
+        <tr>
+          <td class="col-a">主任 ーシニアスタッフ</td>
+          <td class="code">SS1〜SS6</td><td class="code">8年目</td>
+          <td class="col-b">SS 主任<small>テーマ：どれだけ自走できるか</small></td>
+        </tr>
+        <tr>
+          <td class="col-a">担当職 ースタッフ</td>
+          <td class="code">S1〜S6</td><td class="code">4年目</td>
+          <td class="col-b">S 担当職<small>テーマ：実行力の習得</small></td>
+        </tr>
+        <tr>
+          <td class="col-a">研究生 ーアソシエイト</td>
+          <td class="code">T1</td><td class="code">1年目</td>
+          <td class="col-b">T 研究生<small>テーマ：文化に慣れる</small></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="lede" style="margin-top:1.2rem">この統合は、現行版が「要決定」に挙げていた2件（<strong>9. M と SM の線引き</strong>／<strong>10. D と SD のテーマ</strong>）に対する答えになっています。所長版に合わせるなら、この2件は決着です。</p>
+</section>
+
+<section>
+  <span class="secnum">02 ── 項目立て</span>
+  <h2>持っている項目が違う</h2>
+  <p class="lede">同じ「期待役割」でも、書かれている項目の種類が重なりません。所長版は職務とKPIに絞り、現行版は昇格・育成の手順まで抱えています。</p>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>項目</th><th class="col-a">所長版</th><th class="col-b">現行版</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>一言サマリー</td><td class="col-a">あり（2〜3行の職責説明）</td><td class="col-b">テーマ（1語〜1行）</td></tr>
+        <tr><td>期待される役割</td><td class="col-a"><strong>6項目に固定</strong>。具体的な職務</td><td class="col-b">2〜4項目。「〜できる人」という人物像</td></tr>
+        <tr><td>指標</td><td class="col-a">KPI 1行に複数を並記</td><td class="col-b">測定指標1（関与先担当）／測定指標2（総務・経理）の2系統</td></tr>
+        <tr><td>期待されるプロセス</td><td class="col-a">なし</td><td class="col-b">あり。ATC学習項目17件と対応づけ</td></tr>
+        <tr><td>昇格の条件</td><td class="col-a">なし<small>グレード表v9.1の昇格判定④の判定基準として本紙を参照する建て付け</small></td><td class="col-b">あり。虎の巻試験・読書冊数・宣言書・資格要件</td></tr>
+        <tr><td>必要なインプット</td><td class="col-a">なし<small>研究生の役割の中に虎の巻・GTD・ロジカルコミュニケーションが入る</small></td><td class="col-b">あり。職階ごとの書籍リスト</td></tr>
+        <tr><td>評価の運用</td><td class="col-a">役割ごとに ◎／○／△／× の4段階</td><td class="col-b">表の文言そのものでフィードバック</td></tr>
+        <tr><td>改訂</td><td class="col-a">年1回（7月見直しに合わせて）</td><td class="col-b">都度</td></tr>
+        <tr><td>位置づけ</td><td class="col-a">グレード表 v9.1 の<strong>別紙</strong></td><td class="col-b">単独の資料（グレード表・運用ルールも内包）</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="secnum">03 ── 中身</span>
+  <h2>職階ごとの突き合わせ</h2>
+  <p class="lede">7つの重なる職階について、両版の本文を並べています。所長版は職務が具体的（担当社数・比率・期限）で、現行版は EMP グループ版由来の抽象度の高い人物像です。</p>
+
+  <div class="lvhead"><span class="sym">EP</span><h3>代表社員</h3><span class="band">EP1〜EP3 ／ 22年目</span></div>
+  <div class="pair">
+    <div class="side a">
+      <p class="who">所長版</p>
+      <p class="summary">経営責任者・法人代表。所長方針の具現化、業界内での事務所ブランド構築、法人代表として対外責任を負う。</p>
+      <p class="lbl">期待される役割（6項目）</p>
+      <ol>
+        <li>税理士法人の代表社員として、法人の全ての債務・対外契約に責任を負う</li>
+        <li>中長期経営方針（3年・5年・10年）を所長と共に策定・遂行</li>
+        <li>業界団体・関連士業・金融機関等との高位対外関係を構築</li>
+        <li>事務所ブランド・レピュテーションを守り、拡張する</li>
+        <li>事業承継・M&amp;A・組織再編に関する最終意思決定</li>
+        <li>若手（部長・拠点長）の後継育成、次代のリーダー選抜</li>
+      </ol>
+      <p class="lbl">KPI</p>
+      <p class="kpi">事業計画達成率／法人ブランド指標／後継育成の進捗／対外関係の量と質</p>
+    </div>
+    <div class="side b">
+      <p class="who">現行版</p>
+      <p class="summary">テーマ：戦略的意思決定　＜第五水準の経営者＞</p>
+      <p class="lbl">期待される役割</p>
+      <ol>
+        <li>事業計画や各種プロジェクトを成功に導くためのアイデアがあり、担当領域における戦略的意思決定ができる人</li>
+        <li>自部門利益より法人全体利益を優先できる人</li>
+      </ol>
+      <p class="lbl">測定指標1（関与先担当）</p>
+      <ol>
+        <li>労働分配率43%（部下の売上10%＆メンバーの売上5%計上）</li>
+        <li>15名以上の組織を運営できる<span class="mark">仮</span></li>
+        <li>年商3,000万円規模の新サービス・新拠点を立ち上げた経験がある<span class="mark">仮</span></li>
+      </ol>
+      <p class="lbl">測定指標2（総務・経理）</p>
+      <ol>
+        <li>中期経営計画の策定・実行ができる</li>
+        <li>関係会社・提携先を含む法人全体の価値向上に向けた施策の立案ができる</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="lvhead"><span class="sym">P</span><h3>（執行）社員</h3><span class="band">P1〜P3 ／ 19年目</span></div>
+  <div class="pair">
+    <div class="side a">
+      <p class="who">所長版</p>
+      <p class="summary">所長の右腕として全社戦略・重要関与先・提携先開拓・M&amp;Aを担当。一部業務執行を担う社員。</p>
+      <p class="lbl">期待される役割（6項目）</p>
+      <ol>
+        <li>全社戦略（5カテゴリー×3サブ）の推進責任を持ち、月次経営会議を牽引</li>
+        <li>重要関与先（上位20-30先）の最終窓口・所長同席を要する案件の主対応</li>
+        <li>提携先開拓（他士業・コンサル・金融機関）を能動的に進める</li>
+        <li>M&amp;A・組織再編・特殊業務の企画・実行</li>
+        <li>拠点長・部長の指導・評価・目標設定を支援</li>
+        <li>新規事業・商品開発の企画リード</li>
+      </ol>
+      <p class="lbl">KPI</p>
+      <p class="kpi">担当関与先の売上高／提携数の年間純増／全社カテゴリー進捗率／M&amp;A案件数</p>
+    </div>
+    <div class="side b">
+      <p class="who">現行版</p>
+      <p class="summary">テーマ：事業計画と経営管理　＜有能な経営者＞</p>
+      <p class="lbl">期待される役割</p>
+      <ol>
+        <li>自分が経験のない分野でも、事業計画やプロジェクトプランを策定することができる人</li>
+        <li>法人目標の達成に向けて、自ら成長と貢献の機会を作り出し、目に見える成果をあげる人</li>
+      </ol>
+      <p class="lbl">測定指標1（関与先担当）</p>
+      <ol>
+        <li>労働分配率43%（部下の売上10%＆メンバーの売上5%計上）</li>
+        <li>10名以上の組織を運営できる<span class="mark">仮</span></li>
+        <li>代表から経営者代理としての信頼を得ている</li>
+        <li>数年後のビジョンを明確にして、組織によい刺激を与えている</li>
+        <li>ゼロから年商1,000万円以上のサービス・部門を立ち上げた経験がある<span class="mark">仮</span></li>
+      </ol>
+      <p class="lbl">測定指標2（総務・経理）</p>
+      <ol>
+        <li>投資判断や意思決定において、法人全体最適を見据えつつ、自掌握組織に有益な意思決定ができる</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="lvhead"><span class="sym">D / SD</span><h3>拠点長</h3><span class="band">D1〜SD3 ／ 16年目</span></div>
+  <div class="pair">
+    <div class="side a">
+      <p class="who">所長版　── 1階層</p>
+      <p class="summary">拠点全体の運営責任者。拠点損益・拠点採用・拠点内組織開発・地域営業を担う。将来の多拠点展開の中核。</p>
+      <p class="lbl">期待される役割（6項目）</p>
+      <ol>
+        <li>拠点損益（人件費比率50%以内を維持）に責任を負う</li>
+        <li>拠点採用計画の策定・実行（求人票・面談・内定判断）</li>
+        <li>拠点内の組織開発（部長・主任の登用・チーム編成の見直し）</li>
+        <li>地域営業（地元金融機関・商工会議所・地域ネットワーク）</li>
+        <li>拠点独自の商品・付加価値サービスの企画</li>
+        <li>所長・（執行）社員への月次拠点レポート提出</li>
+      </ol>
+      <p class="lbl">KPI</p>
+      <p class="kpi">拠点損益（黒字化・営業利益率）／拠点採用充足率／地域からの新規紹介数／拠点内 定着率</p>
+    </div>
+    <div class="side b">
+      <p class="who">現行版　── 2階層に分割</p>
+      <p class="summary">D テーマ：マネジャーの育成　＜有能な管理者＞<br>SD テーマ：計画策定と事業推進　＜事業を前に進める管理者＞</p>
+      <p class="lbl">D 期待される役割</p>
+      <ol>
+        <li>部長（M・SM）以下の指導育成ができる人</li>
+        <li>働く幸せの実現に向けて、自己利益より部下利益を優先できる人</li>
+        <li>事務所経営に生じる矛盾を受け入れつつ、うまく昇華できる人</li>
+      </ol>
+      <p class="lbl">SD 期待される役割</p>
+      <ol>
+        <li>法人目標の達成に向けたリアリティある計画（予算策定）ができる人</li>
+        <li>所外との交渉・契約締結、部門横断的な働きかけができる人</li>
+        <li>リーダーシップを発揮して、組織を精鋭集団にできる人</li>
+      </ol>
+      <p class="lbl">測定指標1（両者共通の骨格）</p>
+      <p class="kpi">労働分配率43%（部下の売上10%計上）／6名以上の組織を運営できる<span class="mark">仮</span>／D は拠点の単月黒字、SD は担当領域の予算策定と達成</p>
+    </div>
+  </div>
+
+  <div class="lvhead"><span class="sym">M / SM</span><h3>部長</h3><span class="band">M1〜SM3 ／ 12年目</span></div>
+  <div class="pair">
+    <div class="side a">
+      <p class="who">所長版　── 1階層</p>
+      <p class="summary">複数チームを統括するマネージャー。所長の考えを現場に翻訳し、部門損益・組織開発・事業計画の推進を担う。</p>
+      <p class="lbl">期待される役割（6項目）</p>
+      <ol>
+        <li>複数チーム（担当職＋主任）を統括し、部門損益を管理</li>
+        <li>所長方針・虎の巻を現場が実行できる形に翻訳・落とし込み</li>
+        <li>事業計画の各カテゴリーで、部門としての実行責任を負う</li>
+        <li>メンバーの月次評価・半期評価・面談を実施</li>
+        <li>主任・上位担当職の申告書検査・レビュー</li>
+        <li>関与先の追加提案（アップセル・クロスセル）を組織的に推進</li>
+      </ol>
+      <p class="lbl">KPI</p>
+      <p class="kpi">部門損益／メンバーの目標達成率／半期評価スコア／部門内 定着率</p>
+    </div>
+    <div class="side b">
+      <p class="who">現行版　── 2階層に分割</p>
+      <p class="summary">M テーマ：チーム力の向上　＜チームを持つ管理者＞<br>SM テーマ：チーム間の相乗効果　＜チームをつなぐ管理者＞</p>
+      <p class="lbl">M 期待される役割</p>
+      <ol>
+        <li>経験ある分野の目標を定め（部下の目標設定を含めて）、何とかして達成できる人</li>
+        <li>達成に向けた課題や問題を自ら解決する人</li>
+        <li>家族的なチームを作れる人</li>
+        <li>主任（SS）以下の指導育成ができる人</li>
+      </ol>
+      <p class="lbl">SM 期待される役割</p>
+      <ol>
+        <li>自チームの成果だけでなく、他チームと連携して法人全体の成果を上げられる人</li>
+        <li>部門をまたぐ課題を自ら拾い、関係者を巻き込んで解決できる人</li>
+        <li>自チームの利益より法人全体の利益を優先できる人</li>
+      </ol>
+      <p class="lbl">測定指標1（両者共通の骨格）</p>
+      <p class="kpi">労働分配率43%（部下の売上10%計上）／M は3名以上、SM は複数チーム計6名以上<span class="mark">仮</span></p>
+    </div>
+  </div>
+
+  <div class="lvhead"><span class="sym">SS</span><h3>主任</h3><span class="band">SS1〜SS6 ／ 8年目</span></div>
+  <div class="pair">
+    <div class="side a">
+      <p class="who">所長版</p>
+      <p class="summary">難易度の高い顧問先を担当し、他者の申告書検査も可能。後輩指導・現場マネジメント、付加価値業務（コンサル・提案）に関与。</p>
+      <p class="lbl">期待される役割（6項目）</p>
+      <ol>
+        <li>難易度の高い顧問先（複数事業／連結／国際／組織再編等）を単独担当</li>
+        <li>他者の申告書検査（担当職＋主任下位のレビュー）</li>
+        <li>後輩指導・OJT（虎の巻を用いた新人育成）</li>
+        <li>付加価値業務（経営コンサル・事業計画作成支援・資金調達支援）</li>
+        <li>チーム内の業務標準化・効率化の提案</li>
+        <li>半期評価で②中間ライン超え、通年で③昇格判定年額 到達を目標</li>
+      </ol>
+      <p class="lbl">KPI</p>
+      <p class="kpi">経常売上高（②中間ライン超え）／申告書検査件数／後輩の育成進捗／付加価値業務比率</p>
+    </div>
+    <div class="side b">
+      <p class="who">現行版</p>
+      <p class="summary">テーマ：どれだけ自走できるか　＜自分で回し切る個人＞</p>
+      <p class="lbl">期待される役割</p>
+      <ol>
+        <li>指示を待たずに自分の担当を回し切り、判断に迷う点だけを上司に上げられる人</li>
+        <li>失敗をフィードバックと捉え、挑戦できる人</li>
+        <li>質の良い提案書を作成し、周りの人を説得するプランを立案したことがある人</li>
+      </ol>
+      <p class="lbl">測定指標1（関与先担当）</p>
+      <ol>
+        <li>労働分配率43%</li>
+        <li>決算・申告を単独で完結し、関与先へ説明できる</li>
+        <li>トレーナーとして担当職（S）を指導できる</li>
+        <li>担当先からの一次照会を、上司を介さず自ら回答できる</li>
+      </ol>
+      <p class="lbl">測定指標2（総務・経理）</p>
+      <ol>
+        <li>所内環境の改善に向けた提案ができる</li>
+        <li>業務マニュアルを使って後輩の指導ができる</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="lvhead"><span class="sym">S</span><h3>担当職</h3><span class="band">S1〜S6 ／ 4年目</span></div>
+  <div class="pair">
+    <div class="side a">
+      <p class="who">所長版</p>
+      <p class="summary">顧問先を単独で担当。月次巡回・記帳検査・決算・申告・年末調整の主要業務を遂行。</p>
+      <p class="lbl">期待される役割（6項目）</p>
+      <ol>
+        <li>顧問先を単独で担当（15〜25社目安、S帯上位ほど増）</li>
+        <li>月次巡回・記帳検査（虎の巻§8-15 手順遵守）</li>
+        <li>決算・法人税／所得税／消費税／贈与税 申告</li>
+        <li>年末調整・法定調書・給与計算業務</li>
+        <li>関与先からの問い合わせ 1次対応</li>
+        <li>主任・部長への相談を能動的に行い、期日を守る</li>
+      </ol>
+      <p class="lbl">KPI</p>
+      <p class="kpi">担当関与先の経常売上／記帳検査 期日遵守率／申告書 一次品質／年末調整 完遂率</p>
+    </div>
+    <div class="side b">
+      <p class="who">現行版</p>
+      <p class="summary">テーマ：実行力の習得　＜組織のメンバー＞<span class="mark">仮</span></p>
+      <p class="lbl">期待される役割</p>
+      <ol>
+        <li>報・連・相を適正に行い、ボールをなるべく持たず、肩から当たりにいける人</li>
+        <li>上司からの指示を実行徹底できる人</li>
+      </ol>
+      <p class="lbl">測定指標1（関与先担当）<span class="mark">仮</span></p>
+      <ol>
+        <li>労働分配率43%</li>
+        <li>月次巡回監査を担当先について自ら実施し、期限内に完了できる</li>
+        <li>教わった手順を、次からは自分だけで再現できる</li>
+      </ol>
+      <p class="lbl">測定指標2（総務・経理）</p>
+      <ol>
+        <li>定型業務を期限内に、指示なく完了できる</li>
+        <li>所内マニュアルの誤りや不足に気づき、改善案まで出せている</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="lvhead"><span class="sym">T</span><h3>研究生</h3><span class="band">T1 ／ 1年目</span></div>
+  <div class="pair">
+    <div class="side a">
+      <p class="who">所長版</p>
+      <p class="summary">新入社員。試用期間を経て組織に合流。虎の巻・GTD・ロジカルコミュニケーションを習得。</p>
+      <p class="lbl">期待される役割（6項目）</p>
+      <ol>
+        <li>虎の巻の全項目を通読・理解（3か月以内）</li>
+        <li>GTD（Getting Things Done）の手法を業務に導入</li>
+        <li>ロジカルコミュニケーション（PREP法・報連相）の習得</li>
+        <li>先輩担当職への随行（月次巡回・決算立会い）</li>
+        <li>簡易な記帳検査・年末調整の補助業務</li>
+        <li>朝礼・週次計画共有・週次セルフチェックへの毎回参加</li>
+      </ol>
+      <p class="lbl">KPI</p>
+      <p class="kpi">虎の巻 習得度／随行件数／簡易業務の完遂率／勤怠</p>
+    </div>
+    <div class="side b">
+      <p class="who">現行版</p>
+      <p class="summary">テーマ：文化に慣れる　＜これから戦力になる人＞</p>
+      <p class="lbl">期待される役割</p>
+      <ol>
+        <li>理念と所内のやり方に馴染み、教わったことを素直に実行できる人</li>
+        <li>同じ指摘を繰り返さない人</li>
+        <li>分からないことを、分からないまま放置しない人</li>
+      </ol>
+      <p class="lbl">測定指標1（関与先担当）</p>
+      <ol>
+        <li>期待売上高・労働分配率は問わない（賞与は在籍月数按分）</li>
+        <li>担当補助として、指示された作業を期限内に完了できる</li>
+      </ol>
+      <p class="lbl">必要なインプット</p>
+      <p class="kpi">福田会計虎の巻／ストレスフリーの仕事術<span class="mark same">GTDと同じ</span></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="secnum">04 ── 片方にしかないもの</span>
+  <h2>統合するときに落ちるもの</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th class="col-a">所長版にしかない</th><th class="col-b">現行版にしかない</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="col-a">
+            拠点損益・部門損益の責任（人件費比率50%以内）<br>
+            拠点採用計画の策定・実行<br>
+            地域営業（金融機関・商工会議所）<br>
+            全社戦略 5カテゴリー×3サブ／月次経営会議<br>
+            虎の巻 §8-15 の手順遵守<br>
+            GTD・PREP法<br>
+            担当社数の目安（15〜25社）<br>
+            ②中間ライン／③昇格判定年額<br>
+            ◎○△× による役割充足度の評価
+          </td>
+          <td class="col-b">
+            期待されるプロセス（＋ATC学習項目17件との対応）<br>
+            昇格の条件（虎の巻試験・読書冊数・宣言書・資格要件）<br>
+            必要なインプット（職階ごとの書籍）<br>
+            測定指標2＝総務・経理（バックオフィス）の系統<br>
+            グレード表 31グレード・基本給レンジ・期待売上高<br>
+            在籍者と各人のグレード<br>
+            運用ルール（労働分配率・残業ペナルティ・賞与連動）<br>
+            要決定事項 10項目
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="secnum">05 ── 突き合わせが要る数字</span>
+  <h2>ぶつかっている指標</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>論点</th><th class="col-a">所長版</th><th class="col-b">現行版</th><th>状況</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>人件費の基準</td>
+          <td class="col-a">人件費比率 <strong>50%以内</strong>（拠点損益）</td>
+          <td class="col-b">労働分配率 <strong>43%</strong></td>
+          <td>定義も数値も違う<span class="mark">要確認</span></td>
+        </tr>
+        <tr>
+          <td>売上の基準</td>
+          <td class="col-a">②中間ライン／③昇格判定年額（v9.1の用語）</td>
+          <td class="col-b">期待売上高＝基本給上限×2×1.3×1.15×14</td>
+          <td>v9.1 未入手<span class="mark">要確認</span></td>
+        </tr>
+        <tr>
+          <td>D以上の個人売上</td>
+          <td class="col-a">置かない（拠点損益・部門損益で見る）</td>
+          <td class="col-b">置かない（本日の指示で削除済み）</td>
+          <td>一致<span class="mark same">OK</span></td>
+        </tr>
+        <tr>
+          <td>組織人数の要件</td>
+          <td class="col-a">記載なし</td>
+          <td class="col-b">15名／10名／6名／3名<span class="mark">仮</span></td>
+          <td>現行版のみ・根拠なし</td>
+        </tr>
+        <tr>
+          <td>資格要件</td>
+          <td class="col-a">記載なし</td>
+          <td class="col-b">簿記3級／2級／税理士3科目／登録<span class="mark">仮</span></td>
+          <td>現行版のみ・根拠なし</td>
+        </tr>
+        <tr>
+          <td>新入年次の目安</td>
+          <td class="col-a">22／19／16／12／8／4／1年目</td>
+          <td class="col-b">同左（＋SD 17年目・SM 14年目）</td>
+          <td>重なる7階層は一致<span class="mark same">OK</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="secnum">06 ── 判断</span>
+  <h2>決めていただきたいこと</h2>
+  <p class="lede">所長版のほうが新しく（令和8年8月2日）、所長ご自身の作成で、内容も福田会計固有です。基本は所長版に寄せるのが筋だと考えていますが、現行版にしかない仕組みをどう扱うかは別の判断になります。</p>
+  <ol class="decide">
+    <li>
+      <b>職階を7に寄せるか、9のまま行くか</b>
+      <p>D／SD と M／SM を1階層に戻すかどうか。グレード帯（D1〜SD3、M1〜SM3）は所長版でも残るので、グレードの刻みは変わりません。変わるのは「テーマを2つ持つか1つにするか」です。</p>
+      <p class="rec">7に寄せることをおすすめします。要決定9・10がそのまま解決し、チームが1つしかない現状とも整合します。</p>
+    </li>
+    <li>
+      <b>期待される役割を所長版の6項目に差し替えるか</b>
+      <p>現行版の「〜できる人」はEMPグループ版由来で、福田会計固有の業務が書かれていません。所長版は担当社数・虎の巻の節番号まで具体的です。</p>
+      <p class="rec">差し替えをおすすめします。抽象的な人物像は、評価面談で「達成／未達」を判定しづらいためです。</p>
+    </li>
+    <li>
+      <b>測定指標2（総務・経理）をどうするか</b>
+      <p>所長版のKPIは関与先担当を前提にした指標で、総務・経理の系統がありません。現行版の要決定6「バックオフィス職の評価軸」は未解決のままになります。</p>
+      <p class="rec">現行版の測定指標2を残し、所長版のKPIに足す形をおすすめします。小島さんが総務兼任のため、実際に必要です。</p>
+    </li>
+    <li>
+      <b>期待されるプロセス・昇格の条件・必要なインプットを残すか</b>
+      <p>所長版にはありません。ただし昇格の条件はグレード表v9.1側にある可能性があり（昇格判定④という記述があります）、重複の恐れがあります。</p>
+      <p class="rec">v9.1を確認してから決めるのが安全です。二重管理になると、どちらが正か分からなくなります。</p>
+    </li>
+    <li>
+      <b>人件費比率50%と労働分配率43%のどちらを使うか</b>
+      <p>現行版の労働分配率43%は賞与算定シートと連動しています。所長版の人件費比率50%以内は拠点損益の指標です。分母が違う可能性が高く、そのままでは並べられません。</p>
+      <p class="rec">定義を確認のうえ、どちらか一方に統一してください。両方載せると現場が混乱します。</p>
+    </li>
+    <li>
+      <b>グレード表 v9.1 を共有していただけますか</b>
+      <p>②中間ライン・③昇格判定年額・昇格判定④・下位グレードによる判定は、いずれもv9.1の用語です。現在こちらが持っているのは「グレード制度_基本給テーブル_福田会計」（2026-06-30更新）で、31グレードの基本給レンジのみです。</p>
+      <p class="rec">v9.1をいただければ、グレード表・昇格の条件・期待売上高の3点をまとめて突合します。</p>
+    </li>
+  </ol>
+</section>
+
+<p class="foot">
+  所長版：職階別 期待役割 詳細（別紙）　令和8年8月2日　作成：所長 福田 秀幸<br>
+  現行版：職階別の期待職能　2026-08-15版（たたき台）　原型：EMPグループ 給与テーブル期待職能 2024-09-01版<br>
+  現行版の閲覧ページ：<a href="https://claude.ai/code/artifact/8295227f-91f0-42ec-b096-de04999f8de0">一般版</a>
+</p>
+
+</div>
