@@ -45,11 +45,31 @@ R*年*.json
    など社内の場所に保管している。** そちらの場所をユーザーに確認してから
    `--snapshot-dir` に渡す。このリポジトリのローカルには存在しない前提で動く。
 3. 生成した HTML やスナップショットをユーザーへ渡すときは `SendUserFile` で
-   届ける（このセッションのやり方）。Asana の生データそのものを SharePoint へ
-   アップロードして永続化する運用は、まだ導入していない — もしユーザーが
-   「他のセッションからも同じデータをすぐ読めるようにしたい」と言ったら、
-   SharePoint「30.担当一覧表」フォルダに JSON かスナップショットを置く案を
-   提案し、置き場所と命名をユーザーと決めてから実装する。
+   届ける（このセッションのやり方）。
+
+### SharePoint「30.担当一覧表」への最新 JSON アップロード（権限待ち・未達成）
+
+「他のセッションからも同じデータをすぐ読めるようにしたい」という依頼を受けて
+実装・実行を試みたが、**Microsoft 365 コネクタが読み取り専用（`Files.ReadWrite.All`
+が未許可）で、書き込みが `FORBIDDEN` になる。** 管理者に claude.ai の Microsoft 365
+コネクタ設定でこの権限を追加してもらう必要がある。権限が有効になったら、下記の
+手順でそのまま実行できる。
+
+- 置き先: ドライブ `b!Bf5X_il3t068ZsAQcxsgjv3eijrhjJtHuB0iH1ILYo87h_eDv3RhQ5sSQEGSHZi3`
+  のフォルダ「General/30.担当一覧表」（アイテム ID
+  `01OSSOZFCSOCLVEURNIZC3BZFOZ7WK637P`。`sharepoint_folder_search` はこの環境では
+  ヒットしないことがあるため、`read_resource` で `General` フォルダを一覧して
+  探すこと）
+- ファイル名: `担当一覧表_最新データ.json`（`conflictBehavior: replace` で毎回上書き）
+- 中身: `asana_assignment_list.py` の `save_snapshot()` と同じスキーマ
+  （`{"label", "synced", "records": [...]}`）。ただし `sharepoint_upload_file`
+  の `content` はツール呼び出しの引数に文字列としてそのまま書く必要があり、
+  `json.dumps` の既定（1 行）だと大きすぎて `Read` の 1 回あたりの上限
+  （25000 トークン）に収まらない。**1 レコード 1 行になるよう整形してから
+  複数回の `Read` で読み込み、それを `content` に組み立てる**こと
+  （`tools/asana_assignment_list.py` の `save_snapshot` は使わず、一時ファイルを
+  自分で作る）
+- 権限が有効になるまでは、`SendUserFile` で JSON をユーザーへ渡すだけにとどめる
 
 ### 変換規則は Python と HTML で二重に持っている
 
