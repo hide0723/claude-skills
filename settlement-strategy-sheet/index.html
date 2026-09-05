@@ -1,0 +1,646 @@
+<title>9月決算 対策検討シート</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#F4F5F7; --surface:#FFFFFF; --surface-2:#EDEFF3; --line:#D8DCE4; --line-soft:#E6E9EF;
+    --ink:#161A20; --ink-2:#4A5361; --ink-3:#77808F;
+    --accent:#2B5C8A; --accent-soft:#E4EDF6; --accent-ink:#1E4468;
+    --ok:#2F7A55; --ok-soft:#E2F0E8;
+    --warn:#B4762A; --warn-soft:#F6EEE0;
+    --risk:#B03A3A; --risk-soft:#F7E6E6;
+    --off:#8A93A1; --off-soft:#EAECF0;
+    --shadow:0 1px 2px rgba(22,26,32,.06), 0 6px 18px rgba(22,26,32,.05);
+    --mincho:"Zen Old Mincho",Georgia,"Yu Mincho",serif;
+    --gothic:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    --mono:"Roboto Mono",ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12151A; --surface:#1A1F26; --surface-2:#222833; --line:#333B47; --line-soft:#2A313B;
+      --ink:#E9ECF1; --ink-2:#AEB7C4; --ink-3:#7E8896;
+      --accent:#7FB2DE; --accent-soft:#1E2C3A; --accent-ink:#A8CDEC;
+      --ok:#6FBE93; --ok-soft:#1B2C24;
+      --warn:#DDA95E; --warn-soft:#302719;
+      --risk:#E08585; --risk-soft:#331D1D;
+      --off:#7E8896; --off-soft:#242A33;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12151A; --surface:#1A1F26; --surface-2:#222833; --line:#333B47; --line-soft:#2A313B;
+    --ink:#E9ECF1; --ink-2:#AEB7C4; --ink-3:#7E8896;
+    --accent:#7FB2DE; --accent-soft:#1E2C3A; --accent-ink:#A8CDEC;
+    --ok:#6FBE93; --ok-soft:#1B2C24;
+    --warn:#DDA95E; --warn-soft:#302719;
+    --risk:#E08585; --risk-soft:#331D1D;
+    --off:#7E8896; --off-soft:#242A33;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--gothic);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  button,input,select,textarea{font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+  /* ---------- masthead ---------- */
+  .masthead{border-bottom:1px solid var(--line);background:var(--surface)}
+  .masthead-in{max-width:1240px;margin:0 auto;padding:20px 24px 18px;display:flex;flex-wrap:wrap;gap:20px 32px;align-items:flex-end;justify-content:space-between}
+  .brand-eyebrow{font-size:11px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;font-family:var(--mono)}
+  h1{font-family:var(--mincho);font-weight:700;font-size:27px;line-height:1.25;margin:4px 0 0;letter-spacing:.02em;text-wrap:balance}
+  .brand-sub{margin:6px 0 0;color:var(--ink-2);font-size:13px}
+  .timeline{display:flex;gap:0;align-items:stretch;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface)}
+  .tl{padding:8px 16px;min-width:104px}
+  .tl + .tl{border-left:1px solid var(--line-soft)}
+  .tl-k{font-size:10.5px;letter-spacing:.1em;color:var(--ink-3)}
+  .tl-v{font-family:var(--mono);font-size:16px;font-weight:500;font-variant-numeric:tabular-nums}
+  .tl.now{background:var(--accent-soft)}
+  .tl.now .tl-v{color:var(--accent-ink)}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1240px;margin:0 auto;padding:22px 24px 72px;display:grid;grid-template-columns:274px minmax(0,1fr);gap:24px;align-items:start}
+  @media (max-width:940px){.wrap{grid-template-columns:1fr}}
+
+  .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:16px}
+  @media (max-width:940px){.rail{position:static}}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow)}
+  .panel-h{padding:11px 14px;border-bottom:1px solid var(--line-soft);font-size:11px;letter-spacing:.14em;color:var(--ink-3);font-family:var(--mono)}
+  .panel-b{padding:14px}
+
+  label.fld{display:block;font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);margin-bottom:5px}
+  select,input[type=text],input[type=date],textarea{width:100%;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:7px 9px;font-size:13.5px}
+  textarea{resize:vertical;line-height:1.6}
+  .fld-row + .fld-row{margin-top:12px}
+
+  .prog{display:flex;flex-direction:column;gap:9px}
+  .prog-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline;font-size:12.5px}
+  .prog-n{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-2)}
+  .bar{grid-column:1/-1;height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+  .bar i{display:block;height:100%}
+  .dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:7px;vertical-align:1px}
+
+  /* ---------- tabs ---------- */
+  .tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:18px;flex-wrap:wrap}
+  .tab{background:none;border:0;border-bottom:2px solid transparent;padding:9px 15px 10px;cursor:pointer;color:var(--ink-2);font-size:13.5px;font-weight:500}
+  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
+  .tab .cnt{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:6px}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+  .chipbtn{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:4px 13px;font-size:12.5px;cursor:pointer;color:var(--ink-2)}
+  .chipbtn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .spacer{flex:1}
+  .btn{background:var(--accent);color:#fff;border:0;border-radius:4px;padding:7px 15px;font-size:13px;font-weight:500;cursor:pointer}
+  :root[data-theme="dark"] .btn, :root:not([data-theme="light"]) .btn{color:#0F1319}
+  @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .btn{color:#fff}}
+  .btn.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+
+  /* ---------- catalog ---------- */
+  .sec{margin-bottom:30px}
+  .sec-h{display:flex;gap:12px;align-items:baseline;padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:2px}
+  .sec-ord{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em}
+  .sec-t{font-family:var(--mincho);font-size:17px;font-weight:600}
+  .sec-note{font-size:12px;color:var(--ink-3);margin-left:auto;text-align:right}
+
+  .item{border-bottom:1px solid var(--line-soft);padding:13px 2px 13px 0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0 13px;align-items:start}
+  .item[data-st="採用"]{background:linear-gradient(90deg,var(--ok-soft),transparent 62%)}
+  .item[data-st="検討中"]{background:linear-gradient(90deg,var(--warn-soft),transparent 62%)}
+  .item[data-st="対象外"]{opacity:.5}
+  .stripe{width:3px;align-self:stretch;border-radius:2px;background:var(--line);margin-right:2px}
+  .item[data-st="採用"] .stripe{background:var(--ok)}
+  .item[data-st="検討中"] .stripe{background:var(--warn)}
+  .item[data-st="対象外"] .stripe{background:var(--off)}
+  .it-t{font-weight:700;font-size:14.5px;line-height:1.5}
+  .it-note{font-size:11.5px;color:var(--accent-ink);background:var(--accent-soft);border-radius:3px;padding:1px 7px;margin-left:8px;white-space:nowrap;font-weight:400}
+  .it-d{color:var(--ink-2);font-size:12.8px;margin-top:3px}
+  .it-meta{display:flex;gap:7px;align-items:center;margin-top:6px;flex-wrap:wrap}
+  .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;border:1px solid var(--line);border-radius:3px;padding:0 6px;color:var(--ink-3)}
+  .tag.pl{border-color:var(--accent);color:var(--accent-ink)}
+  .tag.bs{border-color:var(--ink-3)}
+  .it-ctl{display:flex;flex-direction:column;gap:7px;align-items:flex-end;min-width:172px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .seg button{background:var(--surface);border:0;padding:4px 9px;font-size:11.5px;cursor:pointer;color:var(--ink-2);white-space:nowrap}
+  .seg button + button{border-left:1px solid var(--line-soft)}
+  .seg button[aria-pressed="true"]{color:#fff;font-weight:700}
+  .seg button[data-v="検討中"][aria-pressed="true"]{background:var(--warn)}
+  .seg button[data-v="採用"][aria-pressed="true"]{background:var(--ok)}
+  .seg button[data-v="対象外"][aria-pressed="true"]{background:var(--off)}
+  .memo{width:172px;font-size:12px;padding:5px 7px;min-height:30px}
+  .docs{margin-top:8px;grid-column:2/3;display:flex;flex-wrap:wrap;gap:6px}
+  .doc{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:3px;padding:2px 8px 2px 6px;cursor:pointer}
+  .doc input{accent-color:var(--ok);margin:0}
+  .doc.got{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+  @media (max-width:700px){
+    .item{grid-template-columns:auto minmax(0,1fr)}
+    .it-ctl{grid-column:2/3;align-items:flex-start;margin-top:8px}
+    .memo{width:100%}
+  }
+
+  /* ---------- checks ---------- */
+  .chk{display:grid;grid-template-columns:26px minmax(0,1fr) 190px;gap:10px;padding:11px 0;border-bottom:1px solid var(--line-soft);align-items:start}
+  .chk input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent);margin-top:3px}
+  .chk.done .ck-t{text-decoration:line-through;color:var(--ink-3)}
+  .ck-t{font-weight:500}
+  .ck-d{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+  .ck-ask{font-size:12px;color:var(--risk);margin-top:4px;border-left:2px solid var(--risk);padding-left:8px}
+  .ck-src{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:4px}
+  @media (max-width:700px){.chk{grid-template-columns:26px minmax(0,1fr)}.chk textarea{grid-column:2/3}}
+
+  /* ---------- docs list ---------- */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+  th{text-align:left;font-size:11px;letter-spacing:.1em;color:var(--ink-3);font-weight:500;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  td.c{text-align:center;width:52px}
+  .src{font-size:11.5px;color:var(--ink-3)}
+  .empty{padding:36px 20px;text-align:center;color:var(--ink-3);font-size:13px}
+  .pill{font-size:11px;border-radius:3px;padding:1px 7px;white-space:nowrap}
+  .pill.采{background:var(--ok-soft);color:var(--ok)}
+  .pill.検{background:var(--warn-soft);color:var(--warn)}
+  .pill.監{background:var(--risk-soft);color:var(--risk)}
+
+  .savebar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:var(--ink);color:var(--paper);border-radius:22px;padding:7px 18px;font-size:12.5px;box-shadow:var(--shadow);opacity:0;transition:opacity .25s;pointer-events:none}
+  .savebar.on{opacity:1}
+  .note{font-size:12px;color:var(--ink-3);margin-top:10px;line-height:1.6}
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div>
+      <div class="brand-eyebrow">税理士法人福田会計</div>
+      <h1>9月決算 対策検討シート</h1>
+      <p class="brand-sub">決算対策カタログ48項目と税務監査・決算確認項目を、法人ごとに検討状況と入手資料まで通しで管理します。</p>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside class="rail">
+    <div class="panel">
+      <div class="panel-h">対象法人</div>
+      <div class="panel-b">
+        <div class="fld-row">
+          <label class="fld" for="co">9月決算・11月申告</label>
+          <select id="co"></select>
+        </div>
+        <div class="fld-row" id="customWrap" hidden>
+          <label class="fld" for="coCustom">法人名</label>
+          <input type="text" id="coCustom" placeholder="法人名を入力">
+        </div>
+        <div class="fld-row">
+          <label class="fld" for="mtg">決算打ち合わせ予定日</label>
+          <input type="date" id="mtg">
+        </div>
+        <div class="fld-row">
+          <label class="fld" for="staff">担当</label>
+          <input type="text" id="staff" placeholder="担当者名">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">検討状況</div>
+      <div class="panel-b prog" id="prog"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">当期業績メモ</div>
+      <div class="panel-b">
+        <textarea id="profit" rows="5" placeholder="8月までの試算表利益、着地見込み、前期比較、繰越欠損金の残高など"></textarea>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="catalog" aria-selected="true">決算対策カタログ<span class="cnt" id="cnt-catalog"></span></button>
+      <button class="tab" role="tab" data-tab="checks" aria-selected="false">税務監査・決算確認<span class="cnt" id="cnt-checks"></span></button>
+      <button class="tab" role="tab" data-tab="docs" aria-selected="false">入手資料リスト<span class="cnt" id="cnt-docs"></span></button>
+    </div>
+
+    <section id="p-catalog">
+      <div class="toolbar">
+        <button class="chipbtn" data-f="all" aria-pressed="true">すべて</button>
+        <button class="chipbtn" data-f="active" aria-pressed="false">検討中・採用のみ</button>
+        <button class="chipbtn" data-f="todo" aria-pressed="false">未検討のみ</button>
+        <button class="chipbtn" data-f="PL" aria-pressed="false">損益対策</button>
+        <button class="chipbtn" data-f="BS" aria-pressed="false">資産・資本</button>
+        <span class="spacer"></span>
+        <button class="btn ghost" id="resetBtn">この法人の入力をクリア</button>
+      </div>
+      <div id="catalog"></div>
+      <p class="note">出典：Google ドライブ「決算対策カタログ_マスタ」（48項目）。時期区分は9月決算を基準に、着手期限を併記しています。</p>
+    </section>
+
+    <section id="p-checks" hidden>
+      <div id="checks"></div>
+      <p class="note">出典：monthly-tax-audit スキルの判断ルール（消費税区分・修繕費・建設仮勘定・寄付金等）＋法人決算特有の確認項目。チェック時のメモは打ち合わせ時の質問メモとしてそのまま使えます。</p>
+    </section>
+
+    <section id="p-docs" hidden>
+      <div class="toolbar">
+        <button class="chipbtn" data-df="pending" aria-pressed="true">未入手のみ</button>
+        <button class="chipbtn" data-df="all" aria-pressed="false">すべて</button>
+        <span class="spacer"></span>
+        <button class="btn" id="copyBtn">依頼文をコピー</button>
+      </div>
+      <div class="tblwrap"><table>
+        <thead><tr><th class="c">入手</th><th>資料</th><th>発生元</th><th>区分</th></tr></thead>
+        <tbody id="docsBody"></tbody>
+      </table></div>
+      <p class="note">「検討中」「採用」にした対策項目と、チェック済みでない監査確認項目から自動で積み上がります。</p>
+    </section>
+  </main>
+</div>
+
+<div class="savebar" id="savebar">保存しました</div>
+
+<script>
+/* ============ 静的データ ============ */
+const COMPANIES = ["㈲ムーム","㈱アズ","㈱福島封筒","地域計画㈱","㈱SAKURA咲く","㈱DEIS","㈲杜コーポレーション","㈱NAP","中央電子システム㈱","日本ゼウス工業㈱","㈱大西ライト工業所","髙野設備㈱","㈱大野","㈱アクロ(解散)"];
+
+const SECTIONS = [
+  {key:"early", ord:"Ⅰ", title:"制度加入・計画認定・契約", note:"期首〜期中に着手が必要／9月決算は事実上締切"},
+  {key:"mid",   ord:"Ⅱ", title:"資産取得・修繕・支出",     note:"決算3〜6か月前に検討／事業供用は9/30まで"},
+  {key:"late",  ord:"Ⅲ", title:"決算直前（9月中）に実行可能", note:"9/30まで／未払計上・通知等の要件に注意"},
+  {key:"calc",  ord:"Ⅳ", title:"申告計算上の選択",           note:"11/30の申告時までに判定"},
+  {key:"long",  ord:"Ⅴ", title:"中長期・資本政策",           note:"翌期以降を見据えて打ち合わせで提起"}
+];
+
+// id, section, type, title, note, detail, docs[]
+const CATALOG = [
+ ["m1","early","PL","経営セーフティ共済への加入","中小企業倒産防止共済","掛金（月額最大20万円・累計800万円）は全額損金算入。40か月以上で解約時100%返戻。解約手当金は益金となるため出口とセットで検討。",["加入契約書・掛金払込証明","前納の可否確認"]],
+ ["m2","early","PL","中小企業退職金共済（中退共）への加入","","掛金は全額損金算入、新規加入・増額に国の助成あり。役員・事業主は加入不可。",["加入申込書控","掛金月額一覧"]],
+ ["m3","early","BS","生命保険の活用","定期／養老／医療","保障確保と保険料の一部損金算入。商品ごとに損金算入割合・解約返戻率が大きく異なる。",["保険証券","保険料控除・年間払込予定表"]],
+ ["m4","early","BS","経営者向け保険の活用","1/2損金・一部損金タイプ","最高解約返戻率に応じて損金算入割合が決まる。返戻金ピークと出口（退職金）をセットで設計。",["保険設計書（返戻率推移表）","保険証券"]],
+ ["m5","early","PL","役員報酬の適正な設定・改定","期首3か月以内＝12月まで","定期同額給与とすることで損金算入。9月決算法人は翌期（10月開始）の改定を12月末までに決議。",["株主総会・取締役会議事録","役員報酬一覧"]],
+ ["m6","early","BS","中小企業投資促進税制の活用","","対象設備の取得で30%特別償却または7%税額控除。対象設備・指定事業の要件確認が必要。",["設備の請求書・納品書","事業供用日のわかる資料"]],
+ ["m7","early","BS","特定経営力向上設備等投資促進税制","経営力向上計画","即時償却または10%（資本金3千万円超は7%）税額控除。計画認定は原則設備取得前。",["経営力向上計画の認定書","工業会証明書"]],
+ ["m8","early","BS","先端設備等導入計画の認定","市区町村","固定資産税の軽減等。認定は設備取得前が原則、賃上げ表明で軽減期間が延長される場合あり。",["先端設備等導入計画認定書"]],
+ ["m9","early","PL","賃上げ促進税制の活用","","給与増加額の一定割合を税額控除（中小最大45%）。教育訓練費の上乗せ要件あり。赤字では使えない。",["前期・当期の給与総額集計","教育訓練費の内訳"]],
+ ["m10","early","PL","企業版ふるさと納税","","損金算入＋税額控除で最大約9割軽減。返礼品の受領は禁止。寄附先・時期の確認が必要。",["寄附受領証明書","対象事業の確認資料"]],
+ ["m11","early","PL","オペレーティングリースの活用","匿名組合出資","初年度に大きな減価償却損。満了時に益金計上されるため将来の対策とセットで検討。",["匿名組合契約書","損益分配報告書"]],
+
+ ["m12","mid","BS","設備・固定資産の計画的取得","減価償却資産","9/30までに「事業の用に供する」必要あり。購入しただけ・未稼働では償却できない。",["請求書・納品書","設置完了／稼働開始のわかる資料"]],
+ ["m13","mid","BS","中古資産の取得","耐用年数短縮で早期償却","見積耐用年数で早期費用化（4年落ち中古車等）。実際に事業に使用している実態が必要。",["売買契約書・車検証等","中古資産の年式がわかる資料"]],
+ ["m14","mid","BS","リース資産の取得","","所有権移転外ファイナンスリースは資産計上＋償却、オペレーティングリースは費用処理。",["リース契約書","リース料支払予定表"]],
+ ["m15","mid","BS","圧縮記帳の活用","補助金・保険金・買換え","取得資産の簿価を圧縮して課税を繰延べ。将来の償却費は減る＝繰延べである点に留意。",["補助金交付決定通知","保険金支払明細"]],
+ ["m16","mid","PL","修繕の実施","資本的支出と修繕費の区分","老朽箇所の修繕費は当期費用。価値増加・耐用年数延長は資本的支出として資産計上。",["修繕内容のわかる請求書・見積書","工事写真等"]],
+ ["m17","mid","PL","出張日当の支給","出張旅費規程に基づく","規程を整備し日当を支給すると会社は損金、受給者は一定額まで非課税。規程整備と相当性が要件。",["出張旅費規程","出張報告書・日当支給明細"]],
+ ["m18","mid","PL","顧問料・決算報酬の見直し","福田会計","決算対策や申告品質の向上に資する報酬体系を見直し、適正なサポート水準を確保。",[]],
+
+ ["m19","late","PL","決算賞与（従業員賞与の増額・未払計上）","9/30までに各人へ通知","9/30までに各人へ支給額を通知し、10月中に支給、当期に未払計上すれば損金算入可。",["各人別の支給額通知書（控）","支給日のわかる振込資料"]],
+ ["m20","late","PL","役員退職金の支給","","適正額の範囲で損金算入できる大型対策。功績倍率法等の妥当性検討と株主総会決議が必要。",["株主総会議事録","功績倍率の算定資料","退職の事実がわかる資料"]],
+ ["m21","late","PL","少額減価償却資産の取得","30万円未満・年300万円まで","中小企業者等は少額資産を全額即時損金算入。事業供用が要件。",["取得資産の一覧（取得価額・供用日）"]],
+ ["m22","late","BS","一括償却資産への振替","20万円未満","3年均等償却。償却資産税の対象外となるメリットあり。少額特例との有利選択を検討。",["20万円未満資産の一覧"]],
+ ["m23","late","PL","損害保険等の加入","","掛捨て型は全額費用、積立型は一部資産計上。",["保険証券・払込証明"]],
+ ["m24","late","PL","短期前払費用の特例の活用","継続適用が条件","支払日から1年以内に役務提供を受ける前払費用を支払時損金に。家賃・保険料・サブスク等。",["年払いに変更した契約書","支払明細"]],
+ ["m25","late","BS","未払費用の計上","債務確定基準","当期発生・債務確定の費用（給与・社会保険料・利息等）を期末に未払計上。",["9月分の請求書","社会保険料の納入告知書"]],
+ ["m26","late","BS","不良在庫の処分・評価損の計上","","処分または評価損計上で費用化。評価損は要件が厳格、廃棄の事実・評価根拠の資料を必ず残す。",["廃棄証明・処分業者の伝票","滞留在庫リスト（廃棄写真）"]],
+ ["m27","late","BS","貸倒引当金の計上","","期末金銭債権に対する繰入。中小は法定繰入率が可。一括評価・個別評価の区分確認が必要。",["期末売掛金・受取手形の残高明細"]],
+ ["m28","late","PL","不良債権の貸倒損失処理","","法律上・事実上・形式上の3区分で要件が異なる。回収不能の事実確認が必要。",["回収不能を示す資料（債権放棄通知等）","取引停止後の入金経過"]],
+ ["m29","late","PL","交際費→会議費への適正な区分振替","","会議に伴う相当な飲食費は会議費として全額損金。参加者・目的の記録を残す。",["飲食店領収書（参加者・目的の記載）"]],
+ ["m30","late","PL","交際費の損金算入枠の活用","年800万円","中小は年800万円まで全額損金算入（または接待飲食費50%を選択）。枠の利用状況を把握。",["交際費の科目内訳（8月末時点）"]],
+ ["m31","late","PL","含み損資産の売却による損出し","財産評価","含み損の有価証券・不動産等を売却して損失実現。譲渡の事実・時期、グループ内取引の制限に注意。",["時価がわかる資料（残高報告書・評価証明）","売買契約書"]],
+ ["m32","late","BS","前受金の期間帰属の適正化","","翌期に帰属する売上を前受金として繰延べ。契約・履行義務に照らして収益認識時期を適正化。",["契約書・注文書","9月末の未完了案件リスト"]],
+ ["m33","late","BS","現金過不足の整理・計上","","帳簿残高と実際有高の差異を期末までに調査・整理し、原因不明分を雑損・雑益で処理。",["9月末の現金実査表"]],
+ ["m34","late","BS","創立費・開業費の任意償却","","繰延資産は任意のタイミングで償却可能。利益が出た期に償却して費用化。",["繰延資産の残高明細"]],
+ ["m48","late","PL","剰余金配当の検討","株価対策","比準要素1の法人（赤字続きかつ無配当）は純資産価額評価となる。配当により株価上昇を回避する方法を検討。",["株主名簿","配当決議の議事録案"]],
+
+ ["m35","calc","BS","繰越欠損金の活用","最大10年","青色欠損金を繰り越して当期黒字と相殺。中小は全額控除可。期限切れに注意。",["別表七（繰越欠損金の明細）"]],
+ ["m36","calc","PL","寄附金の損金算入","指定・特定公益増進法人・一般","区分に応じた限度額の範囲で損金算入。一般寄附金は限度額が小さいため寄附先の区分確認が重要。",["寄附金の領収書","寄附先の区分がわかる資料"]],
+ ["m37","calc","PL","消費税の有利選択","個別対応／一括比例配分","課税売上割合や設備投資の状況に応じて有利な方を選択。シミュレーションによる判定が必要。",["課税売上割合の計算資料","大口設備投資の用途区分"]],
+ ["m38","calc","PL","簡易課税制度の選択","基準期間5千万円以下","みなし仕入率により計算。原則課税と比較し、事前の届出により適用。",["基準期間の課税売上高","届出書の提出期限確認"]],
+
+ ["m39","long","PL","所得800万円以下への調整","軽減税率の活用","年800万円以下の所得部分は軽減税率。複数の対策の組み合わせで水準を調整。",["当期利益の着地シミュレーション"]],
+ ["m40","long","BS","減資","資本金1億円以下＝中小特例の維持","軽減税率・交際費枠・外形標準課税の不適用など中小特例を維持。手続きと信用面を踏まえ計画的に。",["登記事項証明書","資本金の推移"]],
+ ["m41","long","BS","グループ法人税制の活用","","100%支配関係で譲渡損益の繰延べ・受取配当益金不算入。強制適用である点に注意。",["資本関係図","グループ間取引の一覧"]],
+ ["m42","long","BS","法人化の検討","","所得分散・経費範囲・社会保険・事業承継のメリット。設立コストと社会保険負担も含め判断。",["個人事業の所得推移"]],
+ ["m43","long","BS","特例事業承継税制の活用","","贈与税・相続税の納税猶予・免除。特例承継計画の提出など要件・期限が厳格。",["特例承継計画","株主構成表"]],
+ ["m44","long","BS","自社株式評価の引下げ提案","","評価額を把握し、利益・純資産の調整で評価引下げ。現状評価のうえ中長期の対策を立てる。",["直近の株価評価資料","株主名簿"]],
+ ["m45","long","PL","給与（雑給）の外注費への切替","実態判定に注意","消費税・社会保険で有利になる場合があるが、実態が雇用と判断されると否認される。",["業務委託契約書","請求書（外注先発行）"]],
+ ["m46","long","PL","雇用の拡大（従業員の増員）","","人件費増に加え賃上げ促進税制等の適用にもつながる。事業計画と併せて検討。",["採用計画"]],
+ ["m47","long","PL","免税事業者への移行","インボイス登録の取消し","納税義務がなくなるが、取引先の仕入税額控除への影響を踏まえて慎重に判断。",["取引先の課税事業者比率"]]
+];
+
+// 税務監査チェックリスト由来＋決算特有
+const CHECKS = [
+ {g:"消費税区分（月次監査の指摘パターン）", items:[
+  ["c1","弁当代の税区分","摘要に「弁当代」を含む福利厚生費は軽減税率8%。10%処理があれば修正。","9月までの福利厚生費の内訳と領収書をご提出ください。","monthly-tax-audit"],
+  ["c2","食事代・会議費（外食）の税区分","外食は課対仕入10%。8%（軽）処理があれば修正。","会議費の飲食領収書をご確認ください。","monthly-tax-audit"],
+  ["c3","地代家賃（事業所貸付）の税区分","事業所の貸付は課対仕入10%。非課税扱いがあれば修正。","賃貸借契約書をご提出ください。","monthly-tax-audit"],
+  ["c4","課税売上割合と控除方式の最終確認","個別対応／一括比例配分の有利判定、95%ルールの適用可否を申告前に確定。","",""] ]},
+ {g:"固定資産・修繕（資本的支出の判定）", items:[
+  ["c5","修繕費と資本的支出の区分","「製作＋交換」「新設」等は資本的支出の疑い。「修理代」は修繕費でよい。","大口修繕の請求書をご確認ください。内容から資本的支出に該当しないでしょうか。","monthly-tax-audit"],
+  ["c6","修繕費の重複計上","同一金額・同一内容が別部門・別伝票で複数計上されていないか。","同一内容・同一金額が別伝票でも計上されています。仕訳の経緯をご確認ください。","monthly-tax-audit"],
+  ["c7","建設仮勘定の期末残高と振替","外注加工費（製造費）への振替は固定資産計上が適切でないか。機械装置・構築物への振替は適正。","建設仮勘定の期末残高明細と、完成・引渡しの時期がわかる資料をご提出ください。","monthly-tax-audit"],
+  ["c8","事業供用日の確認","9/30までに事業の用に供したか。未稼働資産は償却できない。","設置完了・稼働開始日のわかる資料をご提出ください。",""],
+  ["c9","除却資産の有無","帳簿にあり現物がない資産の除却漏れ。除却損の計上時期。","除却した資産の一覧と廃棄処分の伝票をご提出ください。",""] ]},
+ {g:"寄付金・出資金・特殊取引", items:[
+  ["c10","大口の寄付金","5万円以上の寄付金は寄附先の区分（指定・特定公益増進・一般）を確認。","寄附金の領収書と寄附先の区分がわかる資料をご提出ください。","monthly-tax-audit"],
+  ["c11","匿名組合出資の損益","損益分配報告書の確認、源泉税の法人税等計上処理の根拠確認。","損益分配報告書をご提出ください。また源泉税の処理根拠をご確認させてください。","monthly-tax-audit"],
+  ["c12","大口消耗品費（100万円超）","資産計上すべきものが消耗品費に含まれていないか。","100万円超の消耗品費の請求書をご確認ください。","monthly-tax-audit"],
+  ["c13","役員・関係会社との取引","役員貸付金の利息計上、関係会社間取引の価格の妥当性、寄附金認定のリスク。","役員貸付金の残高と利息計上の状況をご確認ください。",""] ]},
+ {g:"決算特有の残高確認", items:[
+  ["c14","棚卸資産の実地棚卸","9/30基準の棚卸表の入手。評価方法の届出との整合。滞留・不良在庫の有無。","9月末の実地棚卸表をご提出ください。",""],
+  ["c15","売上・仕入のカットオフ","9月末前後の売上計上・仕入計上の期間帰属。翌期分の前倒し計上がないか。","9月末前後の納品書・検収書をご確認ください。",""],
+  ["c16","仮払金・仮受金の整理","期末に残る仮勘定の内容確認と適正科目への振替。","仮払金・仮受金の期末残高の内訳をご説明ください。",""],
+  ["c17","未払社会保険料・未払事業税の計上","債務確定分の未払計上漏れがないか。","9月分の社会保険料の納入告知書をご提出ください。",""],
+  ["c18","貸倒懸念債権の洗い出し","長期滞留売掛金の有無と回収可能性。引当・貸倒損失の要否。","1年以上動きのない売掛金の相手先と経緯をご確認ください。",""],
+  ["c19","現金・預金の残高照合","9月末の現金実査、預金残高証明書との照合。","9月末の残高証明書と現金実査表をご提出ください。",""],
+  ["c20","借入金の残高・返済予定表","期末残高の照合、1年内返済額の区分、利息の期間按分。","借入金の返済予定表（9月末時点）をご提出ください。",""] ]},
+ {g:"前期・申告関連", items:[
+  ["c21","前期監査不明点の再発確認","前期に「修正確認済み」とした事項が今期も同様に計上されていないか。","前期○月に同様の指摘がありますが、今期も同様に計上されています。ご確認ください。","monthly-tax-audit"],
+  ["c22","前期申告書との繰越項目の照合","繰越欠損金、未納法人税等、別表五(一)の期首残高の整合。","",""],
+  ["c23","届出書の提出期限確認","簡易課税・課税事業者選択等、翌期適用の届出は9/30までに提出。","",""],
+  ["c24","決算打ち合わせ資料の準備","対策の採否、税額シミュレーション、納税予定額、翌期の役員報酬案。","",""] ]}
+];
+
+const STATUSES = ["検討中","採用","対象外"];
+
+/* ============ 状態 ============ */
+const KEY = "kessan9-v1";
+let state = {};      // {[company]: {items:{}, checks:{}, docs:{}, meta:{}}}
+let company = COMPANIES[0];
+let db = null;
+let filter = "all", docFilter = "pending", tab = "catalog";
+let saveTimer = null;
+
+const $ = s => document.querySelector(s);
+const co = () => (state[company] ||= {items:{}, checks:{}, docs:{}, meta:{}});
+
+function loadLocal(){
+  try{ const r = localStorage.getItem(KEY); if(r) state = JSON.parse(r) || {}; }catch(e){}
+}
+function saveLocal(){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+}
+function flash(msg){
+  const b = $("#savebar"); b.textContent = msg || "保存しました"; b.classList.add("on");
+  clearTimeout(flash._t); flash._t = setTimeout(()=>b.classList.remove("on"), 1400);
+}
+function persist(){
+  saveLocal();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    if(!db) return;
+    try{ await db.doc("sheets/"+encodeURIComponent(company)).set({company, data:co(), updatedAt:Date.now()}); flash("保存しました"); }
+    catch(e){ flash("この端末に保存しました"); }
+  }, 600);
+}
+
+/* ============ 期日 ============ */
+function fiscalDates(){
+  const today = new Date();
+  let y = today.getFullYear();
+  let end = new Date(y, 8, 30);            // 9/30
+  if(today > new Date(y, 10, 30)) { end = new Date(y+1, 8, 30); }
+  const due = new Date(end.getFullYear(), 10, 30);   // 11/30
+  const days = d => Math.ceil((d - today) / 86400000);
+  return {end, due, toEnd:days(end), toDue:days(due)};
+}
+function renderTimeline(){
+  const f = fiscalDates();
+  const fmt = d => `${d.getMonth()+1}/${d.getDate()}`;
+  $("#timeline").innerHTML = `
+    <div class="tl"><div class="tl-k">決算日</div><div class="tl-v">${fmt(f.end)}</div></div>
+    <div class="tl now"><div class="tl-k">決算日まで</div><div class="tl-v">${f.toEnd >= 0 ? f.toEnd+"日" : "経過"}</div></div>
+    <div class="tl"><div class="tl-k">申告期限</div><div class="tl-v">${fmt(f.due)}</div></div>
+    <div class="tl"><div class="tl-k">申告まで</div><div class="tl-v">${f.toDue >= 0 ? f.toDue+"日" : "経過"}</div></div>`;
+}
+
+/* ============ カタログ ============ */
+function itemState(id){ return co().items[id] ||= {status:"", memo:""}; }
+
+function renderCatalog(){
+  const host = $("#catalog");
+  host.innerHTML = "";
+  let shown = 0;
+  for(const sec of SECTIONS){
+    const rows = CATALOG.filter(r => r[1] === sec.key).filter(r => {
+      const st = itemState(r[0]).status;
+      if(filter === "active") return st === "検討中" || st === "採用";
+      if(filter === "todo")   return !st;
+      if(filter === "PL" || filter === "BS") return r[2] === filter;
+      return true;
+    });
+    if(!rows.length) continue;
+    shown += rows.length;
+    const sc = document.createElement("section");
+    sc.className = "sec";
+    sc.innerHTML = `<div class="sec-h"><span class="sec-ord">${sec.ord}</span><span class="sec-t">${sec.title}</span><span class="sec-note">${sec.note}</span></div>`;
+    for(const [id, , type, title, note, detail, docs] of rows){
+      const st = itemState(id);
+      const el = document.createElement("div");
+      el.className = "item";
+      el.dataset.st = st.status || "";
+      el.innerHTML = `
+        <div class="stripe"></div>
+        <div>
+          <div class="it-t">${title}${note ? `<span class="it-note">${note}</span>` : ""}</div>
+          <div class="it-d">${detail}</div>
+          <div class="it-meta"><span class="tag ${type.toLowerCase()}">${type === "PL" ? "損益" : "資産・資本"}</span><span class="tag">${id}</span></div>
+          ${docs.length ? `<div class="docs">${docs.map((d,i)=>{
+            const got = !!co().docs[id+"_"+i];
+            return `<label class="doc${got?" got":""}"><input type="checkbox" data-doc="${id}_${i}"${got?" checked":""}>${d}</label>`;
+          }).join("")}</div>` : ""}
+        </div>
+        <div class="it-ctl">
+          <div class="seg">${STATUSES.map(v=>`<button data-id="${id}" data-v="${v}" aria-pressed="${st.status===v}">${v}</button>`).join("")}</div>
+          <textarea class="memo" data-memo="${id}" rows="1" placeholder="検討メモ・金額">${st.memo||""}</textarea>
+        </div>`;
+      sc.appendChild(el);
+    }
+    host.appendChild(sc);
+  }
+  if(!shown) host.innerHTML = `<div class="panel"><div class="empty">該当する項目がありません。</div></div>`;
+}
+
+/* ============ チェックリスト ============ */
+function renderChecks(){
+  const host = $("#checks");
+  host.innerHTML = "";
+  for(const grp of CHECKS){
+    const sc = document.createElement("section");
+    sc.className = "sec";
+    sc.innerHTML = `<div class="sec-h"><span class="sec-t">${grp.g}</span></div>`;
+    for(const [id, t, d, ask, src] of grp.items){
+      const cur = co().checks[id] ||= {done:false, memo:""};
+      const el = document.createElement("div");
+      el.className = "chk" + (cur.done ? " done" : "");
+      el.innerHTML = `
+        <div><input type="checkbox" data-chk="${id}"${cur.done?" checked":""} aria-label="${t}"></div>
+        <div>
+          <div class="ck-t">${t}</div>
+          <div class="ck-d">${d}</div>
+          ${ask ? `<div class="ck-ask">依頼文：${ask}</div>` : ""}
+          ${src ? `<div class="ck-src">出典 ${src}</div>` : ""}
+        </div>
+        <textarea data-ckmemo="${id}" rows="2" placeholder="確認結果・打合せメモ">${cur.memo||""}</textarea>`;
+      sc.appendChild(el);
+    }
+    host.appendChild(sc);
+  }
+}
+
+/* ============ 資料リスト ============ */
+function docRows(){
+  const rows = [];
+  for(const [id, , , title, , , docs] of CATALOG){
+    const st = itemState(id).status;
+    if(st !== "検討中" && st !== "採用") continue;
+    docs.forEach((d,i)=>rows.push({key:id+"_"+i, doc:d, from:title, kind:st, got:!!co().docs[id+"_"+i]}));
+  }
+  for(const grp of CHECKS) for(const [id, t, , ask] of grp.items){
+    if(!ask) continue;
+    const cur = co().checks[id] || {};
+    if(cur.done) continue;
+    rows.push({key:"chk_"+id, doc:ask, from:t, kind:"監査確認", got:!!co().docs["chk_"+id]});
+  }
+  return rows;
+}
+function renderDocs(){
+  const rows = docRows().filter(r => docFilter === "all" || !r.got);
+  const body = $("#docsBody");
+  if(!rows.length){
+    body.innerHTML = `<tr><td colspan="4"><div class="empty">${docFilter==="pending" ? "未入手の資料はありません。" : "対策項目を「検討中」「採用」にすると、必要資料がここに集まります。"}</div></td></tr>`;
+    return;
+  }
+  const cls = k => k === "採用" ? "采" : k === "検討中" ? "検" : "監";
+  body.innerHTML = rows.map(r=>`
+    <tr>
+      <td class="c"><input type="checkbox" data-doc="${r.key}"${r.got?" checked":""} aria-label="入手済み"></td>
+      <td>${r.doc}</td>
+      <td class="src">${r.from}</td>
+      <td><span class="pill ${cls(r.kind)}">${r.kind}</span></td>
+    </tr>`).join("");
+}
+
+/* ============ 進捗 ============ */
+function renderProg(){
+  const tot = CATALOG.length;
+  const c = {採用:0, 検討中:0, 対象外:0};
+  for(const [id] of CATALOG){ const s = itemState(id).status; if(s) c[s]++; }
+  const未 = tot - c.採用 - c.検討中 - c.対象外;
+  const chkTot = CHECKS.reduce((n,g)=>n+g.items.length,0);
+  const chkDone = Object.values(co().checks).filter(v=>v.done).length;
+  const docs = docRows(); const docGot = docs.filter(d=>d.got).length;
+
+  const row = (color,label,n,d) => `<div class="prog-row"><span><span class="dot" style="background:${color}"></span>${label}</span><span class="prog-n">${n}/${d}</span></div>`;
+  $("#prog").innerHTML =
+    row("var(--ok)","採用",c.採用,tot) +
+    row("var(--warn)","検討中",c.検討中,tot) +
+    row("var(--off)","対象外",c.対象外,tot) +
+    row("var(--line)","未検討",未,tot) +
+    `<div class="bar"><i style="width:${(c.採用/tot*100).toFixed(1)}%;background:var(--ok)"></i></div>` +
+    `<div style="height:6px"></div>` +
+    row("var(--accent)","監査・決算確認",chkDone,chkTot) +
+    `<div class="bar"><i style="width:${chkTot?(chkDone/chkTot*100).toFixed(1):0}%;background:var(--accent)"></i></div>` +
+    `<div style="height:6px"></div>` +
+    row("var(--risk)","資料の入手",docGot,docs.length);
+
+  $("#cnt-catalog").textContent = `${c.採用+c.検討中}/${tot}`;
+  $("#cnt-checks").textContent = `${chkDone}/${chkTot}`;
+  $("#cnt-docs").textContent = `${docs.length-docGot}件未入手`;
+}
+
+function renderAll(){ renderCatalog(); renderChecks(); renderDocs(); renderProg(); renderMeta(); }
+
+function renderMeta(){
+  const m = co().meta || {};
+  $("#mtg").value = m.mtg || "";
+  $("#staff").value = m.staff || "";
+  $("#profit").value = m.profit || "";
+}
+
+/* ============ イベント ============ */
+document.addEventListener("click", e=>{
+  const seg = e.target.closest(".seg button");
+  if(seg){
+    const s = itemState(seg.dataset.id);
+    s.status = s.status === seg.dataset.v ? "" : seg.dataset.v;
+    persist(); renderCatalog(); renderDocs(); renderProg(); return;
+  }
+  const tb = e.target.closest(".tab");
+  if(tb){
+    tab = tb.dataset.tab;
+    document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", String(t.dataset.tab===tab)));
+    for(const k of ["catalog","checks","docs"]) $("#p-"+k).hidden = (k !== tab);
+    return;
+  }
+  const cf = e.target.closest("[data-f]");
+  if(cf){
+    filter = cf.dataset.f;
+    document.querySelectorAll("[data-f]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.f===filter)));
+    renderCatalog(); return;
+  }
+  const df = e.target.closest("[data-df]");
+  if(df){
+    docFilter = df.dataset.df;
+    document.querySelectorAll("[data-df]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.df===docFilter)));
+    renderDocs(); return;
+  }
+});
+
+document.addEventListener("change", e=>{
+  const t = e.target;
+  if(t.dataset.doc){ co().docs[t.dataset.doc] = t.checked; persist(); renderCatalog(); renderDocs(); renderProg(); return; }
+  if(t.dataset.chk){ (co().checks[t.dataset.chk] ||= {}).done = t.checked; persist(); renderChecks(); renderDocs(); renderProg(); return; }
+  if(t.id === "co"){
+    if(t.value === "__other"){ $("#customWrap").hidden = false; $("#coCustom").focus(); }
+    else { $("#customWrap").hidden = true; company = t.value; loadCompany(); }
+    return;
+  }
+});
+
+document.addEventListener("input", e=>{
+  const t = e.target;
+  if(t.dataset.memo){ itemState(t.dataset.memo).memo = t.value; persist(); return; }
+  if(t.dataset.ckmemo){ (co().checks[t.dataset.ckmemo] ||= {}).memo = t.value; persist(); return; }
+  if(["mtg","staff","profit"].includes(t.id)){ (co().meta ||= {})[t.id] = t.value; persist(); return; }
+  if(t.id === "coCustom" && t.value.trim()){ company = t.value.trim(); persist(); renderAll(); return; }
+});
+
+$("#resetBtn").addEventListener("click", ()=>{
+  if(!confirm(`${company} の入力内容をすべて消去します。よろしいですか。`)) return;
+  state[company] = {items:{}, checks:{}, docs:{}, meta:{}};
+  persist(); renderAll(); flash("クリアしました");
+});
+
+$("#copyBtn").addEventListener("click", async ()=>{
+  const rows = docRows().filter(r=>!r.got);
+  if(!rows.length){ flash("未入手の資料はありません"); return; }
+  const f = fiscalDates();
+  const text = `${company} 御中\n\n${f.end.getFullYear()}年9月期の決算にあたり、下記の資料のご提出・ご確認をお願いいたします。\n\n`
+    + rows.map((r,i)=>`${i+1}. ${r.doc}（${r.from}）`).join("\n")
+    + `\n\n税理士法人福田会計`;
+  try{ await navigator.clipboard.writeText(text); flash(`依頼文をコピーしました（${rows.length}件）`); }
+  catch(e){ flash("コピーできませんでした"); }
+});
+
+/* ============ 起動 ============ */
+async function loadCompany(){
+  if(db){
+    try{
+      const d = await db.doc("sheets/"+encodeURIComponent(company)).get();
+      if(d && d.data) state[company] = d.data;
+    }catch(e){}
+  }
+  renderAll();
+}
+
+(function init(){
+  loadLocal();
+  const sel = $("#co");
+  sel.innerHTML = COMPANIES.map(c=>`<option>${c}</option>`).join("") + `<option value="__other">その他（入力）</option>`;
+  renderTimeline();
+  renderAll();
+
+  claude.use("db").then(async d=>{
+    if(!d) return;
+    db = d;
+    await loadCompany();
+  }).catch(()=>{});
+})();
+</script>
