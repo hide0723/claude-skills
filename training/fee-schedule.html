@@ -1,0 +1,671 @@
+<title>【仕事】福田会計の報酬体系</title>
+<style>
+  :root {
+    --paper: #F5F7F8; --surface: #FFFFFF; --surface-2: #EAEEF1;
+    --ink: #16202B; --ink-2: #52626F; --ink-3: #7B8894;
+    --rule: #D3DAE0; --rule-strong: #A9B5BE;
+    --ai: #1E4470; --ai-soft: #E3EAF3;
+    --shu: #A8402C; --shu-soft: #F6E7E2;
+    --mincho: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif JP", "Songti SC", serif;
+    --gothic: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic, "Noto Sans JP", "Meiryo", sans-serif;
+    --mono: "SFMono-Regular", "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --step-0: 0.95rem; --step-1: 1.0625rem; --step-2: 1.375rem; --step-4: 2.5rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #11171C; --surface: #182028; --surface-2: #1F2A33;
+      --ink: #E7ECF0; --ink-2: #A6B3BE; --ink-3: #7C8996;
+      --rule: #2B3740; --rule-strong: #3E4C57;
+      --ai: #8FB2DA; --ai-soft: #1D2B3B; --shu: #E2917B; --shu-soft: #33201B;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #11171C; --surface: #182028; --surface-2: #1F2A33;
+    --ink: #E7ECF0; --ink-2: #A6B3BE; --ink-3: #7C8996;
+    --rule: #2B3740; --rule-strong: #3E4C57;
+    --ai: #8FB2DA; --ai-soft: #1D2B3B; --shu: #E2917B; --shu-soft: #33201B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--gothic); font-size: var(--step-1); line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px 96px; }
+
+  .cover { border-bottom: 3px double var(--rule-strong); padding: 72px 0 40px; display: grid; gap: 26px; }
+  .cover-mark { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); }
+  .cover h1 { font-family: var(--mincho); font-size: var(--step-4); line-height: 1.35; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: 0.04em; }
+  .cover h1 .sub { display: block; font-size: var(--step-2); color: var(--ai); margin-top: 12px; letter-spacing: 0.08em; }
+  .cover-lede { max-width: 62ch; color: var(--ink-2); margin: 0; }
+  .src { margin: 0; display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .src > div { background: var(--surface); padding: 12px 16px; display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 14px; align-items: baseline; }
+  .src dt { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; color: var(--ink-3); }
+  .src dd { margin: 0; font-size: 0.875rem; }
+
+  .clause { display: grid; grid-template-columns: 148px minmax(0, 1fr) 260px; gap: 0 32px; border-bottom: 1px solid var(--rule); padding: 52px 0; align-items: start; }
+  .clause.wide { grid-template-columns: 148px minmax(0, 1fr); }
+  .clause-label { position: sticky; top: 24px; font-family: var(--mincho); font-size: var(--step-2); letter-spacing: 0.16em; line-height: 1.5; border-left: 3px solid var(--ai); padding-left: 14px; }
+  .clause-label .no { display: block; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--ink-3); margin-bottom: 6px; }
+  .clause-body > * + * { margin-top: 20px; }
+  .clause-body h3 { font-family: var(--mincho); font-size: var(--step-2); font-weight: 600; margin: 0; letter-spacing: 0.05em; text-wrap: balance; }
+  .clause-body h4 { font-family: var(--mincho); font-size: var(--step-1); font-weight: 600; margin: 0; letter-spacing: 0.05em; }
+  .clause-body p { margin: 0; max-width: 64ch; }
+  .clause-body p.quote { font-family: var(--mincho); background: var(--surface-2); border-left: 2px solid var(--rule-strong); padding: 14px 18px; color: var(--ink-2); font-size: var(--step-0); line-height: 1.9; max-width: none; }
+
+  .table-scroll { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.875rem; }
+  th, td { text-align: left; padding: 11px 15px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; color: var(--ink-3); background: var(--surface-2); font-weight: 400; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody th { font-weight: 400; font-size: 0.875rem; }
+  td.num, th.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+  thead th.num { text-align: right; }
+  tr.total td, tr.total th { background: var(--ai-soft); font-weight: 600; }
+  tr.sub td, tr.sub th { background: var(--surface-2); }
+  .grp td { background: var(--surface-2); font-family: var(--mincho); letter-spacing: 0.08em; }
+  .yes { color: var(--ai); font-weight: 600; }
+  .no { color: var(--ink-3); }
+
+  .alert { background: var(--shu-soft); border-left: 3px solid var(--shu); padding: 16px 20px; font-size: var(--step-0); }
+  .alert strong { color: var(--shu); }
+  .note { background: var(--surface-2); border-left: 3px solid var(--ai); padding: 16px 20px; font-size: 0.875rem; line-height: 1.8; color: var(--ink-2); }
+  .note strong { color: var(--ink); }
+
+  .memo { background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--shu); padding: 18px 20px; font-size: 0.875rem; line-height: 1.75; position: sticky; top: 24px; }
+  .memo h4 { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.18em; color: var(--shu); margin: 0 0 12px; }
+  .memo ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .memo li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; color: var(--ink-2); }
+  .memo li::before { content: "☐"; color: var(--rule-strong); font-size: 0.95rem; line-height: 1.6; }
+
+  figure { margin: 0; display: grid; gap: 12px; }
+  .diagram-scroll { overflow-x: auto; }
+  .diagram { display: block; width: 100%; min-width: 640px; height: auto; color: var(--ink); }
+  figcaption { font-size: 0.85rem; color: var(--ink-2); max-width: 70ch; }
+  .dg-box { fill: var(--surface); stroke: var(--rule-strong); stroke-width: 1; }
+  .dg-root { fill: var(--ai-soft); stroke: var(--ai); stroke-width: 1.4; }
+  .dg-t { font-family: var(--gothic); font-size: 13px; fill: currentColor; }
+  .dg-s { font-family: var(--gothic); font-size: 12px; fill: currentColor; opacity: 0.72; }
+  .dg-lbl { font-family: var(--mono); font-size: 11px; fill: currentColor; opacity: 0.55; letter-spacing: 0.12em; }
+
+  .colophon { margin-top: 56px; padding-top: 24px; border-top: 3px double var(--rule-strong); font-size: 0.82rem; color: var(--ink-3); display: grid; gap: 8px; max-width: 74ch; }
+  a { color: var(--ai); }
+  a:focus-visible { outline: 2px solid var(--shu); outline-offset: 3px; }
+
+  @media (max-width: 900px) {
+    .clause, .clause.wide { grid-template-columns: 1fr; gap: 24px; padding: 40px 0; }
+    .clause-label, .memo { position: static; }
+    .clause-label { border-left: none; border-bottom: 2px solid var(--ai); padding: 0 0 8px; }
+    .src > div { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="cover-mark">新入職員研修資料 ／ 税理士法人 福田会計</div>
+    <h1>
+      福田会計の報酬体系
+      <span class="sub">どの業務にいくらいただいているか</span>
+    </h1>
+    <p class="cover-lede">
+      前編「顧問契約書から学ぶ福田会計のサービス体系」では、契約書に<strong>何を引き受けると書いてあるか</strong>を読みました。この資料はその続きで、<strong>それぞれの業務にいくらの報酬をいただいているか</strong>を一覧にしたものです。お客様にお渡しするご案内資料と、契約書に添える別紙の2つを突き合わせて作っています。
+    </p>
+    <dl class="src">
+      <div><dt>出典1</dt><dd>報酬額のご案内（令和7年6月5日版・お客様説明用）</dd></div>
+      <div><dt>出典2</dt><dd>顧問契約書 別紙1〜4「契約業務内容および報酬内訳」（令和8年8月・整備中）</dd></div>
+      <div><dt>金額表記</dt><dd>特記のない限り<strong>税抜</strong>。別紙は税抜と明記、ご案内資料には税抜・税込の別の記載がありません</dd></div>
+    </dl>
+  </header>
+
+  <section class="clause wide">
+    <div class="clause-label"><span class="no">図</span>報酬の<br>3区分</div>
+    <div class="clause-body">
+      <h3>いつ請求するかで、3つに分かれます</h3>
+      <p>
+        報酬は項目数が多く、一覧をいきなり見ると混乱します。まず<strong>「毎月いただくもの」「決算のときにいただくもの」「その都度いただくもの」の3つに分かれる</strong>ことを押さえてください。
+      </p>
+
+      <figure>
+        <div class="diagram-scroll">
+          <svg class="diagram" viewBox="0 0 900 330" role="img" aria-label="報酬は毎月請求する月額報酬、決算時に請求する決算報酬、発生の都度請求するその他の報酬の3つに分かれる">
+            <text class="dg-lbl" x="24" y="34">毎月</text>
+            <rect class="dg-root" x="24" y="46" width="272" height="200" />
+            <text class="dg-t" x="44" y="78">月額報酬</text>
+            <text class="dg-s" x="44" y="106">・税務顧問報酬（プラン制）</text>
+            <text class="dg-s" x="44" y="130">・記帳代行報酬</text>
+            <text class="dg-s" x="44" y="154">・給与計算代行</text>
+            <text class="dg-s" x="44" y="186">毎月20日に口座振替または</text>
+            <text class="dg-s" x="44" y="208">お振込みでいただく分</text>
+
+            <text class="dg-lbl" x="314" y="34">事業年度ごと</text>
+            <rect class="dg-box" x="314" y="46" width="272" height="200" />
+            <text class="dg-t" x="334" y="78">決算報酬</text>
+            <text class="dg-s" x="334" y="106">・決算書・法人税申告書</text>
+            <text class="dg-s" x="334" y="130">・消費税申告書</text>
+            <text class="dg-s" x="334" y="154">・書面添付</text>
+            <text class="dg-s" x="334" y="186">・記帳代行の仕訳超過分</text>
+            <text class="dg-s" x="334" y="214">決算のときに精算する分</text>
+
+            <text class="dg-lbl" x="604" y="34">その都度</text>
+            <rect class="dg-box" x="604" y="46" width="272" height="200" />
+            <text class="dg-t" x="624" y="78">その他の報酬</text>
+            <text class="dg-s" x="624" y="106">・年末調整／償却資産申告</text>
+            <text class="dg-s" x="624" y="130">・税務調査立会／修正申告</text>
+            <text class="dg-s" x="624" y="154">・株式評価／所得税・贈与税</text>
+            <text class="dg-s" x="624" y="178">・税額控除に係る報酬</text>
+            <text class="dg-s" x="624" y="214">発生したときにいただく分</text>
+
+            <rect class="dg-box" x="24" y="266" width="852" height="44" />
+            <text class="dg-s" x="44" y="293">「その都度」の分は、着手する前にお客様と内容と金額を合意してから実施します（顧問契約書 報酬の額 9.）</text>
+          </svg>
+        </div>
+        <figcaption>報酬は請求のタイミングで3つに分かれます。青枠の月額報酬が、毎月の請求額として顧問料と呼ばれている部分です。</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="clause">
+    <div class="clause-label"><span class="no">1-A</span>月額<br>税務報酬</div>
+    <div class="clause-body">
+      <h3>プランを選び、当てはまるオプションを足す</h3>
+      <p>
+        月額の税務報酬は、<strong>お客様に6つの質問をして、その答えでプランとオプションが決まる</strong>仕組みです。お客様側で作業していただける部分が多いほど安くなり、事務所が引き受ける部分が多いほど高くなります。
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>ご確認する内容</th>
+              <th class="num">ライトプラン</th>
+              <th class="num">ベーシックプラン</th>
+              <th class="num">標準オプション</th>
+              <th class="num">限定オプション</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="sub">
+              <th>料金</th>
+              <td class="num">￥10,000</td>
+              <td class="num">￥16,000</td>
+              <td class="num">1項目あたり<br>＋￥5,000</td>
+              <td class="num">1項目あたり<br>＋￥10,000</td>
+            </tr>
+            <tr>
+              <th>会計ソフトへの入力は貴社にて行いますか？</th>
+              <td class="num yes">〇</td>
+              <td class="num yes">〇</td>
+              <td class="num no">×</td>
+              <td class="num">—</td>
+            </tr>
+            <tr>
+              <th>領収書の整理保存は貴社にて行いますか？</th>
+              <td class="num yes">〇</td>
+              <td class="num yes">〇</td>
+              <td class="num no">×</td>
+              <td class="num">—</td>
+            </tr>
+            <tr>
+              <th>弊事務所との打ち合わせに、貴社にご訪問が必要でしょうか。</th>
+              <td class="num yes">〇</td>
+              <td class="num no">×</td>
+              <td class="num">—</td>
+              <td class="num">—</td>
+            </tr>
+            <tr>
+              <th>月次決算の打ち合わせの頻度は年2回以上、希望されますか？</th>
+              <td class="num">年2回以内</td>
+              <td class="num">年4回以内</td>
+              <td class="num">年6回以内</td>
+              <td class="num">年12回</td>
+            </tr>
+            <tr>
+              <th>貴社の事業規模はどのくらいでしょうか？</th>
+              <td class="num">1,000万円未満</td>
+              <td class="num">5,000万円以内</td>
+              <td class="num" colspan="2">以後5,000万円ごとに ＋￥5,000</td>
+            </tr>
+            <tr>
+              <th>報酬の支払いは口座自動振替をご利用いただけますか？</th>
+              <td class="num yes">〇</td>
+              <td class="num yes">〇</td>
+              <td class="num no">×</td>
+              <td class="num">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        表の読み方はこうです。<strong>〇＝お客様がやってくださる（＝事務所の手間が減る）、×＝事務所が引き受ける（＝オプションが加算される）。</strong>たとえば「会計ソフトへの入力を貴社で行いますか？」に×（できない）と答えた場合、事務所が入力を代行するので標準オプション＋￥5,000が乗ります。これが記帳代行の月額です。
+      </p>
+
+      <h4>算定例</h4>
+      <p>ご案内資料に載っている計算例です。ベーシックプランに標準オプションを3項目足した形になっています。</p>
+      <div class="table-scroll">
+        <table>
+          <tbody>
+            <tr>
+              <th>ベーシックプラン</th>
+              <td class="num">￥16,000</td>
+            </tr>
+            <tr>
+              <th>標準オプション　3項目（＠￥5,000）</th>
+              <td class="num">￥15,000</td>
+            </tr>
+            <tr class="total">
+              <th>合計（月額）</th>
+              <td class="num">￥31,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <aside class="memo">
+      <h4>新人メモ</h4>
+      <ul>
+        <li>〇＝お客様がやる、×＝事務所が引き受ける</li>
+        <li>×が増えるほど月額が上がる仕組み</li>
+        <li>担当先がどのプラン・何項目かを把握する</li>
+        <li>作業の実態が変われば金額も変わる。実態と契約がずれていたら担当者へ</li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="clause">
+    <div class="clause-label"><span class="no">1-B</span>月額<br>その他報酬</div>
+    <div class="clause-body">
+      <h3>給与計算代行</h3>
+      <p>
+        給与計算は、税務顧問とは別に金額を出します。<strong>会社ごとの基本報酬に、従業員の人数分を足す</strong>のが基本の形です。人数が増えれば計算の手間も増えるためです。
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>項目</th><th>単位</th><th class="num">報酬額（月額）</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>基本報酬</th><td>1事業者あたり</td><td class="num">￥4,000</td></tr>
+            <tr><th>人数あたり</th><td>1人につき</td><td class="num">￥800</td></tr>
+            <tr><th>給与明細の印刷あり</th><td>1人につき</td><td class="num">￥200</td></tr>
+            <tr><th>納税代行手続（ダイレクト納付）　源泉所得税</th><td>—</td><td class="num">￥2,000</td></tr>
+            <tr><th>納税代行手続（ダイレクト納付）　住民税</th><td>—</td><td class="num">￥1,600</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>給与計算に付随する労務手続きの代行</h4>
+      <p>A・Bどちらかを選ぶ形です。</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>項目</th><th>単位</th><th class="num">報酬額</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>A）労働保険・社会保険 手続一式</th><td>1事業年度</td><td class="num">月額 ￥4,000</td></tr>
+            <tr><th>B）労働保険の概算申告</th><td>1事業年度</td><td class="num">年額 ￥30,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert">
+        <strong>「月額に含む」の範囲に注意してください。</strong>顧問契約書の本紙には「給与計算代行の報酬には労働・社会保険の手続代行を含む」と書かれています。しかし<strong>労働保険の申告書（年度更新）の作成料は、この月額には含まれません。</strong>上の表でも「労働保険の概算申告 年額￥30,000」が独立した項目として金額を持っており、契約書別紙でも「労働保険の算定基礎届の作成 ￥45,000／回」が別項目です。<strong>申告書の作成が発生するときは、別途のご相談・ご請求になります。</strong><br>
+        また、お客様が別に社会保険労務士へ依頼している場合は、特約で手続代行そのものを「含まない」と整理します。担当先がどちらかは、契約書の特約まで見て確認してください。
+      </div>
+    </div>
+    <aside class="memo">
+      <h4>新人メモ</h4>
+      <ul>
+        <li>基本報酬＋人数割が基本の形</li>
+        <li>従業員が増減したら金額が変わる。入退社の連絡は担当者へ</li>
+        <li>労務手続きを含む契約か、含まない契約かを確認する</li>
+        <li>労働保険の申告書作成料は月額に含まない。別途相談</li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="clause">
+    <div class="clause-label"><span class="no">2</span>決算報酬</div>
+    <div class="clause-body">
+      <h3>1年に1回、決算のときにいただく報酬</h3>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>項目</th><th class="num">報酬額</th></tr>
+          </thead>
+          <tbody>
+            <tr class="grp"><td colspan="2">決算書・確定申告書 作成手数料</td></tr>
+            <tr><th>法人　決算書作成手数料＋法人税の確定申告書作成料</th><td class="num">￥120,000</td></tr>
+            <tr><th>個人事業主　収支内訳書・決算書＋所得税の確定申告書作成料</th><td class="num">￥50,000</td></tr>
+            <tr><th>一般社団法人等の非営利法人　決算書作成手数料<br><span class="no">（法人税の確定申告書の作成なし）</span></th><td class="num">￥50,000</td></tr>
+            <tr class="grp"><td colspan="2">消費税</td></tr>
+            <tr><th>消費税確定申告書の作成手数料</th><td class="num">￥50,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="quote">
+        顧問契約書の本紙では、決算報酬を「税務顧問報酬の額に含む（書面添付含む）」と定めている契約が多くあります。その場合、決算のときに別途￥120,000をいただくのではなく、毎月の顧問料に織り込み済みという扱いです。<strong>担当先がどちらの立て付けかは、契約書で必ず確認してください。</strong>
+      </p>
+    </div>
+    <aside class="memo">
+      <h4>新人メモ</h4>
+      <ul>
+        <li>決算報酬が顧問料に「含む」契約か「別建て」かを確認</li>
+        <li>法人と個人事業主で金額が違う</li>
+        <li>消費税の申告があるかどうかで金額が変わる</li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="clause">
+    <div class="clause-label"><span class="no">3</span>その他の<br>報酬</div>
+    <div class="clause-body">
+      <h3>発生したときに、その都度いただく報酬</h3>
+      <p>
+        月額報酬にも決算報酬にも含まれない業務の料金表です。<strong>お客様が希望されたときに、事前に内容と金額を合意してから実施します。</strong>契約書の別紙2として添える一覧が、いちばん詳しい形になっています。
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>項目</th><th>単位</th><th class="num">報酬額（税抜）</th></tr>
+          </thead>
+          <tbody>
+            <tr class="grp"><td colspan="3">1　年末調整代行</td></tr>
+            <tr><th>基本料金</th><td>1企業あたり</td><td class="num">￥10,000</td></tr>
+            <tr><th>従業員人数　10人まで</th><td>1人あたり</td><td class="num">￥2,000</td></tr>
+            <tr><th>従業員人数　11人から30人まで</th><td>1人あたり</td><td class="num">￥5,000</td></tr>
+            <tr><th>従業員人数　30人超</th><td>—</td><td class="num">別途見積り</td></tr>
+            <tr class="grp"><td colspan="3">2　支払調書の作成代行</td></tr>
+            <tr><th>所得税法第204条第1項報酬</th><td>1件あたり</td><td class="num">￥1,500</td></tr>
+            <tr class="grp"><td colspan="3">3　償却資産税申告書の作成代行</td></tr>
+            <tr><th>提出自治体</th><td>一自治体あたり</td><td class="num">￥10,000</td></tr>
+            <tr class="grp"><td colspan="3">4　税務調査立会料及び修正申告書作成料</td></tr>
+            <tr><th>税務調査立会料</th><td>1日1人あたり</td><td class="num">￥30,000</td></tr>
+            <tr><th>修正申告書作成料</th><td>1税目1事業年度あたり</td><td class="num">￥30,000</td></tr>
+            <tr class="grp"><td colspan="3">5　株式評価（個別お見積もり）</td></tr>
+            <tr><th>初回</th><td>1回</td><td class="num">￥100,000〜</td></tr>
+            <tr><th>2回目以降</th><td>1回</td><td class="num">￥50,000〜</td></tr>
+            <tr class="grp"><td colspan="3">6　所得税・贈与税申告書の作成代行</td></tr>
+            <tr><th>〈所得税〉確定申告書 第1表・第2表（基本料金）</th><td>1件</td><td class="num">￥20,000</td></tr>
+            <tr><th>〈所得税〉収支内訳書 又は 青色申告決算書（損益計算書のみ）</th><td>1件</td><td class="num">￥30,000</td></tr>
+            <tr><th>〈所得税〉青色申告決算書（貸借対照表あり）</th><td>—</td><td class="num">別紙1に含む</td></tr>
+            <tr><th>〈所得税〉消費税申告書</th><td>1件</td><td class="num">￥30,000</td></tr>
+            <tr><th>〈所得税〉その他の付表・明細（株式譲渡明細を含む）</th><td>1種類につき</td><td class="num">￥10,000</td></tr>
+            <tr><th>〈所得税〉土地・建物の譲渡所得の申告</th><td>1事業年度あたり</td><td class="num">￥100,000</td></tr>
+            <tr><th>〈所得税〉給与所得以外の所得の収入金額が300万円以下の場合</th><td>1件</td><td class="num">△￥10,000</td></tr>
+            <tr><th>〈贈与税〉贈与税申告書の作成・贈与契約書の作成</th><td>贈与者・受贈者1組につき</td><td class="num">￥10,000</td></tr>
+            <tr class="grp"><td colspan="3">7　税額控除に係る報酬</td></tr>
+            <tr><th>法人税額の特別控除額に対する報酬</th><td>1事業年度</td><td class="num">特別控除額 × 5％<br>（上限 ￥500,000／事業年度）</td></tr>
+            <tr class="grp"><td colspan="3">8　試算表の提出頻度又は訪問の追加</td></tr>
+            <tr><th>契約で合意した頻度・方法を超える場合</th><td>都度</td><td class="num">別紙1の当該項目の単価による</td></tr>
+            <tr class="grp"><td colspan="3">9　記帳代行（仕訳数の超過分）</td></tr>
+            <tr><th>契約に定めた年間仕訳数を超過した分</th><td>1仕訳あたり</td><td class="num">￥50</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>この一覧に付いている主な注記。</strong><br>
+        ・年末調整を行わず、法定調書合計表の作成のみを行う場合は ￥10,000。<br>
+        ・償却資産税申告書について、該当する資産がない場合は請求しない。<br>
+        ・「所得税法第204条第1項報酬」とは、弁護士・税理士・デザイナーなど一定の職業に該当する人への支払いで、支払う側が源泉徴収を要する報酬・料金のことです。<br>
+        ・税額控除に係る報酬の算定基礎は、法人税申告書 別表一「3」欄（法人税額の特別控除額の合計を記載する欄）の金額です。<br>
+        ・仕訳数の超過分は、その事業年度の仕訳数が確定してから<strong>決算時に一括して請求</strong>します。毎月の請求には乗りません。<br>
+        ・この一覧にない業務を引き受けるときは、その都度、事前に内容と報酬額を合意します。
+      </div>
+    </div>
+    <aside class="memo">
+      <h4>新人メモ</h4>
+      <ul>
+        <li>ここにある業務は、着手前の合意が必要</li>
+        <li>お客様から依頼が出たら、金額を答える前に担当者へ</li>
+        <li>仕訳超過分は決算時に精算。毎月は請求しない</li>
+        <li>年末調整は人数で金額が変わる。従業員数を確認する</li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="clause wide">
+    <div class="clause-label"><span class="no">4</span>契約書の<br>別紙</div>
+    <div class="clause-body">
+      <h3>いまの契約書には、別紙が4枚付きます</h3>
+      <p>
+        ここまでの料金表はお客様への説明用です。これを契約の一部として綴じる形にしたのが<strong>別紙</strong>です。プランやオプションという言い方をやめ、<strong>業務項目ごとに「含む」欄へ☑を付けて数量・単価・金額を書く</strong>形式になっています。同じ料金体系の別の見せ方だと思ってください。
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>別紙</th><th>正式名称</th><th>役割</th></tr></thead>
+          <tbody>
+            <tr><th>別紙1</th><td>契約業務内容および報酬内訳<br><span class="no">（税務顧問業務・決算申告代行業務）</span></td><td>毎月の顧問料と決算報酬の内訳。項目1〜14に☑と数量・単価・金額を記入する。</td></tr>
+            <tr><th>別紙2</th><td>その他業務の報酬<br><span class="no">（年末調整代行業務・償却資産申告業務ほか料金表）</span></td><td>月額にも決算報酬にも含まれない業務の料金表。記入欄はなく、単価が固定で載る。</td></tr>
+            <tr><th>別紙3</th><td>契約業務内容および報酬内訳<br><span class="no">（給与計算代行業務）</span></td><td>給与計算代行の内訳。税務顧問とは発注の有無が分かれるため、単独で締結・改定できるよう別建てにしている。</td></tr>
+            <tr><th>別紙4</th><td>特約事項<br><span class="no">（別紙1から別紙3までの注記事項及び特約事項）</span></td><td>別紙1〜3の注記をまとめたものと、契約条件を修正する特約。<strong>本契約・別紙1〜3と食い違う場合は別紙4が優先する。</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>どれが優先するか</h4>
+      <figure>
+        <div class="diagram-scroll">
+          <svg class="diagram" viewBox="0 0 900 250" role="img" aria-label="顧問契約書の本紙を別紙1から3が具体化し、別紙4の特約事項がそれらすべてに優先する">
+            <defs>
+              <marker id="dgArrowF" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="7" markerHeight="6" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="currentColor" opacity="0.65" />
+              </marker>
+            </defs>
+            <rect class="dg-box" x="24" y="40" width="230" height="66" />
+            <text class="dg-t" x="44" y="70">顧問契約書（本紙）</text>
+            <text class="dg-s" x="44" y="92">何を引き受けるか・報酬の大枠</text>
+
+            <line class="dg-arrow" x1="254" y1="73" x2="316" y2="73" marker-end="url(#dgArrowF)" />
+            <text class="dg-lbl" x="285" y="63" text-anchor="middle">具体化</text>
+
+            <rect class="dg-box" x="322" y="40" width="230" height="66" />
+            <text class="dg-t" x="342" y="70">別紙1・2・3</text>
+            <text class="dg-s" x="342" y="92">業務項目ごとの☑と単価</text>
+
+            <line class="dg-arrow" x1="552" y1="73" x2="614" y2="73" marker-end="url(#dgArrowF)" />
+
+            <rect class="dg-root" x="620" y="40" width="256" height="66" />
+            <text class="dg-t" x="640" y="70">別紙4　特約事項</text>
+            <text class="dg-s" x="640" y="92">食い違う場合はこれが優先</text>
+
+            <path class="dg-arrow" d="M 748 106 L 748 150 L 139 150 L 139 110" marker-end="url(#dgArrowF)" />
+            <text class="dg-lbl" x="443" y="168" text-anchor="middle">本紙の定めも、別紙4で読み替えられることがある</text>
+
+            <rect class="dg-box" x="24" y="190" width="852" height="44" />
+            <text class="dg-s" x="44" y="217">例：本紙に「労働・社会保険の手続代行を含む」とあっても、別紙4第10条で「含まない」と読み替える</text>
+          </svg>
+        </div>
+        <figcaption>本紙 → 別紙1〜3 → 別紙4 の順に具体的になり、食い違ったときは後ろが優先します。担当先の契約を読むときは、必ず別紙4まで目を通してください。</figcaption>
+      </figure>
+
+      <h4>別紙1の項目と、もとの料金表との対応</h4>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th class="num">番号</th><th>品番・品名</th><th class="num">単価</th><th>もとの料金表での位置づけ</th></tr>
+          </thead>
+          <tbody>
+            <tr class="grp"><td colspan="4">税務業務（月額）</td></tr>
+            <tr><td class="num">1</td><th>税務監査、税務相談業務：基本月額報酬</th><td class="num">￥10,000</td><td>ライトプランの本体</td></tr>
+            <tr><td class="num">2</td><th>記帳代行報酬：会計ソフトの入力処理をご依頼の場合</th><td class="num">￥5,000</td><td>「会計ソフトへの入力」が×の場合の標準オプション</td></tr>
+            <tr><td class="num">3</td><th>資料預り、打合せ方法：訪問ありの場合<br><span class="no">（来所・オンラインはゼロ）</span></th><td class="num">￥5,000</td><td>「ご訪問が必要か」への回答</td></tr>
+            <tr><td class="num">4</td><th>月次経理処理頻度<br><span class="no">年4回＠5,000／年6回＠10,000／年6回超＠15,000（いずれも×12か月）</span></th><td class="num">￥5,000〜<br>￥15,000</td><td>「打ち合わせの頻度」への回答</td></tr>
+            <tr><td class="num">5</td><th>事業規模：年商5,000万円超から5,000万円ごと<br><span class="no">※5億円超は一律＋￥50,000</span></th><td class="num">￥5,000</td><td>「事業規模」への回答</td></tr>
+            <tr><td class="num">6</td><th>報酬支払：口座振替以外の場合<br><span class="no">（請求書発行を行う場合）</span></th><td class="num">￥3,000</td><td>「口座自動振替をご利用いただけるか」への回答</td></tr>
+            <tr class="grp"><td colspan="4">決算・申告代行業務（事業年度ごと）</td></tr>
+            <tr><td class="num">7</td><th>決算報酬：法人 ＠120,000／個人＆NPO ＠50,000</th><td class="num">￥120,000<br>￥50,000</td><td>決算報酬の表</td></tr>
+            <tr><td class="num">8</td><th>消費税申告</th><td class="num">￥50,000</td><td>決算報酬の表</td></tr>
+            <tr><td class="num">9</td><th>申告書控印刷</th><td class="num">￥30,000</td><td rowspan="3">料金表になし（別紙で追加）</td></tr>
+            <tr><td class="num">10</td><th>銀行用申告書印刷</th><td class="num">￥5,000</td></tr>
+            <tr><td class="num">11</td><th>総勘定元帳印刷</th><td class="num">￥30,000</td></tr>
+            <tr><td class="num">12</td><th>NXPRO使用 決算手数料<br><span class="no">（ミロクのクラウドアプリを使用している場合）</span></th><td class="num">△￥50,000</td><td>値引き項目</td></tr>
+            <tr><td class="num">13</td><th>出精値引き</th><td class="num">△</td><td>値引き項目</td></tr>
+            <tr><td class="num">14</td><th>税理士法第33条の2第1項に規定する書面添付</th><td class="num">￥30,000</td><td>その他の報酬の表</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        表の下には、<strong>小計（税抜）／消費税（10％）／お値引き（税込）／合計（税込）</strong>の欄が付きます。お値引きは、報酬の改定にあたって<strong>従前の契約の年額に金額を据え置くための調整</strong>として使われることがあります。標準の報酬額と実際の請求額の両方が1枚で追えるよう、小計は値引き前の金額のままにしてあります。
+      </p>
+
+      <h4>別紙3（給与計算代行）の項目</h4>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th class="num">番号</th><th>品番・品名</th><th class="num">単価</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><th>給与計算：基本月額報酬</th><td class="num">￥4,000／月</td></tr>
+            <tr><td class="num">2</td><th>給与計算：人数×月＠800×12ヶ月</th><td class="num">年＠￥9,600</td></tr>
+            <tr><td class="num">3</td><th>給与計算 勤怠の集計有：人数×月＠400×12ヶ月</th><td class="num">年＠￥4,800</td></tr>
+            <tr><td class="num">4</td><th>給与明細印刷有：人数×月＠200×12ヶ月</th><td class="num">年＠￥2,400</td></tr>
+            <tr><td class="num">5</td><th>納税代行手続き（ダイレクト納付）－住民税</th><td class="num">￥1,000／月</td></tr>
+            <tr><td class="num">6</td><th>労働保険・社会保険手続き一式</th><td class="num">￥4,000／月</td></tr>
+            <tr><td class="num">7</td><th>労働保険の算定基礎届の作成</th><td class="num">￥45,000／回</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert">
+        <strong>項目6・7は、既定では契約に含みません。</strong>最新のフォーマットでは、別紙4第10条に「労働保険及び社会保険の手続代行は本契約に含まない。甲が別途委託する社会保険労務士が行う」と定められ、<strong>本紙に「必要な労働・社会保険の手続代行を含む」と書かれていても、この条項で読み替える</strong>形になっています。お客様が当事務所に委任を希望される場合は、上の単価でその都度合意して実施します。
+      </div>
+
+      <h4>別紙4（特約事項）の中身</h4>
+      <p>別紙4は2部構成です。<strong>特約事項①</strong>が別紙1〜3の注記をまとめたもの、<strong>特約事項②</strong>が契約条件を修正する条文です。</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>条</th><th>見出し</th><th>要旨</th></tr></thead>
+          <tbody>
+            <tr><th>第1条</th><td>税額控除に係る報酬</td><td>上限は1事業年度あたり￥500,000。算定基礎は法定申告期限時点の最終申告書の別表一「3」欄。資料確認から申告後の通常の照会対応までを含み、重ねて請求しない。</td></tr>
+            <tr><th>第2条</th><td>追加報酬の取扱い</td><td>下の「追加業務の4段階」を参照。</td></tr>
+            <tr><th>第3条</th><td>損害賠償</td><td>「締結の前後を問わず」を削除。上限は効力発生日以後の行為に限り適用し、<strong>故意・重大な過失には上限を適用しない</strong>。</td></tr>
+            <tr><th>第4条</th><td>契約内容の変更</td><td>書面またはChatwork等の電磁的方法による合意が必要。解約の3か月前予告とは別の話。</td></tr>
+            <tr><th>第5条</th><td>契約終了時の取扱い</td><td>原本は現物返還。データ・申告書控え・受信通知等は<strong>終了日から14日以内</strong>に無償提供。引継ぎに協力。</td></tr>
+            <tr><th>第6条</th><td>打合せの記録</td><td>録音・録画・文字起こしは<strong>1年以上保存</strong>し、求めがあれば<strong>10営業日以内</strong>に写しを提供。</td></tr>
+            <tr><th>第7条</th><td>AIサービス等の利用</td><td>提供者・委託先の選定と監督に責任を負い、これらの者の行為について自ら行った場合と同様の責任を負う。事故を認識したら速やかに通知。</td></tr>
+            <tr><th>第8条</th><td>契約期間及び従前の合意との関係</td><td>従前の料金合意と矛盾する場合は本契約が優先。</td></tr>
+            <tr><th>第9条</th><td>条項の引用</td><td>本紙第6項・第7項の「(4)」「(5)」は委任業務の範囲を定める号を指す。</td></tr>
+            <tr><th>第10条</th><td>労働・社会保険の手続代行</td><td>本契約に含まない。社会保険労務士が行う。本紙の「含む」旨の記載はこれで読み替える。</td></tr>
+            <tr><th>第11条</th><td>お値引き</td><td>従前の年額に据え置くための調整。<strong>本契約の期間限りで適用</strong>し、次期以降は協議。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>追加業務の4段階（別紙4 第2条第4項）</h4>
+      <p>
+        本紙の「報酬の額 9.」と同じ趣旨ですが、<strong>最新の別紙では4段階に整理され、緊急時の例外も加わっています。</strong>金額はいずれも税抜で、同一または一連の業務は合算して判定します。
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>1件の報酬額（税抜）</th><th>着手前にすること</th></tr></thead>
+          <tbody>
+            <tr><th class="num">5万円以下</th><td>事後に請求できる（事前の連絡は不要）</td></tr>
+            <tr><th class="num">5万円超 20万円以下</th><td>着手前に業務内容と概算額を連絡する。<strong>承諾は不要</strong></td></tr>
+            <tr><th class="num">20万円超</th><td>着手前に見積りを提示し、承諾を得る（Chatwork等の記録が残る方法でも可）。<strong>ただし緊急を要する場合は「着手します・概算〇円」の一報で着手し、事後に精算を協議できる</strong></td></tr>
+            <tr class="total"><th class="num">上限</th><td>事前の承諾を得ていない追加業務報酬の合計は、1事業年度あたり30万円が上限</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert">
+        <strong>本紙と別紙で段階の区切りが違います。</strong>本紙の9項は「5万円超20万円以下は連絡」「20万円超は見積・承諾」の2段階で、5万円以下の扱いと緊急時の例外は書かれていません。別紙4が付いている契約では<strong>別紙4が優先</strong>します。担当先がどちらの状態かを確認してください。
+      </div>
+    </div>
+  </section>
+
+  <section class="clause">
+    <div class="clause-label"><span class="no">要確認</span>資料間で<br>食い違う<br>項目</div>
+    <div class="clause-body">
+      <h3>ご案内資料と契約書別紙で、単価が違うところがあります</h3>
+      <p>
+        この資料は2つの出典を突き合わせて作りました。その過程で、<strong>同じ項目なのに金額や区分の書き方が違うところ</strong>が見つかっています。実務で迷いやすいので、そのまま挙げておきます。<strong>どちらが現行の取扱いかは、請求や見積りに使う前に担当者へ確認してください。</strong>
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>項目</th><th>報酬額のご案内（令和7年6月）</th><th>契約書別紙（令和8年8月）</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>ダイレクト納付（住民税）</th>
+              <td class="num">￥1,600</td>
+              <td class="num">￥1,000</td>
+            </tr>
+            <tr>
+              <th>勤怠の集計</th>
+              <td>記載なし</td>
+              <td class="num">月＠￥400（年＠￥4,800）</td>
+            </tr>
+            <tr>
+              <th>労働保険関係</th>
+              <td>B）労働保険の概算申告　年額 ￥30,000</td>
+              <td>労働保険の算定基礎届の作成　￥45,000／回</td>
+            </tr>
+            <tr>
+              <th>年末調整</th>
+              <td>1事業年度 ￥10,000〜</td>
+              <td>基本 ￥10,000＋人数割<br><span class="no">（10人まで＠2,000／11〜30人＠5,000）</span></td>
+            </tr>
+            <tr>
+              <th>事業規模の加算</th>
+              <td>1,000万円未満／5,000万円以内の区分、<br>以後5,000万円ごとに＋￥5,000</td>
+              <td>5,000万円未満は＠0、5,000万円超から<br>5,000万円ごとに＠￥5,000、5億円超は一律＋￥50,000</td>
+            </tr>
+            <tr>
+              <th>年間仕訳数の基準</th>
+              <td>記載なし</td>
+              <td>事務所の標準は1,200仕訳。<br>契約書に別の定め（4,800仕訳など）がある先はそちらが優先</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>別紙フォーマットそのものに、直すべき点が見つかりました</h3>
+      <p>
+        現在使われている別紙のひな型を2種類（代表の共有フォルダにある共通フォームと、契約書フォルダにある公式フォーマット）読み比べたところ、<strong>そのまま使うと誤った契約書ができてしまう箇所</strong>がありました。研修の題材としてではなく、実務上の申し送りとして挙げます。
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>箇所</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr>
+              <th>別紙2 区分7<br>税額控除の料率</th>
+              <td>共通フォームは、<strong>表に「特別控除額×10％」、注記に「5％を乗じた額」</strong>と書かれており、同じ書類の中で食い違っています。公式フォーマットは表・注記とも5％です。<strong>5％が正しいと思われますが、共通フォームの表の修正が必要です。</strong></td>
+            </tr>
+            <tr>
+              <th>仕訳数の基準</th>
+              <td>公式フォーマットの中で、<strong>別紙2 区分9は「1,201件を超過した場合」</strong>、<strong>別紙4 第2条第2項は「4,800仕訳を超える部分」</strong>となっており、同じ書類の中で基準が2つあります。どちらかに揃える必要があります。</td>
+            </tr>
+            <tr>
+              <th>前案件の数値の残存</th>
+              <td>公式フォーマットには、<strong>別紙1の事業規模欄・単価欄・小計欄、別紙3の小計欄に、前に作成した案件の金額がそのまま残っています。</strong>また別紙4第8条・第11条の契約期間が「令和　年　月　日から令和　年<strong>4月30日</strong>まで」と、月日だけ埋まった状態です。空欄に戻さないと、書き換え漏れがそのまま契約書になります。</td>
+            </tr>
+            <tr>
+              <th>別紙3 項目6の名称</th>
+              <td>共通フォームは項目6が「<strong>労働保険の保険料の申告・納付に係る事務</strong>」の1項目（＠4,000）。公式フォーマットは項目6「労働保険・社会保険手続き一式」（＠4,000）＋項目7「労働保険の算定基礎届の作成」（＠45,000）の2項目です。<strong>2つのひな型で構成が違うため、どちらを使うかを決める必要があります。</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="quote">
+        なお、事業規模（年商）を基準に報酬を加算する仕組みそのものについては、お客様から「売上の大きさは業務量と直結しない」という趣旨のご意見をいただいており、業務量の基準を年間仕訳数に一本化する案が検討されています。この部分は今後変わる可能性があります。
+      </p>
+    </div>
+    <aside class="memo">
+      <h4>新人メモ</h4>
+      <ul>
+        <li>金額を答える前に、必ず最新の取扱いを確認する</li>
+        <li>古い資料の金額をそのまま使わない</li>
+        <li>食い違いに気づいたら、自分で決めずに報告する</li>
+      </ul>
+    </aside>
+  </section>
+
+  <footer class="colophon">
+    <p>本資料は、税理士法人 福田会計の「報酬額のご案内」（令和7年6月5日版）および顧問契約書 別紙1〜4「契約業務内容および報酬内訳」（令和8年8月・整備中）をもとに作成した社内研修資料です。</p>
+    <p>掲載した金額は事務所の標準的な報酬額です。実際の適用は契約ごとに異なり、値引きや特約が入ることもあります。請求・見積りに使う前に、必ず担当先の契約書原本と最新の料金表を確認してください。</p>
+    <p>別紙は整備作業の途中であり、金額・基準は確定前のものを含みます。特定のお客様の契約金額・値引き額・事業規模などは記載していません。社内利用に限ります。</p>
+  </footer>
+
+</div>
